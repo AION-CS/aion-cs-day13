@@ -1,22 +1,21 @@
 import { bi, t } from "@/lib/lang";
 
 /**
- * Task 1 · Block 1.2, and the worked example of Materi A4: what an engaged customer is worth. EngageIT's accounts that came up for
- * renewal last year, split by whether they completed the setup path in their first 90 days (Case assumption). The method is
+ * Task 1 · Block 1.2 (Optional, read-only: the rates are PRINTED, no figure is asked for, CLAUDE.md #44) and the worked example of Materi A4: what a
+ * set-up bar is worth. EngageIT's new customers last year, split by whether the home screen showed a set-up bar (Case assumption). The method is
  *
- *   renewal rate                 = renewals ÷ accounts up for renewal × 100
- *   lift (how many times)        = renewal rate of accounts that completed the path ÷ renewal rate of accounts that did not
- *   extra revenue a year         = accounts up for renewal a year × (rate with path − rate without, as a share of one) × annual contract
+ *   finish rate                  = finished set-ups ÷ new customers × 100
+ *   lift (how many times)        = finish rate with the bar ÷ finish rate without it
+ *   extra revenue a year         = new customers a year × (rate with − rate without, as a share of one) × yearly value of a customer who finishes set-up
  *
- * (Identifiers keep the names of the file this was built from: `control` = accounts without the path, `variant` = accounts that
- * completed it, `sent` = accounts up for renewal, `orders` = renewals, `yearly` = accounts up for renewal next year, `order` = annual
- * contract value.) Results are rounded to two decimals.
+ * (Identifiers keep the names of the file this was built from: `control` = new customers without the bar, `variant` = with the bar,
+ * `sent` = new customers, `orders` = finished set-ups, `order` = yearly value of a customer who finished set-up.) Results are rounded to two decimals.
  */
 export const PILOT = {
-  control: { sent: 400, orders: 240 },
-  variant: { sent: 200, orders: 180 },
-  yearly: 500,
-  order: 6000,
+  control: { sent: 720, orders: 108 },
+  variant: { sent: 240, orders: 72 },
+  yearly: 2000,
+  order: 1200,
 };
 
 const r2 = (x: number) => Math.round(x * 100) / 100;
@@ -35,124 +34,69 @@ export const FORECAST = {
   },
 };
 
-export type FigureId = "F1" | "F2" | "F3";
-export const FIGURE_IDS: FigureId[] = ["F1", "F2", "F3"];
-
-export const FIGURES = bi({
-  F1: {
-    id: "F1" as FigureId,
-    label: t("F1 · Renewal rate of accounts that completed the setup path, %", "F1 · Verlängerungsquote der Konten, die den Einrichtungspfad abgeschlossen haben, %"),
-    question: t("Of the accounts that completed the setup path, what share renewed?", "Welcher Anteil der Konten, die den Einrichtungspfad abgeschlossen haben, hat verlängert?"),
-    unit: "%",
-    example: "12.5",
-    answer: FORECAST.f1,
-    formula: t("Renewal rate = renewals ÷ accounts up for renewal × 100. Use the two rows of the accounts that completed the setup path.", "Verlängerungsquote = Verlängerungen ÷ Konten mit anstehender Verlängerung × 100. Nutzen Sie die zwei Zeilen der Konten, die den Einrichtungspfad abgeschlossen haben."),
-    taughtIn: "A4" as const,
-    clue: t("Did you divide the renewals by the accounts of the same group, and multiply by 100?", "Haben Sie die Verlängerungen durch die Konten derselben Gruppe geteilt und mit 100 multipliziert?"),
-    sources: [
-      { label: t("Last year · completed the setup path · accounts up for renewal", "Letztes Jahr · Einrichtungspfad abgeschlossen · Konten mit anstehender Verlängerung"), value: "200", target: "fc-var-sent" },
-      { label: t("Last year · completed the setup path · renewals", "Letztes Jahr · Einrichtungspfad abgeschlossen · Verlängerungen"), value: "180", target: "fc-var-orders" },
-    ],
-  },
-  F2: {
-    id: "F2" as FigureId,
-    label: t("F2 · Lift: how many times the renewal rate without the path", "F2 · Lift: wie viel Mal die Verlängerungsquote ohne Pfad"),
-    question: t("How many times higher is the renewal rate of accounts that completed the setup path than that of accounts that did not?", "Wie viel Mal höher ist die Verlängerungsquote der Konten, die den Einrichtungspfad abgeschlossen haben, als die der Konten, die es nicht taten?"),
-    unit: "×",
-    example: "1.5",
-    answer: FORECAST.f2,
-    formula: t("Lift = renewal rate with the path ÷ renewal rate without it. Work out the rate without the path from its rows first.", "Lift = Verlängerungsquote mit Pfad ÷ Verlängerungsquote ohne Pfad. Berechnen Sie die Quote ohne Pfad zuerst aus ihren Zeilen."),
-    taughtIn: "A4" as const,
-    clue: t("You need two rates from two pairs of rows. Is the second one worked out from the rows without the path, the same way as F1?", "Sie brauchen zwei Quoten aus zwei Zeilenpaaren. Ist die zweite aus den Zeilen ohne Pfad berechnet, genauso wie F1?"),
-    sources: [
-      { label: t("Your F1 (renewal rate with the path)", "Ihr F1 (Verlängerungsquote mit Pfad)"), value: "F1", target: "fig-F1" },
-      { label: t("Last year · did not complete the path · accounts up for renewal", "Letztes Jahr · Pfad nicht abgeschlossen · Konten mit anstehender Verlängerung"), value: "400", target: "fc-ctl-sent" },
-      { label: t("Last year · did not complete the path · renewals", "Letztes Jahr · Pfad nicht abgeschlossen · Verlängerungen"), value: "240", target: "fc-ctl-orders" },
-    ],
-  },
-  F3: {
-    id: "F3" as FigureId,
-    label: t("F3 · Extra revenue a year, €", "F3 · Zusätzlicher Umsatz pro Jahr, €"),
-    question: t("If all 500 accounts up for renewal next year completed the setup path and customers behaved as last year, how much extra revenue would it keep in a year?", "Wenn alle 500 Konten mit anstehender Verlängerung im nächsten Jahr den Einrichtungspfad abschlössen und Kunden sich wie im letzten Jahr verhielten: Wie viel zusätzlichen Umsatz hielte das in einem Jahr?"),
-    unit: "€",
-    example: "12500",
-    answer: FORECAST.f3,
-    formula: t("Extra revenue = accounts up for renewal a year × (renewal rate with the path − renewal rate without it, as a share of one) × annual contract value.", "Zusätzlicher Umsatz = Konten mit anstehender Verlängerung pro Jahr × (Verlängerungsquote mit Pfad − Verlängerungsquote ohne Pfad, als Anteil von eins) × Jahresvertragswert."),
-    taughtIn: "A4" as const,
-    clue: t("Only the difference between the two rates is extra, and it has to be a share of one (1 point = 0.01) before you multiply.", "Nur der Unterschied zwischen den beiden Quoten ist zusätzlich, und er muss ein Anteil von eins sein (1 Punkt = 0,01), bevor Sie multiplizieren."),
-    sources: [
-      { label: t("Next year · accounts up for renewal", "Nächstes Jahr · Konten mit anstehender Verlängerung"), value: "500", target: "fc-yearly" },
-      { label: t("Your F1 (renewal rate with the path)", "Ihr F1 (Verlängerungsquote mit Pfad)"), value: "F1", target: "fig-F1" },
-      { label: t("Last year · did not complete the path · accounts and renewals (its rate)", "Letztes Jahr · Pfad nicht abgeschlossen · Konten und Verlängerungen (ihre Quote)"), value: "240 ÷ 400", target: "fc-ctl-orders" },
-      { label: t("All accounts · annual contract value", "Alle Konten · Jahresvertragswert"), value: t("€6,000", "6.000 €"), target: "fc-order" },
-    ],
-  },
-});
-
-/** The worked example of Materi A4: a different company (Fulda Software), the same method on other numbers. Case assumption. */
-export const MOSEL = { control: { sent: 200, orders: 100 }, variant: { sent: 50, orders: 40 }, yearly: 150, order: 4000 };
+/** The worked example of Materi A4: a different provider (Weser Systemhaus), the same method on other numbers. Case assumption. */
+export const MOSEL = { control: { sent: 400, orders: 40 }, variant: { sent: 200, orders: 50 }, yearly: 800, order: 1000 };
 export const MOSEL_RESULT = (() => {
   const rate = rateOf(MOSEL.variant.orders, MOSEL.variant.sent);
   const other = rateOf(MOSEL.control.orders, MOSEL.control.sent);
   return { rate, other, lift: liftOf(rate, other), extra: extraOf(MOSEL.yearly, rate, other, MOSEL.order) };
 })();
 
-/* ------------------------------------------------------------------ Block 1.3a · eight accounts */
+/* ------------------------------------------------------------------ Block 1.3a · eight moments on the platform */
 
 /**
- * Eight of EngageIT's customer accounts, from the platform's usage data and the account managers' notes (Case assumption). (The type
- * keeps the name "customer" of the file it was built from: `volume` = annual contract in €, `leave` = share of the core features the
- * account uses, `decision` = its users log in at least weekly, `known` = what motivates them most according to the account manager:
- * none = points and rewards, campaign = comparing with others, customer = reaching the next level.) The rules of Materi A3: a progress
- * path helps most = logs in at least weekly AND uses fewer than 40% of the core features; risk of artificial motivation = motivated
- * mainly by points and rewards.
+ * Eight moments on EngageIT's platform. (The type keeps the name "customer" of the file it was built from: `volume` = customers a month at that
+ * moment, `leave` = share of them who stop there, `decision` = the customer wants the result of this step on its own (so a game element only has to
+ * carry them to something they want), `known` = how much of what EngageIT already runs (membership, referral, customer profile) is connected
+ * to the moment.) The rule of Materi A1 and A3: a game element helps most where the customer wants the result and 25% or more stop; it
+ * can plug into what exists only where part or all of the membership, referral and profile data is already connected.
  */
 export type CustId = "c1" | "c2" | "c3" | "c4" | "c5" | "c6" | "c7" | "c8";
-export type Known = "none" | "campaign" | "customer";
-export type Customer = { id: CustId; name: string; volume: number; leave: number; decision: boolean; known: Known };
-export const KNOWN_LABEL = bi({ none: t("Points and rewards", "Punkte und Belohnungen"), campaign: t("Comparing with others", "Vergleich mit anderen"), customer: t("Reaching the next level", "Die nächste Stufe erreichen") });
+export type Known = "none" | "part" | "all";
+export const KNOWN_LABEL = bi({ none: t("Nothing: membership, referral and profile do not reach this moment", "Nichts: Mitgliedschaft, Empfehlung und Profil erreichen diesen Moment nicht"), part: t("Part of it: the profile data is connected, not the membership or the referral scheme", "Ein Teil: die Profildaten sind verbunden, nicht die Mitgliedschaft oder das Empfehlungsprogramm"), all: t("All of it: membership, referral and profile are connected", "Alles: Mitgliedschaft, Empfehlung und Profil sind verbunden") });
 export const DECISION_LABEL = bi({ yes: t("Yes", "Ja"), no: t("No", "Nein") });
-export const LEAVE_MIN = 40;
+export type Customer = { id: CustId; name: string; volume: number; leave: number; decision: boolean; known: Known };
+export const LEAVE_MIN = 25;
 export const CUSTOMERS: Customer[] = bi([
-  { id: "c1" as CustId, name: t("Tax firm, office manager", "Steuerkanzlei, Büroleitung"), volume: 12000, leave: 25, decision: true, known: "customer" as Known },
-  { id: "c2" as CustId, name: t("Engineering firm, IT lead", "Ingenieurbüro, IT-Leitung"), volume: 18000, leave: 30, decision: true, known: "campaign" as Known },
-  { id: "c3" as CustId, name: t("Care home group, administration", "Pflegeheimverbund, Verwaltung"), volume: 24000, leave: 20, decision: false, known: "customer" as Known },
-  { id: "c4" as CustId, name: t("Wholesaler, purchasing", "Großhändler, Einkauf"), volume: 15000, leave: 55, decision: true, known: "none" as Known },
-  { id: "c5" as CustId, name: t("Retail chain, back office", "Einzelhandelskette, Backoffice"), volume: 30000, leave: 35, decision: false, known: "none" as Known },
-  { id: "c6" as CustId, name: t("Law firm, partner", "Kanzlei, Partnerin"), volume: 9000, leave: 70, decision: true, known: "customer" as Known },
-  { id: "c7" as CustId, name: t("Logistics firm, dispatcher team", "Logistikunternehmen, Disposition"), volume: 21000, leave: 45, decision: true, known: "campaign" as Known },
-  { id: "c8" as CustId, name: t("Software start-up, CTO", "Software-Start-up, CTO"), volume: 6000, leave: 80, decision: false, known: "campaign" as Known },
+  { id: "c1" as CustId, name: t("First login → first project created", "Erster Login → erstes Projekt angelegt"), volume: 400, leave: 36, decision: true, known: "none" as Known },
+  { id: "c2" as CustId, name: t("First project → inviting colleagues", "Erstes Projekt → Kollegen einladen"), volume: 260, leave: 31, decision: true, known: "none" as Known },
+  { id: "c3" as CustId, name: t("Newsletter → opening the platform", "Newsletter → Plattform öffnen"), volume: 5000, leave: 62, decision: false, known: "none" as Known },
+  { id: "c4" as CustId, name: t("Set-up finished → first membership benefit used", "Einrichtung fertig → erster Mitgliedschaftsvorteil genutzt"), volume: 150, leave: 8, decision: false, known: "all" as Known },
+  { id: "c5" as CustId, name: t("Support ticket closed → tip for the next feature", "Support-Ticket geschlossen → Tipp für die nächste Funktion"), volume: 220, leave: 12, decision: true, known: "part" as Known },
+  { id: "c6" as CustId, name: t("Feature page → opening the helpdesk", "Funktionsseite → Helpdesk öffnen"), volume: 700, leave: 22, decision: false, known: "none" as Known },
+  { id: "c7" as CustId, name: t("Invoice paid → confirmation page", "Rechnung bezahlt → Bestätigungsseite"), volume: 800, leave: 3, decision: false, known: "none" as Known },
+  { id: "c8" as CustId, name: t("Rating request after a ticket → writing a rating", "Bewertungsanfrage nach einem Ticket → Bewertung schreiben"), volume: 80, leave: 40, decision: false, known: "none" as Known },
 ]);
 export const CUST_BY_ID = Object.fromEntries(CUSTOMERS.map((c) => [c.id, c])) as Record<CustId, Customer>;
 export const PICK = 2;
 export const AUTO_MIN_VOLUME = LEAVE_MIN;
-/** A progress path helps most: users log in at least weekly and the account uses fewer than 40% of the core features (Materi A3). */
+/** A game element helps most: the customer wants the result and 25% or more stop (Materi A1). */
 export const VALUABLE_TRUTH: CustId[] = ["c1", "c2"];
-/** Risk of artificial motivation: motivated mainly by points and rewards (Materi A3). */
+/** A game element can plug into what exists: part or all of membership, referral and profile is already connected (Materi A1). */
 export const CHURN_TRUTH: CustId[] = ["c4", "c5"];
 export const PICK_WHY = bi({
-  c1: t("Logs in every week but uses only 25% of the core features: active but shallow. A progress path shows the next useful step to people who are already there.", "Meldet sich jede Woche an, nutzt aber nur 25 % der Kernfunktionen: aktiv, aber oberflächlich. Ein Fortschrittspfad zeigt Menschen, die schon da sind, den nächsten nützlichen Schritt."),
-  c2: t("Weekly logins and 30% of the core features: the users come, but stop at the basics. A path to the next level fits them.", "Wöchentliche Anmeldungen und 30 % der Kernfunktionen: Die Nutzer kommen, bleiben aber bei den Grundlagen stehen. Ein Pfad zur nächsten Stufe passt zu ihnen."),
-  c3: t("Only 20% of the core features, but users rarely log in: a game element would reach nobody. First a personal onboarding contact, then a path.", "Nur 20 % der Kernfunktionen, aber die Nutzer melden sich selten an: Ein Spielelement erreichte niemanden. Zuerst ein persönlicher Onboarding-Kontakt, dann ein Pfad."),
-  c4: t("Motivated mainly by points and rewards: points would make them click for the points, not use the product better. Artificial motivation.", "Vor allem durch Punkte und Belohnungen motiviert: Punkte ließen sie für die Punkte klicken, nicht das Produkt besser nutzen. Künstliche Motivation."),
-  c5: t("Motivated by points and rewards, and rarely active: a reward scheme would buy activity that stops when the points stop.", "Durch Punkte und Belohnungen motiviert und selten aktiv: Ein Belohnungssystem kaufte Aktivität, die endet, wenn die Punkte enden."),
-  c6: t("Uses 70% of the core features and logs in weekly: already deep. A path adds little; ask for a testimonial or a referral instead.", "Nutzt 70 % der Kernfunktionen und meldet sich wöchentlich an: schon tief drin. Ein Pfad bringt wenig; bitten Sie stattdessen um ein Testimonial oder eine Empfehlung."),
-  c7: t("Weekly logins and 45% of the core features: just above the line. A benchmark against similar firms may suit their wish to compare, but they are not the first case for a path.", "Wöchentliche Anmeldungen und 45 % der Kernfunktionen: knapp über der Linie. Ein Benchmark gegenüber ähnlichen Firmen passt vielleicht zu ihrem Wunsch zu vergleichen, aber sie sind nicht der erste Fall für einen Pfad."),
-  c8: t("Uses 80% and compares itself with others, but logs in rarely: a small team that uses the platform deeply in bursts. No game needed.", "Nutzt 80 % und vergleicht sich mit anderen, meldet sich aber selten an: ein kleines Team, das die Plattform schubweise intensiv nutzt. Kein Spiel nötig."),
+  c1: t("The customer wants a first project, and 36% stop before they have one: a progress path can carry them to something they want. The most critical moment.", "Der Kunde will ein erstes Projekt, und 36 % hören auf, bevor sie eines haben: Ein Fortschrittspfad kann sie zu etwas tragen, das sie wollen. Der kritischste Moment."),
+  c2: t("Inviting colleagues is what makes the platform useful, and 31% stop there: a game element helps them take the step they already want.", "Kollegen einzuladen macht die Plattform nützlich, und 31 % hören dort auf: Ein Spielelement hilft ihnen, den Schritt zu gehen, den sie ohnehin wollen."),
+  c3: t("Many leave, but nobody wants to open the platform because of a newsletter: a game element would buy clicks, not a habit.", "Viele gehen, aber niemand will die Plattform wegen eines Newsletters öffnen: Ein Spielelement würde Klicks kaufen, keine Gewohnheit."),
+  c4: t("The membership benefits, the referral scheme and the profile are all connected here, so a game element can plug into them. Only 8% stop, so it is not the moment that needs the most help.", "Mitgliedschaftsvorteile, Empfehlungsprogramm und Profil sind hier alle verbunden, also kann sich ein Spielelement daran anschließen. Nur 8 % hören auf, also braucht dieser Moment nicht die meiste Hilfe."),
+  c5: t("The profile data reaches this moment, so a personal tip or a next-step reward can build on it. Only 12% stop, so it is not the most critical break.", "Die Profildaten erreichen diesen Moment, also kann ein persönlicher Tipp oder eine Belohnung für den nächsten Schritt darauf aufbauen. Nur 12 % hören auf, also ist es nicht der kritischste Bruch."),
+  c6: t("22% stop and nothing is connected, but the customer does not want to open the helpdesk: no game element belongs here.", "22 % hören auf, und nichts ist verbunden, aber der Kunde will den Helpdesk nicht öffnen: Hier gehört kein Spielelement hin."),
+  c7: t("Almost nobody stops after paying an invoice; the moment works.", "Nach dem Bezahlen einer Rechnung hört fast niemand auf; der Moment funktioniert."),
+  c8: t("40% skip the rating, but customers do not want to write one: a reward would buy ratings, not opinions.", "40 % überspringen die Bewertung, aber Kunden wollen keine schreiben: Eine Belohnung würde Bewertungen kaufen, keine Meinungen."),
 });
 
-/* ------------------------------------------------------------------ Block 1.3b · three gamification approaches */
+/* ------------------------------------------------------------------ Block 1.3b · three concrete approaches */
 
-/** Three mechanisms to build a gamification approach on; each approach uses a different one. (The type keeps its earlier name, "basis".) */
-export type Basis = "respond" | "personal" | "learn";
+/** The three mechanisms from Block 1.1; each approach serves a different one. (The type keeps its earlier name, "basis".) */
+export type Basis = "reward" | "compete" | "progress";
 export const BASES = bi([
-  { id: "respond" as Basis, label: t("A reward (points, benefits)", "Eine Belohnung (Punkte, Vorteile)"), short: t("Reward", "Belohnung") },
-  { id: "personal" as Basis, label: t("Competition or comparison", "Wettbewerb oder Vergleich"), short: t("Competition", "Wettbewerb") },
-  { id: "learn" as Basis, label: t("Progress and status (a path, a level)", "Fortschritt und Status (ein Pfad, eine Stufe)"), short: t("Progress", "Fortschritt") },
+  { id: "reward" as Basis, label: t("Reward", "Belohnung"), short: t("Reward", "Belohnung") },
+  { id: "compete" as Basis, label: t("Competition", "Wettbewerb"), short: t("Competition", "Wettbewerb") },
+  { id: "progress" as Basis, label: t("Progress and status", "Fortschritt und Status"), short: t("Progress", "Fortschritt") },
 ]);
-export const BASIS_LABEL = bi({ respond: t("A reward", "Eine Belohnung"), personal: t("Competition or comparison", "Wettbewerb oder Vergleich"), learn: t("Progress and status", "Fortschritt und Status") });
+export const BASIS_LABEL = bi({ reward: t("Reward", "Belohnung"), compete: t("Competition", "Wettbewerb"), progress: t("Progress and status", "Fortschritt und Status") });
 export const INSIGHT_COUNT = 3;
 export const INSIGHT_MIN = 45;
-export const INSIGHT_FRAME = bi({ v: t("[What the platform does] for [which users or feature], so [what they use more, and why it lasts].", "[Was die Plattform tut] für [welche Nutzer oder Funktion], sodass [was sie mehr nutzen, und warum es hält].") });
+export const INSIGHT_FRAME = bi({ v: t("[What we add] at [which moment], so [what the customer gains].", "[Was wir hinzufügen] an [welchem Moment], sodass [was der Kunde gewinnt].") });
 /** True when the sentence says what the change gives. A floor, not a judge of quality; English and German forms. */
 export const hasSoWhat = (s: string) => /\b(so|therefore|which means|because|means|so that|thus|hence|daher|deshalb|weil|das heißt|bedeutet|sodass|damit|also)\b/i.test(s);

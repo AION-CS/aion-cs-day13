@@ -1,37 +1,40 @@
 "use client";
 
 import { Bul, Diagram } from "@/components/materi/kit";
-import { ArchExample, CompProfile, DataStages, LiftCases, SourceGrid } from "@/components/materi/diagramsB";
+import { ArchMini, CompProfile, LiftCases, ScatterMap, StageBars } from "@/components/materi/diagrams";
 import { Callout, DataTable, MaterialCard } from "@/components/ui/MaterialCard";
-import { CASES_MIN, CRITERIA, LIFT_ACT, LIFT_WATCH, QUALITY_BAR } from "@/data/route2";
+import { ShowMore } from "@/components/ui/ShowMore";
+import { ARCH_MINI, COMP_TESTS, LIFT, SOURCE_MAP, STAGES } from "@/data/diagramData";
+import { CASES_MIN, CRITERIA, LIFT_ACT, LIFT_WATCH, QUALITY_BAR, R2_MONTHS } from "@/data/route2";
 import { tt } from "@/lib/lang";
 
-/** Materi B: the five cards of Route 2 (Level 3). 60 minutes in all. */
+/** Materi B: the five cards of Route 2 (Level 3). 60 minutes in all; B5 is the one Core card (CLAUDE.md #48). */
 const p = "text-body text-ink";
 
 export function CardB1() {
   return (
     <MaterialCard
       id="B1"
-      scan={tt("A scalable retention system is not a collection of loyalty offers. It is a membership that gives added value instead of discounts, a referral model that thanks both sides with value, an owner and a KPI for every part, and a monthly review. Membership keeps customers; referrals turn the satisfied ones into the cheapest way to win new ones; together they feed each other.", "Ein skalierbares Bindungssystem ist keine Sammlung von Treueangeboten. Es ist eine Mitgliedschaft, die Mehrwert statt Rabatte gibt, ein Empfehlungsmodell, das beiden Seiten mit Wert dankt, ein Owner und ein KPI für jeden Teil und ein monatliches Review. Die Mitgliedschaft hält Kunden; Empfehlungen machen die Zufriedenen zum günstigsten Weg, neue zu gewinnen; zusammen speisen sie einander.")}
+      scan={tt("An integrated retention system joins what a company already runs around the customer: one customer profile that membership, referral and personalisation all read, and one rulebook that says which actions earn a reward. A target vision says in two sentences what all of it is for, and how the company will steer it.", "Ein integriertes Kundenbindungssystem verbindet, was ein Unternehmen schon betreibt, um den Kunden: ein Kundenprofil, das Mitgliedschaft, Empfehlung und Personalisierung alle lesen, und ein Regelwerk, das sagt, welche Handlungen eine Belohnung bringen. Ein Zielbild sagt in zwei Sätzen, wofür das alles da ist und wie das Unternehmen es steuert.")}
       reasoning={[
-        tt("Added value instead of discounts comes first: a membership that pays customers to stay has to keep paying, and a competitor can always pay more.", "Mehrwert statt Rabatte kommt zuerst: Eine Mitgliedschaft, die Kunden fürs Bleiben bezahlt, muss immer weiter zahlen, und ein Wettbewerber kann immer mehr zahlen."),
-        tt("A referral that thanks both sides with value, once the referred firm signs, is what keeps referrals honest and new customers cheap: customers refer out of trust, and nothing is paid for names.", "Eine Empfehlung, die beiden Seiten mit Wert dankt, sobald die empfohlene Firma unterschreibt, hält Empfehlungen ehrlich und Neukunden günstig: Kunden empfehlen aus Vertrauen, und für Namen wird nichts gezahlt."),
-        tt("An owner and a KPI per part and a monthly review by the same KPIs keep the system honest; both are good additions to the two foundations.", "Ein Owner und ein KPI pro Teil und ein monatliches Review nach denselben KPIs halten das System ehrlich; beides sind gute Ergänzungen zu den zwei Fundamenten."),
-        tt("Paying for every referral is the wrong-incentive trap: it brings volume, but weak and fake referrals, and it turns trusted advice into paid promotion.", "Für jede Empfehlung zu zahlen ist die Falle des falschen Anreizes: Es bringt Menge, aber schwache und gefälschte Empfehlungen, und es macht aus vertrautem Rat bezahlte Werbung."),
-        tt("A discount for every member is not a vision: it is transactional retention, it costs margin on every renewal and it keeps customers only until someone offers more.", "Ein Rabatt für jedes Mitglied ist kein Zielbild: Es ist transaktionale Bindung, es kostet bei jeder Verlängerung Marge und hält Kunden nur, bis jemand mehr bietet."),
-        tt("Thinking in systems instead of single measures: each part should make another stronger, for example members who meet peers in the community are the ones most likely to refer.", "In Systemen statt in Einzelmaßnahmen denken: Jeder Teil sollte einen anderen stärken, etwa sind Mitglieder, die in der Community andere treffen, diejenigen, die am ehesten empfehlen."),
+        tt("A target vision says, in two sentences, what changes for customers and teams once the system runs, and how the company steers it: by which few KPIs, and what every new game element has to do before it grows.", "Ein Zielbild sagt in zwei Sätzen, was sich für Kunden und Teams ändert, wenn das System läuft, und wie das Unternehmen es steuert: nach welchen wenigen KPIs, und was jedes neue Spielelement tun muss, bevor es wächst."),
+        tt("Two foundations hold an integrated system: one customer profile that membership, referral and personalisation all read (every game element then knows the customer), and one rulebook that says which actions earn a reward (so nobody earns a prize for a click).", "Zwei Fundamente tragen ein integriertes System: ein Kundenprofil, das Mitgliedschaft, Empfehlung und Personalisierung alle lesen (jedes Spielelement kennt dann den Kunden), und ein Regelwerk, das sagt, welche Handlungen eine Belohnung bringen (damit niemand für einen Klick einen Preis erhält)."),
+        tt("A good third principle is a KPI owner who can move the number, or a monthly review that decides keep, change or stop with the same few KPIs for every game element.", "Ein gutes drittes Prinzip ist ein KPI-Owner, der die Zahl bewegen kann, oder ein monatliches Review, das mit denselben wenigen KPIs für jedes Spielelement entscheidet: behalten, ändern oder stoppen."),
+        tt("Reject “add as many game elements as possible”: more elements without integration is over-complexity and pays for clicks. Reject “hand every reward to one automatic platform first”: nothing changes for customers until it runs everywhere, and nobody can explain its rewards.", "Verwerfen Sie „so viele Spielelemente wie möglich einführen“: Mehr Elemente ohne Integration sind Übermaß an Komplexität und bezahlen Klicks. Verwerfen Sie „jede Belohnung zuerst einer automatischen Plattform übergeben“: Für Kunden ändert sich nichts, bis sie überall läuft, und niemand kann ihre Belohnungen erklären."),
+        tt("Say what each principle means in the company, and which problem or risk it answers: low use, mediocre retention, measures not integrated, or wrong incentives.", "Sagen Sie, was jedes Prinzip im Unternehmen bedeutet und welches Problem oder Risiko es beantwortet: geringe Nutzung, mittelmäßige Kundenbindung, nicht integrierte Maßnahmen oder falsche Anreize."),
       ]}
-      sources={["reichheld1990", "dowling1997"]}
+      sources={["kaplan1992", "courtney1997"]}
     >
-      <p className={p}>
-        {tt(
-          "Reichheld and Sasser (1990) showed that retention and referrals are linked: customers who stay longer cost less, buy more and bring others. Dowling and Uncles (1997) warned that loyalty programmes built on rewards are easily copied and rarely pay; the ones that work add value that belongs to the product and the relationship.",
-          "Reichheld und Sasser (1990) zeigten, dass Bindung und Empfehlungen zusammenhängen: Kunden, die länger bleiben, kosten weniger, kaufen mehr und bringen andere mit. Dowling und Uncles (1997) warnten, dass auf Belohnungen gebaute Treueprogramme leicht zu kopieren sind und sich selten lohnen; die, die wirken, geben einen Mehrwert, der zum Produkt und zur Beziehung gehört.",
-        )}
-      </p>
-      <Diagram label={tt("Four stages towards a membership and referral system · a worked example on Ems Systems", "Vier Stufen zu einem Mitglieder- und Empfehlungssystem · ein Beispiel mit Ems Systems")} caption={tt("Click a stage and read what changes for the company at that stage.", "Klicken Sie eine Stufe an und lesen Sie, was sich auf dieser Stufe für das Unternehmen ändert.")}>
-        <DataStages />
+      <ShowMore id="B1" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Kaplan and Norton (1992) argued for a few linked measures instead of many unrelated ones, which is what a shared profile and one dashboard make possible. Courtney, Kirkland and Viguerie (1997) advise matching the commitment to what is known: build the foundations that no-regret moves rest on first.",
+            "Kaplan und Norton (1992) plädierten für wenige verbundene Kennzahlen statt vieler unverbundener, was ein gemeinsames Profil und ein Dashboard möglich machen. Courtney, Kirkland und Viguerie (1997) raten, die Festlegung an das Bekannte anzupassen: zuerst die Fundamente bauen, auf denen No-regret-Schritte ruhen.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("Four stages towards an integrated retention system · a worked example on Neckar Systeme", "Vier Stufen zu einem integrierten Kundenbindungssystem · ein Beispiel mit Neckar Systeme")} caption={tt("Move through the four stages and read what each one adds.", "Gehen Sie die vier Stufen durch und lesen Sie, was jede hinzufügt.")}>
+        <StageBars cfg={STAGES} />
       </Diagram>
     </MaterialCard>
   );
@@ -41,24 +44,25 @@ export function CardB2() {
   return (
     <MaterialCard
       id="B2"
-      scan={tt("Not every benefit deserves a place in the membership. An added value is central when it supports a decision the customer takes (renew, stay when something breaks, expand, justify the renewal internally); it is ready to offer to everyone when enough pilot members actually used it. How nice it sounds is not the test.", "Nicht jeder Vorteil verdient einen Platz in der Mitgliedschaft. Ein Mehrwert ist zentral, wenn er eine Entscheidung des Kunden unterstützt (verlängern, bleiben, wenn etwas ausfällt, erweitern, die Verlängerung intern rechtfertigen); er ist bereit, allen angeboten zu werden, wenn genug Pilotmitglieder ihn tatsächlich genutzt haben. Wie schön er klingt, ist nicht der Test.")}
+      scan={tt("Start from what the customer wants to get done, not from the tool. A moment in the journey where the customer wants something done and the data is ready is integrated now; where the data is not ready it waits; where nobody wants anything done it is not central, however well connected.", "Gehen Sie von dem aus, was der Kunde erledigen will, nicht vom Werkzeug. Ein Moment der Journey, in dem der Kunde etwas erledigen will und die Daten bereit sind, wird jetzt integriert; wo die Daten nicht bereit sind, wartet er; wo niemand etwas erledigen will, ist er nicht zentral, egal wie gut verbunden.")}
       reasoning={[
-        tt("The added value supports no customer decision (a badge, gifts, invitations) → not central, however popular.", "Der Mehrwert unterstützt keine Entscheidung des Kunden (ein Abzeichen, Geschenke, Einladungen) → nicht zentral, egal wie beliebt."),
-        tt(`It supports a decision and at least ${QUALITY_BAR}% of the pilot members used it → central: offer it now to every member.`, `Er unterstützt eine Entscheidung, und mindestens ${QUALITY_BAR} % der Pilotmitglieder haben ihn genutzt → zentral: jetzt jedem Mitglied anbieten.`),
-        tt(`It supports a decision but fewer than ${QUALITY_BAR}% used it → central, but prove it first: offering it to everyone now risks paying for something few want.`, `Er unterstützt eine Entscheidung, aber weniger als ${QUALITY_BAR} % haben ihn genutzt → zentral, aber zuerst belegen: Ihn jetzt allen anzubieten riskiert, für etwas zu zahlen, das wenige wollen.`),
-        tt("Cost and how impressive a benefit sounds are not the test: a modest benefit most members use is central; an impressive one few use is not ready.", "Kosten und wie beeindruckend ein Vorteil klingt, sind nicht der Test: Ein bescheidener Vorteil, den die meisten Mitglieder nutzen, ist zentral; ein beeindruckender, den wenige nutzen, ist nicht bereit."),
-        tt("Cost is the other main risk of a membership: every added value costs something per member, so benefits nobody uses are pure cost.", "Kosten sind das andere Hauptrisiko einer Mitgliedschaft: Jeder Mehrwert kostet pro Mitglied etwas, also sind Vorteile, die niemand nutzt, reine Kosten."),
+        tt("Does the customer want something done in the moment (get going, keep learning, use more, renew and recommend)? If not, a game element would only buy clicks: not central.", "Will der Kunde im Moment etwas erledigen (loslegen, weiterlernen, mehr nutzen, verlängern und empfehlen)? Wenn nicht, würde ein Spielelement nur Klicks kaufen: nicht zentral."),
+        tt(`Does at least ${QUALITY_BAR}% of its data reach the shared profile? Then integrate it now. If not, connect the data first: built on now, it would learn the gaps.`, `Erreichen mindestens ${QUALITY_BAR} % seiner Daten das gemeinsame Profil? Dann integrieren Sie ihn jetzt. Wenn nicht, verbinden Sie zuerst die Daten: Jetzt darauf gebaut, würde er die Lücken lernen.`),
+        tt("Volume and cost are not the test: a newsletter nobody wants to open is not central; a renewal talk is.", "Menge und Kosten sind nicht der Test: Ein Newsletter, den niemand öffnen will, ist nicht zentral; ein Verlängerungsgespräch schon."),
+        tt("Joining the data of several systems is processing personal data: it needs a lawful basis (GDPR Art. 6), and a reward scheme does not change that.", "Die Daten mehrerer Systeme zu verbinden ist Verarbeitung personenbezogener Daten: Sie braucht eine Rechtsgrundlage (DSGVO Art. 6), und ein Belohnungsschema ändert daran nichts."),
       ]}
-      sources={["bolton2000", "mcalexander2002"]}
+      sources={["davenport2018", "gdpr2016"]}
     >
-      <p className={p}>
-        {tt(
-          "Bolton, Kannan and Bramlett (2000) found that a programme retains where its members experience real service value, not merely where they are enrolled. McAlexander, Schouten and Koenig (2002) showed that shared experiences with other customers bind members to the company, which is why a community can be an added value in its own right.",
-          "Bolton, Kannan und Bramlett (2000) fanden, dass ein Programm dort bindet, wo seine Mitglieder echten Servicewert erleben, nicht schon dort, wo sie angemeldet sind. McAlexander, Schouten und Koenig (2002) zeigten, dass gemeinsame Erlebnisse mit anderen Kunden Mitglieder an das Unternehmen binden, und darum kann eine Community ein eigener Mehrwert sein.",
-        )}
-      </p>
-      <Diagram label={tt("Ems Systems' added values, sorted by customer decision and use in the pilot", "Mehrwerte von Ems Systems, nach Kundenentscheidung und Nutzung im Pilot sortiert")} caption={tt("Click an added value to read where it goes and why.", "Klicken Sie einen Mehrwert an, um zu lesen, wohin er gehört und warum.")}>
-        <SourceGrid />
+      <ShowMore id="B2" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Davenport and Ronanki (2018) found that technology pays where it starts from a business problem and fits existing processes and data. The GDPR (2016) adds the legal condition for joining data about customers: a lawful basis for each use.",
+            "Davenport und Ronanki (2018) fanden, dass sich Technologie dort auszahlt, wo sie von einem Geschäftsproblem ausgeht und zu bestehenden Prozessen und Daten passt. Die DSGVO (2016) ergänzt die rechtliche Bedingung für das Verbinden von Kundendaten: eine Rechtsgrundlage für jede Nutzung.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("The moment first, then the tool · a worked example on Neckar Systeme", "Zuerst der Moment, dann das Werkzeug · ein Beispiel mit Neckar Systeme")} caption={tt("Choose a moment on the map or in the list and read what the rule gives.", "Wählen Sie einen Moment auf der Karte oder in der Liste und lesen Sie, was die Regel ergibt.")}>
+        <ScatterMap cfg={SOURCE_MAP} />
       </Diagram>
     </MaterialCard>
   );
@@ -68,24 +72,26 @@ export function CardB3() {
   return (
     <MaterialCard
       id="B3"
-      scan={tt("A KPI system for customer retention needs a few KPIs that pass four tests: linked to value, early, covering every customer (members and non-members), and measured automatically. Rate each candidate, capped by its printed facts. Counting sign-ups (members, likes, newsletters) tells you the programme is visible, not that anyone stays.", "Ein KPI-System für Kundenbindung braucht wenige KPIs, die vier Tests bestehen: mit dem Wert verbunden, früh, jeden Kunden abdeckend (Mitglieder und Nichtmitglieder) und automatisch gemessen. Bewerten Sie jeden Kandidaten, gedeckelt durch seine gedruckten Fakten. Anmeldungen zu zählen (Mitglieder, Likes, Newsletter) sagt Ihnen, dass das Programm sichtbar ist, nicht dass jemand bleibt.")}
+      scan={tt("A KPI system for management uses a few numbers that pass four tests: linked to value, early, covering every customer, and counted by the systems. A number that only counts what you hand out fails the first test, however easy it is to count.", "Ein KPI-System für das Management nutzt wenige Zahlen, die vier Tests bestehen: mit dem Wert verbunden, früh, jeden Kunden abdeckend und von den Systemen gezählt. Eine Zahl, die nur zählt, was Sie ausgeben, besteht den ersten Test nicht, egal wie leicht sie zu zählen ist.")}
       reasoning={[
-        ...CRITERIA.map((c) => `${c.name}: ${c.test} ${tt("Low", "Niedrig")}: ${c.low} ${tt("High", "Hoch")}: ${c.high}`),
-        tt("The printed facts cap the ratings: not linked to value → link Low; after the customer has left or twice a year → early Low, monthly → at most Mid; only some customers → reach at most Mid; by a survey → measured automatically at most Mid, collected by hand → Low.", "Die gedruckten Fakten deckeln die Bewertungen: nicht mit dem Wert verbunden → Verbindung Niedrig; nachdem der Kunde gegangen ist oder zweimal im Jahr → früh Niedrig, monatlich → höchstens Mittel; nur einige Kunden → Reichweite höchstens Mittel; über eine Befragung → automatisch gemessen höchstens Mittel, von Hand gesammelt → Niedrig."),
-        tt("A management system needs most of its KPIs to show a change within days or weeks; a number that counts cancellations afterwards is for learning, not for steering.", "Ein Managementsystem braucht die meisten KPIs so, dass sie eine Veränderung innerhalb von Tagen oder Wochen zeigen; eine Zahl, die Kündigungen hinterher zählt, dient dem Lernen, nicht dem Steuern."),
-        tt("The KPI with the greatest leverage is usually the driver the problem names, if it is also linked to value and automatic: every part of the programme can be steered by it within weeks.", "Der KPI mit der größten Hebelwirkung ist meist der Treiber, den das Problem nennt, wenn er zugleich mit dem Wert verbunden und automatisch ist: Jeder Teil des Programms lässt sich innerhalb von Wochen daran steuern."),
-        tt("Compare members with non-members where you can: a renewal rate that rises only for members who use their benefits shows the programme works; one that rises for everyone may be the market.", "Vergleichen Sie, wo möglich, Mitglieder mit Nichtmitgliedern: Eine Verlängerungsquote, die nur bei Mitgliedern steigt, die ihre Vorteile nutzen, zeigt, dass das Programm wirkt; eine, die bei allen steigt, ist vielleicht der Markt."),
+        ...CRITERIA.map((c) => `${c.name}: ${c.test} ${tt("Low:", "Niedrig:")} ${c.low} ${tt("High:", "Hoch:")} ${c.high}`),
+        tt("The printed facts cap each rating: “not linked to value” caps the link at Low; “after the customer has left” or “twice a year” caps early at Low; “some customers” caps reach at Mid; “collected by hand” caps measured automatically at Low.", "Die gedruckten Fakten deckeln jede Bewertung: „nicht mit dem Wert verbunden“ deckelt die Verbindung bei Niedrig; „nachdem der Kunde gegangen ist“ oder „zweimal im Jahr“ deckeln früh bei Niedrig; „einige Kunden“ deckelt die Reichweite bei Mittel; „von Hand gesammelt“ deckelt automatisch gemessen bei Niedrig."),
+        tt("A management system needs most of its KPIs to show a change before the result is lost (daily or monthly).", "Ein Managementsystem braucht, dass die meisten seiner KPIs eine Veränderung zeigen, bevor das Ergebnis verloren ist (täglich oder monatlich)."),
+        tt("The KPI with the greatest leverage is one a team can move this month and that is linked to value: name the tests that decide it and the problem it answers.", "Der KPI mit der größten Hebelwirkung ist einer, den ein Team diesen Monat bewegen kann und der mit dem Wert verbunden ist: Nennen Sie die Tests, die es entscheiden, und das Problem, das er beantwortet."),
+        tt("A guardrail belongs in the system: the share of accounts that only collect points is the number that shows when a reward pays for clicks.", "Eine Guardrail gehört ins System: Der Anteil der Konten, die nur Punkte sammeln, ist die Zahl, die zeigt, wann eine Belohnung Klicks bezahlt."),
       ]}
-      sources={["kaplan1992", "reichheld2003"]}
+      sources={["kaplan1992", "hubbard2014"]}
     >
-      <p className={p}>
-        {tt(
-          "Kaplan and Norton (1992) showed that managers steer better by a few linked measures, results and the drivers behind them, than by many unrelated ones. Reichheld (2003) argued that a single well-chosen question about recommending predicts growth better than long satisfaction surveys, which is a reason to prefer a few sharp KPIs over many.",
-          "Kaplan und Norton (1992) zeigten, dass Führungskräfte besser nach wenigen verbundenen Kennzahlen steuern, Ergebnissen und den Treibern dahinter, als nach vielen unverbundenen. Reichheld (2003) argumentierte, dass eine einzige gut gewählte Frage zum Empfehlen Wachstum besser vorhersagt als lange Zufriedenheitsbefragungen, ein Grund, wenige scharfe KPIs vielen vorzuziehen.",
-        )}
-      </p>
-      <Diagram label={tt("Four KPI candidates of Ems Systems on four tests", "Vier KPI-Kandidaten von Ems Systems nach vier Tests")} caption={tt("Choose a candidate and compare its profile with the printed facts under it.", "Wählen Sie einen Kandidaten und vergleichen Sie sein Profil mit den gedruckten Fakten darunter.")}>
-        <CompProfile />
+      <ShowMore id="B3" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Kaplan and Norton (1992) argued for a few linked measures, results and the drivers behind them. Hubbard (2014) adds that a measure earns its place when it would change a decision, which is why a number that only counts what you hand out does not.",
+            "Kaplan und Norton (1992) plädierten für wenige verbundene Kennzahlen, Ergebnisse und ihre Treiber. Hubbard (2014) ergänzt, dass eine Kennzahl ihren Platz verdient, wenn sie eine Entscheidung ändern würde, weshalb eine Zahl, die nur zählt, was Sie ausgeben, ihn nicht verdient.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("Four tests for one KPI candidate · a worked example on Neckar Systeme", "Vier Tests für einen KPI-Kandidaten · ein Beispiel mit Neckar Systeme")} caption={tt("Choose a candidate and read how it does on each test.", "Wählen Sie einen Kandidaten und lesen Sie, wie er bei jedem Test abschneidet.")}>
+        <CompProfile cfg={COMP_TESTS} />
       </Diagram>
     </MaterialCard>
   );
@@ -95,35 +101,38 @@ export function CardB4() {
   return (
     <MaterialCard
       id="B4"
-      scan={tt("A referral model scales when it keeps working as more customers join without the cost rising with every referral. Each approach is tested first: every test ends in a decision, roll out, keep testing or stop, and who acts. Two numbers decide it: the uplift over the control group, and how many decisions it rests on. An approach that invites misuse or costs more than it brings is stopped, however many referrals it produces.", "Ein Empfehlungsmodell skaliert, wenn es weiter wirkt, während mehr Kunden mitmachen, ohne dass die Kosten mit jeder Empfehlung steigen. Jeder Ansatz wird zuerst getestet: Jeder Test endet in einer Entscheidung, ausrollen, weiter testen oder stoppen, und wer handelt. Zwei Zahlen entscheiden: der Uplift gegenüber der Kontrollgruppe und auf wie vielen Entscheidungen er beruht. Ein Ansatz, der zu Missbrauch einlädt oder mehr kostet, als er bringt, wird gestoppt, egal wie viele Empfehlungen er erzeugt.")}
+      scan={tt("Game elements are optimised by testing them on the joined data: every test ends in a decision, roll out, keep testing or stop, and who acts. Two numbers decide it: the uplift over the control group, and how many conversions it rests on. An element that makes customers game the system is stopped, however good the number looks.", "Spielelemente werden optimiert, indem man sie auf den verbundenen Daten testet: Jeder Test endet in einer Entscheidung, ausrollen, weiter testen oder stoppen, und wer handelt. Zwei Zahlen entscheiden: der Uplift gegenüber der Kontrollgruppe und auf wie vielen Conversions er beruht. Ein Element, das Kunden das System austricksen lässt, wird gestoppt, egal wie gut die Zahl aussieht.")}
       reasoning={[
-        tt(`Roll out when the uplift is ${LIFT_ACT}% or more and each group has at least ${CASES_MIN} decisions: the gain is clear and proven.`, `Ausrollen, wenn der Uplift ${LIFT_ACT} % oder mehr beträgt und jede Gruppe mindestens ${CASES_MIN} Entscheidungen hat: Der Gewinn ist klar und belegt.`),
-        tt(`Keep testing when the uplift is ${LIFT_ACT}% or more but on fewer than ${CASES_MIN} decisions, or when it is between ${LIFT_WATCH}% and ${LIFT_ACT}%.`, `Weiter testen, wenn der Uplift ${LIFT_ACT} % oder mehr beträgt, aber auf weniger als ${CASES_MIN} Entscheidungen beruht, oder wenn er zwischen ${LIFT_WATCH} % und ${LIFT_ACT} % liegt.`),
-        tt(`Stop when the uplift is below ${LIFT_WATCH}% or negative. Many decisions do not rescue a tiny uplift: they prove it is tiny.`, `Stoppen, wenn der Uplift unter ${LIFT_WATCH} % liegt oder negativ ist. Viele Entscheidungen retten keinen winzigen Uplift: Sie belegen, dass er winzig ist.`),
-        tt("A guardrail can stop a winner: if referrals turn out to be fake, or rewards cost more per customer kept than agreed, the approach is not rolled out until the cause is fixed. This is the risk analysis of a referral model: wrong incentives and costs.", "Eine Guardrail kann einen Gewinner stoppen: Erweisen sich Empfehlungen als gefälscht oder kosten Belohnungen pro gehaltenem Kunden mehr als vereinbart, wird der Ansatz nicht ausgerollt, bis die Ursache behoben ist. Das ist die Risikoanalyse eines Empfehlungsmodells: falsche Anreize und Kosten."),
-        tt("Scalable: the cost stays the same however many customers take part (a referral form in the portal, a thank-you in value paid only for new customers). Not scalable: cash per referral, which grows with every name, or a person per customer.", "Skalierbar: Die Kosten bleiben gleich, egal wie viele Kunden teilnehmen (ein Empfehlungsformular im Portal, ein Dankeschön in Wert, nur für Neukunden gezahlt). Nicht skalierbar: Geld pro Empfehlung, das mit jedem Namen wächst, oder eine Person pro Kunde."),
-        tt("Who acts follows from where the approach lives: what salespeople ask of new customers goes to sales, what members use or attend goes to Customer Success; keep testing belongs to customer operations; a stopped test has no owner.", "Wer handelt, folgt daraus, wo der Ansatz lebt: Was Vertriebsleute von neuen Kunden erbitten, geht an den Vertrieb, was Mitglieder nutzen oder besuchen, an Customer Success; Weitertesten gehört Customer Operations; ein gestoppter Test hat keinen Owner."),
+        tt(`Roll out when the uplift is ${LIFT_ACT}% or more and each group has at least ${CASES_MIN} conversions: the gain is clear and proven.`, `Ausrollen, wenn der Uplift ${LIFT_ACT} % oder mehr beträgt und jede Gruppe mindestens ${CASES_MIN} Conversions hat: Der Gewinn ist klar und belegt.`),
+        tt(`Keep testing when the uplift is ${LIFT_ACT}% or more but on fewer than ${CASES_MIN} conversions, or when it is between ${LIFT_WATCH}% and ${LIFT_ACT}%.`, `Weiter testen, wenn der Uplift ${LIFT_ACT} % oder mehr beträgt, aber auf weniger als ${CASES_MIN} Conversions beruht, oder wenn er zwischen ${LIFT_WATCH} % und ${LIFT_ACT} % liegt.`),
+        tt(`Stop when the uplift is below ${LIFT_WATCH}% or negative. Many conversions do not rescue a tiny uplift: they prove it is tiny.`, `Stoppen, wenn der Uplift unter ${LIFT_WATCH} % liegt oder negativ ist. Viele Conversions retten keinen winzigen Uplift: Sie belegen, dass er winzig ist.`),
+        tt("A guardrail can stop a winner: if accounts that only collect points rise, or customers switch off the prompts, the element is not rolled out until the cause is fixed.", "Eine Guardrail kann einen Gewinner stoppen: Steigen Konten, die nur Punkte sammeln, oder schalten Kunden die Hinweise ab, wird das Element nicht ausgerollt, bis die Ursache behoben ist."),
+        tt("Who acts follows from what the test is about: an element in the product goes to the product team, one that gives customers a service benefit goes to customer success; keep testing belongs to the data team; a stopped test has no owner.", "Wer handelt, folgt daraus, worum es im Test geht: Ein Element im Produkt geht an das Produktteam, eines, das Kunden einen Service-Vorteil gibt, an Customer Success; Weitertesten gehört dem Datenteam; ein gestoppter Test hat keinen Owner."),
       ]}
-      sources={["kohavi2020", "ryu2007", "schmitt2011"]}
+      sources={["kohavi2020", "hamari2014"]}
     >
-      <p className={p}>
-        {tt(
-          "Kohavi, Tang and Xu (2020) describe how firms that test continuously decide on each result with rules agreed before the test: a minimum effect worth shipping, a minimum sample, and guardrail metrics that veto a rollout. Ryu and Feick (2007) found that rewards increase referrals, most of all between people with weak ties; Schmitt, Skiera and Van den Bulte (2011) found that referred customers are worth more, which is why the reward should follow the customer, not the name.",
-          "Kohavi, Tang und Xu (2020) beschreiben, wie Firmen, die laufend testen, über jedes Ergebnis mit Regeln entscheiden, die vor dem Test vereinbart sind: ein Mindesteffekt, der einen Rollout lohnt, eine Mindeststichprobe und Guardrail-Kennzahlen, die einen Rollout verhindern können. Ryu und Feick (2007) fanden, dass Belohnungen Empfehlungen erhöhen, am stärksten zwischen Menschen mit schwachen Beziehungen; Schmitt, Skiera und Van den Bulte (2011) fanden, dass empfohlene Kunden mehr wert sind, darum sollte die Belohnung dem Kunden folgen, nicht dem Namen.",
-        )}
-      </p>
-      <Diagram label={tt("Roll out, keep testing or stop · move the two sliders", "Ausrollen, weiter testen oder stoppen · die zwei Regler bewegen")} caption={tt("Set an uplift and a number of decisions and read which decision the rule gives.", "Stellen Sie einen Uplift und eine Zahl von Entscheidungen ein und lesen Sie, welche Entscheidung die Regel ergibt.")}>
-        <LiftCases />
+      <ShowMore id="B4" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Kohavi, Tang and Xu (2020) describe how firms that test continuously decide on each result with rules agreed before the test: a minimum effect worth shipping, a minimum sample, and guardrail metrics that veto a rollout. Hamari, Koivisto and Sarsa (2014) found that gamification effects depend on context and user, which is why each element is tested, not assumed.",
+            "Kohavi, Tang und Xu (2020) beschreiben, wie Firmen, die laufend testen, über jedes Ergebnis mit Regeln entscheiden, die vor dem Test vereinbart sind: ein Mindesteffekt, der einen Rollout lohnt, eine Mindeststichprobe und Guardrail-Kennzahlen, die einen Rollout verhindern können. Hamari, Koivisto und Sarsa (2014) fanden, dass die Effekte von Gamification von Umfeld und Nutzer abhängen, weshalb jedes Element getestet statt angenommen wird.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("Roll out, keep testing or stop · move the two sliders", "Ausrollen, weiter testen oder stoppen · die zwei Regler bewegen")} caption={tt("Set an uplift and a number of conversions and read which decision the rule gives.", "Stellen Sie einen Uplift und eine Zahl von Conversions ein und lesen Sie, welche Entscheidung die Regel ergibt.")}>
+        <LiftCases cfg={LIFT} />
       </Diagram>
-      <DataTable
-        head={[tt("Ems test", "Test bei Ems"), tt("Uplift", "Uplift"), tt("Decisions", "Entscheidungen"), tt("Rule gives", "Regel ergibt"), tt("Who acts", "Wer handelt")]}
-        rows={[
-          [tt("A thank-you training day once the referred firm signs", "Ein Schulungstag als Dank, sobald die empfohlene Firma unterschreibt"), "+34%", "140", tt("Roll out", "Ausrollen"), tt("Sales", "Vertrieb")],
-          [tt("A benchmark report for members", "Ein Benchmark-Bericht für Mitglieder"), "+30%", "35", tt("Keep testing", "Weiter testen"), tt("Customer operations", "Customer Operations")],
-          [tt("Double points in the birthday month", "Doppelte Punkte im Geburtstagsmonat"), "+1%", "600", tt("Stop", "Stoppen"), tt("No one", "Niemand")],
-        ]}
-        caption={tt("A worked decision on other tests (Case assumption)", "Eine Beispielentscheidung mit anderen Tests (Fallannahme)")}
-      />
+      <ShowMore id="B4" part="table" label={tt("Show the table: a worked decision on other tests (Case assumption)", "Tabelle zeigen: Eine Beispielentscheidung mit anderen Tests (Fallannahme)")}>
+        <DataTable
+          head={[tt("Neckar test", "Test bei Neckar"), tt("Uplift", "Uplift"), tt("Conversions", "Conversions"), tt("Rule gives", "Regel ergibt"), tt("Who acts", "Wer handelt")]}
+          rows={[
+            [tt("Progress bar in the set-up", "Fortschrittsleiste in der Einrichtung"), "+36%", "150", tt("Roll out", "Ausrollen"), tt("Product team", "Produktteam")],
+            [tt("Referral credit for satisfied customers", "Empfehlungs-Guthaben für zufriedene Kunden"), "+28%", "30", tt("Keep testing", "Weiter testen"), tt("Data team", "Datenteam")],
+            [tt("Animated confetti after every login", "Animiertes Konfetti nach jedem Login"), "+1%", "700", tt("Stop", "Stoppen"), tt("No one", "Niemand")],
+          ]}
+          caption={tt("A worked decision on other tests (Case assumption)", "Eine Beispielentscheidung mit anderen Tests (Fallannahme)")}
+        />
+      </ShowMore>
     </MaterialCard>
   );
 }
@@ -132,31 +141,50 @@ export function CardB5() {
   return (
     <MaterialCard
       id="B5"
-      scan={tt("A strategic decision under an unclear success forecast is made in stages: start now with the added values that are proven and the most active customers, measure from the first day, and agree on the result that makes you change course. The measures architecture gives every funded item a start, one owner and a trigger.", "Eine strategische Entscheidung bei unklarer Erfolgsprognose fällt in Stufen: jetzt mit den belegten Mehrwerten und den aktivsten Kunden beginnen, ab dem ersten Tag messen und das Ergebnis vereinbaren, bei dem Sie den Kurs ändern. Die Maßnahmenarchitektur gibt jedem finanzierten Punkt einen Start, einen Owner und einen Trigger.")}
+      scan={tt("An architecture is built in order: the base first (one shared profile and the KPIs), then the data, the rules and the people, then the game elements on connected data, and the rest held back. Four tests tell you whether it holds, and with five months the time test matters. Integrate now, in stages, and say what you will watch and when you would stop.", "Eine Architektur wird der Reihe nach gebaut: zuerst die Basis (ein gemeinsames Profil und die KPIs), dann die Daten, die Regeln und die Menschen, dann die Spielelemente auf verbundenen Daten, und der Rest wird zurückgehalten. Vier Tests sagen Ihnen, ob sie hält, und bei fünf Monaten zählt der Zeittest. Integrieren Sie jetzt, in Stufen, und sagen Sie, was Sie beobachten und wann Sie aufhören würden.")}
       reasoning={[
-        tt("Waiting for a market study is also a decision: customers rarely know in advance what will keep them, they show it by what they use and whether they renew, and every month of waiting more of them leave. The brief asks for a decision despite an unclear forecast.", "Auf eine Marktstudie zu warten ist auch eine Entscheidung: Kunden wissen selten im Voraus, was sie halten wird, sie zeigen es daran, was sie nutzen und ob sie verlängern, und in jedem Monat des Wartens gehen mehr von ihnen. Der Auftrag verlangt eine Entscheidung trotz unklarer Prognose."),
-        tt("Launching everything at once with a discount feels decisive, but it costs margin on every renewal before anything is measured, and cash for referrals invites misuse. Staging changes something real for customers within weeks and learns what keeps them.", "Alles auf einmal mit einem Rabatt zu starten fühlt sich entschlossen an, kostet aber bei jeder Verlängerung Marge, bevor etwas gemessen ist, und Geld für Empfehlungen lädt zu Missbrauch ein. Stufenweise ändert sich innerhalb von Wochen etwas Echtes für Kunden, und man lernt, was sie hält."),
-        tt("The membership first: the membership with its added values starts no later than the first other item, because the referral thank-you, the community and the KPIs build on it.", "Die Mitgliedschaft zuerst: Die Mitgliedschaft mit ihren Mehrwerten startet nicht später als der erste andere Punkt, weil Empfehlungs-Dankeschön, Community und KPIs darauf aufbauen."),
-        tt("Fund inside the budget, and fund nothing nobody at the company can check: a tool that sets rewards by itself without showing its rules cannot be kept viable.", "Finanzieren Sie innerhalb des Budgets, und nichts, was im Unternehmen niemand prüfen kann: Ein Werkzeug, das Belohnungen selbst festlegt, ohne seine Regeln zu zeigen, lässt sich nicht wirtschaftlich halten."),
-        tt("Owner test: who can change the item without asking anyone else? Trigger test: a metric, a number, a date and an action.", "Owner-Test: Wer kann den Punkt ändern, ohne jemanden zu fragen? Trigger-Test: eine Kennzahl, eine Zahl, ein Datum und eine Aktion."),
-        tt("A tripwire measures how customers behave (the renewal rate, customers who use a service), not your own output or sign-ups (e-mails sent, members signed up, newsletter opens), and its threshold is better than today.", "Ein Tripwire misst, wie Kunden sich verhalten (die Verlängerungsquote, Kunden, die einen Service nutzen), nicht Ihren eigenen Output oder Anmeldungen (versandte E-Mails, angemeldete Mitglieder, Newsletter-Öffnungen), und sein Schwellenwert ist besser als heute."),
-        tt("When members use the benefits and renewals lag, check whether the renewals moved where the change was made, whether the base is large enough and whether a guardrail was hit, before you change the plan; do not switch to cash rewards, and do not cut what keeps members.", "Wenn Mitglieder die Vorteile nutzen und die Verlängerungen hinterherhinken, prüfen Sie, ob sich die Verlängerungen dort bewegten, wo die Änderung gemacht wurde, ob die Basis groß genug ist und ob eine Guardrail verletzt wurde, bevor Sie den Plan ändern; wechseln Sie nicht zu Geldprämien, und kürzen Sie nicht, was Mitglieder hält."),
+        tt("Build in this order. The base first: the shared customer profile and retention dashboard, so every game element reads one customer. Then the data, the rules and the people: the usage data clean-up so use is recorded the same way everywhere, one rulebook for rewards, and teams trained to read the dashboard. Then the game elements that move a named customer KPI, on data that is connected. Hold back the rest.", "Bauen Sie in dieser Reihenfolge. Zuerst die Basis: gemeinsames Kundenprofil und Retention-Dashboard, damit jedes Spielelement einen Kunden liest. Dann die Daten, die Regeln und die Menschen: die Bereinigung der Nutzungsdaten, damit Nutzung überall gleich erfasst wird, ein Regelwerk für Belohnungen und Teams, die geschult sind, das Dashboard zu lesen. Dann die Spielelemente, die einen benannten Kunden-KPI bewegen, auf Daten, die verbunden sind. Den Rest halten Sie zurück."),
+        tt(`Four tests check an architecture. Integration first: the shared profile and dashboard start no later than the first game element. Every funded item has a purpose: it moves a named customer KPI or makes one measurable; a black box and a points scheme that names no customer KPI do neither. Data connected: a game element starts on data of which at least ${QUALITY_BAR}% already reaches the shared profile. It fits: inside the budget and in use by month ${R2_MONTHS}.`, `Vier Tests prüfen eine Architektur. Integration zuerst: Gemeinsames Profil und Dashboard starten nicht später als das erste Spielelement. Jeder finanzierte Punkt hat einen Zweck: Er bewegt einen benannten Kunden-KPI oder macht einen messbar; eine Black Box und ein Punkteschema, das keinen Kunden-KPI nennt, tun keines von beidem. Daten verbunden: Ein Spielelement startet auf Daten, von denen mindestens ${QUALITY_BAR} % schon das gemeinsame Profil erreichen. Es passt: innerhalb des Budgets und bis Monat ${R2_MONTHS} im Einsatz.`),
+        tt(`Time: an item is in use in the month = start + weeks ÷ 4, rounded up. A Now item starts in month 1; an After data is ready item starts in the month the usage data clean-up is in use, so the clean-up has to be Now itself: a clean record of use is what puts the data into the profile. With ${R2_MONTHS} months, an item of 32 weeks is in use only in month 9.`, `Zeit: Ein Punkt ist im Monat = Start + Wochen ÷ 4, aufgerundet, im Einsatz. Ein Jetzt-Punkt startet in Monat 1; ein Punkt „Wenn die Daten bereit sind“ startet in dem Monat, in dem die Bereinigung der Nutzungsdaten im Einsatz ist, die Bereinigung muss also selbst auf Jetzt stehen: Eine saubere Nutzungserfassung bringt die Daten ins Profil. Bei ${R2_MONTHS} Monaten ist ein Punkt mit 32 Wochen erst in Monat 9 im Einsatz.`),
+        tt(`Three bars show where the money sits: Budget (the money against the limit), Measurable (the share on items that are measured, whose data is connected and that are in use within the ${R2_MONTHS} months) and Risk (the share on a black box, on data below ${QUALITY_BAR}% connected or on an item in use only after the ${R2_MONTHS} months). Measurable and Risk are ranges, because customers may react more weakly than the brief says: a plan that holds at both ends is the safer one.`, `Drei Balken zeigen, wo das Geld liegt: Budget (das Geld gegen die Grenze), Messbar (der Anteil auf Punkten, die gemessen werden, deren Daten verbunden sind und die innerhalb der ${R2_MONTHS} Monate im Einsatz sind) und Risiko (der Anteil auf einer Black Box, auf Daten unter ${QUALITY_BAR} % verbunden oder auf einem Punkt, der erst nach den ${R2_MONTHS} Monaten im Einsatz ist). Messbar und Risiko sind Spannen, weil Kunden schwächer reagieren können, als der Auftrag sagt: Ein Plan, der an beiden Enden hält, ist der sicherere.`),
+        tt("Waiting until success is proven is also a decision: the measures stay side by side in the meantime, and a shared profile and a rulebook could start within weeks. The brief asks for an integration decision despite unclear success impact.", "Zu warten, bis der Erfolg bewiesen ist, ist auch eine Entscheidung: Die Maßnahmen bleiben in der Zwischenzeit nebeneinander, und ein gemeinsames Profil und ein Regelwerk ließen sich in Wochen starten. Der Auftrag verlangt eine Integrationsentscheidung trotz unklarer Erfolgswirkung."),
+        tt("Buying one big game platform at once feels like catching up, but it is in use only after 32 weeks, takes most of the budget, and nothing is measured before the money is spent. Staging changes something for customers within weeks and spends the rest as the evidence arrives.", "Eine große Spieleplattform auf einmal zu kaufen fühlt sich wie Aufholen an, ist aber erst nach 32 Wochen in Betrieb, nimmt den Großteil des Budgets, und nichts wird gemessen, bevor das Geld ausgegeben ist. Stufenweise ändert sich innerhalb von Wochen etwas für Kunden, und der Rest wird ausgegeben, während die Evidenz kommt."),
+        tt("Fund inside the budget, and fund nothing nobody at the company can explain or measure: a black box that decides rewards by itself cannot be steered. Points for every login with a public leaderboard, not connected to the membership tool, pay for clicks and name no customer KPI.", "Finanzieren Sie innerhalb des Budgets, und nichts, was im Unternehmen niemand erklären oder messen kann: Eine Black Box, die Belohnungen selbst entscheidet, lässt sich nicht steuern. Punkte für jeden Login mit einer öffentlichen Rangliste, nicht mit dem Mitgliedschaftstool verbunden, bezahlen Klicks und nennen keinen Kunden-KPI."),
+        tt("What you will watch is one figure about customers (the share of new customers who finish set-up, the accounts that only collect points), not what you hand out (points awarded, badges, leaderboard visits), the month it can first be read, and what you do if it falls short: stop, pause or change one thing.", "Was Sie beobachten, ist eine Zahl über Kunden (der Anteil der Neukunden, die die Einrichtung abschließen, die Konten, die nur Punkte sammeln), nicht das, was Sie ausgeben (vergebene Punkte, Badges, Ranglisten-Besuche), der Monat, in dem sie sich zuerst lesen lässt, und was Sie tun, wenn sie zu kurz greift: stoppen, pausieren oder eine Sache ändern."),
+        tt("Every plan gives something and costs something. Say what it gives (measured, connected, inside the budget and the months) and what it leaves open (an item not now, data below 80% if customers react more weakly, budget left unspent). A plan that differs from this order can still be argued: say why.", "Jeder Plan gibt etwas und kostet etwas. Sagen Sie, was er gibt (gemessen, verbunden, innerhalb von Budget und Monaten) und was er offen lässt (ein Punkt, der jetzt nicht kommt, Daten unter 80 %, wenn Kunden schwächer reagieren, ungenutztes Budget). Ein Plan, der von dieser Reihenfolge abweicht, lässt sich trotzdem vertreten: Sagen Sie, warum."),
       ]}
       sources={["courtney1997", "klein2007"]}
     >
-      <Diagram label={tt("Three funded items over six months · a worked example on Ems Systems", "Drei finanzierte Punkte über sechs Monate · ein Beispiel mit Ems Systems")} caption={tt("Click a row to read its owner, its trigger and why it starts when it does.", "Klicken Sie eine Zeile an, um Owner, Trigger und den Grund für den Start zu lesen.")}>
-        <ArchExample />
+      <Diagram label={tt("A progress path and its base · a worked example on Neckar Systeme", "Ein Fortschrittspfad und seine Basis · ein Beispiel mit Neckar Systeme")} caption={tt("Change when the shared profile starts and how much of the data is connected, and watch the links.", "Ändern Sie, wann das gemeinsame Profil startet und wie viel der Daten verbunden ist, und beobachten Sie die Verbindungen.")}>
+        <ArchMini cfg={ARCH_MINI} />
       </Diagram>
-      <Bul
-        items={[
-          tt("Stage it: the no-regret items (the membership's proven added values, the KPIs in the CRM, the misuse rules) first, the referral programme and the community when there are satisfied members to build on.", "Stufenweise: die No-regret-Punkte (die belegten Mehrwerte der Mitgliedschaft, die KPIs im CRM, die Missbrauchsregeln) zuerst, das Empfehlungsprogramm und die Community, wenn es zufriedene Mitglieder gibt, auf denen man aufbauen kann."),
-          tt("Premortem: imagine the programme failed after six months, and write down why. Those reasons are your assumptions to watch.", "Premortem: Stellen Sie sich vor, das Programm sei nach sechs Monaten gescheitert, und schreiben Sie auf, warum. Diese Gründe sind die Annahmen, die Sie beobachten."),
-          tt("What does not fit gets a pickup point: the number and the date at which you look at it again.", "Was nicht passt, bekommt einen Pickup Point: die Zahl und das Datum, zu dem Sie es wieder ansehen."),
-        ]}
-      />
-      <Callout label={tt("An unclear forecast is not a reason to bet everything, or nothing", "Eine unklare Prognose ist kein Grund, alles oder nichts zu setzen")} tone="signal">
-        <p>{tt("Courtney, Kirkland and Viguerie (1997) advise matching the commitment to what is known: no-regret moves now, options that can be scaled later, and big bets only when the evidence is in. Klein (2007) adds the premortem, a short exercise that makes a team name the risks it would otherwise keep to itself.", "Courtney, Kirkland und Viguerie (1997) raten, die Festlegung an das Bekannte anzupassen: No-regret-Schritte jetzt, Optionen, die sich später ausweiten lassen, und große Wetten erst, wenn die Evidenz da ist. Klein (2007) ergänzt das Premortem, eine kurze Übung, die ein Team die Risiken nennen lässt, die es sonst für sich behielte.")}</p>
-      </Callout>
+      <ShowMore id="B5" part="calc" label={tt("Show the worked numbers on another company (Case assumption)", "Die Rechenwege an einem anderen Unternehmen zeigen (Fallannahme)")}>
+        <DataTable
+          head={[tt("Rule", "Regel"), tt("Neckar's figures", "Zahlen von Neckar"), tt("Result", "Ergebnis")]}
+          rows={[
+            [tt("Month in use: starts in month 1, needs 8 weeks", "Monat im Einsatz: startet in Monat 1, braucht 8 Wochen"), "1 + 8 ÷ 4 = 1 + 2", tt("month 3", "Monat 3")],
+            [tt("After data is ready: the usage data clean-up is in use in month 2, the item needs 10 weeks", "Wenn die Daten bereit sind: Die Bereinigung der Nutzungsdaten ist in Monat 2 im Einsatz, der Punkt braucht 10 Wochen"), "2 + 10 ÷ 4 = 2 + 3", tt("starts month 2, in use month 5", "Start Monat 2, im Einsatz Monat 5")],
+            [tt("Time: a platform of 28 weeks that starts in month 1, in a plan of 5 months", "Zeit: eine Plattform mit 28 Wochen, die in Monat 1 startet, in einem Plan von 5 Monaten"), "1 + 28 ÷ 4 = 1 + 7", tt("month 8: too late", "Monat 8: zu spät")],
+            [tt("Data connected: the path's data is 90% connected, the bar is 80%", "Daten verbunden: Die Daten des Pfads sind zu 90 % verbunden, die Grenze ist 80 %"), "90 ≥ 80", tt("ready", "bereit")],
+            [tt("The same path when customers react more weakly and the data is 15 points weaker", "Derselbe Pfad, wenn Kunden schwächer reagieren und die Daten 15 Punkte schwächer sind"), "90 − 15 = 75 < 80", tt("not ready", "nicht bereit")],
+            [tt("Money: three funded items against Neckar's €160,000", "Geld: drei finanzierte Punkte gegen Neckars 160.000 €"), "70,000 + 30,000 + 20,000", tt("€120,000, €40,000 left", "120.000 €, 40.000 € übrig")],
+          ]}
+          caption={tt("Neckar's numbers (Case assumption). The panel in the task does this for you and says what it means.", "Zahlen von Neckar (Fallannahme). Das Panel in der Aufgabe macht das für Sie und sagt, was es bedeutet.")}
+        />
+      </ShowMore>
+      <ShowMore id="B5" part="notes" label={tt("Show two short notes", "Zwei kurze Hinweise zeigen")}>
+        <Bul
+          items={[
+            tt("Stage it: the no-regret items first (the shared profile, the rulebook), the game elements that need more connected data when the usage data is clean.", "Stufenweise: die No-regret-Punkte zuerst (gemeinsames Profil, Regelwerk), die Spielelemente, die mehr verbundene Daten brauchen, wenn die Nutzungsdaten sauber sind."),
+            tt("Premortem: imagine the plan failed after five months, and write down why. Those reasons are what you watch.", "Premortem: Stellen Sie sich vor, der Plan sei nach fünf Monaten gescheitert, und schreiben Sie auf, warum. Diese Gründe beobachten Sie."),
+          ]}
+        />
+      </ShowMore>
+      <ShowMore id="B5" part="extra" label={tt("Show: Unclear success impact is not a reason to bet everything, or nothing", "Zeigen: Unklare Erfolgswirkung ist kein Grund, alles oder nichts zu setzen")}>
+        <Callout label={tt("Unclear success impact is not a reason to bet everything, or nothing", "Unklare Erfolgswirkung ist kein Grund, alles oder nichts zu setzen")} tone="signal">
+          <p>{tt("Courtney, Kirkland and Viguerie (1997) advise matching the commitment to what is known: no-regret moves now, options that can be scaled later, and big bets only when the evidence is in. A staged integration with a sentence on what you watch is decisive and still honest about what you do not know yet.", "Courtney, Kirkland und Viguerie (1997) raten, die Festlegung an das Bekannte anzupassen: No-regret-Schritte jetzt, Optionen, die sich später ausweiten lassen, und große Wetten erst, wenn die Evidenz da ist. Eine gestufte Integration mit einem Satz dazu, was Sie beobachten, ist entschlossen und trotzdem ehrlich darüber, was Sie noch nicht wissen.")}</p>
+        </Callout>
+      </ShowMore>
     </MaterialCard>
   );
 }

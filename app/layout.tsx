@@ -9,9 +9,9 @@ import { GlossaryPanel } from "@/components/chrome/GlossaryPanel";
 import { LangProvider } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Retention Lab · Day 12 — Customer Retention through Memberships and Referrals",
+  title: "Retention Lab · Day 13 — Motivation through Gamification and the Integration of Customer Retention Systems",
   description:
-    "Self-study companion for Customer Retention & Buying Behaviour in B2B IT Sales, Day 12: transactional versus relational retention, membership models, referral marketing and measuring retention, with study material, live instruments and two working documents.",
+    "Self-study companion for Customer Retention & Buying Behaviour in B2B IT Sales, Day 13: reward, competition and progress, real motivation versus short-term incentives, integrating membership, referral and personalisation, with study material, live instruments and two working documents. English and German.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

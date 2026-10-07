@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ROUTES } from "@/lib/routes";
+import { CORE1_MINUTES, CORE2_MINUTES, CORE_CARD_MINUTES, ROUTES } from "@/lib/routes";
 import { tt } from "@/lib/lang";
 
 /** The two route cards on the home page. Both are always open: a suggested order is only a suggestion. */
@@ -31,6 +31,12 @@ export function RouteCards() {
                     </td>
                   </tr>
                 ))}
+                <tr className="border-t border-line">
+                  <td className="py-1.5 text-ink">{r.n === 1 ? tt("Core only: card A1 + card A7 + Blocks 1.1 and 2.4", "Nur der Kern: Karte A1 + Karte A7 + Blöcke 1.1 und 2.4") : tt("Core only: card B5 + the one frame (Step A and Step B)", "Nur der Kern: Karte B5 + der eine Rahmen (Schritt A und Schritt B)")}</td>
+                  <td className="tnum py-1.5 text-right text-ash">
+                    {r.n === 1 ? CORE_CARD_MINUTES[1] + CORE1_MINUTES : CORE_CARD_MINUTES[2] + CORE2_MINUTES} {tt("min", "Min.")}
+                  </td>
+                </tr>
                 <tr className="border-t-2 border-ink font-semibold">
                   <td className="py-1.5">{tt("Total", "Gesamt")}</td>
                   <td className="tnum py-1.5 text-right">

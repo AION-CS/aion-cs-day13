@@ -10,17 +10,20 @@ import { MentorGuide } from "@/components/ui/MentorGuide";
 import { PlacementBoard } from "@/components/ui/PlacementBoard";
 import { RevealHint } from "@/components/ui/RevealHint";
 import { WritingHelp } from "@/components/ui/WritingHelp";
-import { AB, AB_PARTS, MEANINGS, OUTCOME_LABEL, PATTERNS, PATTERN_IDS, PATTERN_PAIR_TESTS, PMEASURES, RECORDS, RISK_GLYPH, RISK_LABEL, RISK_RULE, UNCERTAINTIES } from "@/data/patterns";
+import { ExampleAnswer } from "@/components/ui/ExampleAnswer";
+import { BlockMissing } from "@/components/ui/BlockMissing";
+import { AB, AB_PARTS, MEANINGS, OUTCOME_LABEL, PATTERNS, PATTERN_IDS, PATTERN_PAIR_TESTS, PMEASURES, RECORDS, RISK_GLYPH, RISK_LABEL, RISK_RULE, UNCERTAINTIES, REC_KEY } from "@/data/patterns";
 import type { AbPart, MeaningId, PatternId, PMeasureId, RecId, Risk, UncId } from "@/data/patterns";
-import { BUDGET, CHOOSE, EVIDENCE_LABEL, EXPLAIN_RULE, MEASURES, MEASURE_BY_ID, MONTHS, PROBLEM_IDS, PROBLEM_LABEL } from "@/data/measures";
-import type { MeasureId, ProblemId } from "@/data/measures";
-import { abFlagsOf, aimsHold, allTagged, coverage, expHolds, measureScore, measureScored, orderInversions, rowChecks, tagHolds, tallyOf, totalCost, uncHolds } from "@/lib/checks";
+import { BUDGET, CHOOSE, EFFECT_ANCHOR, EVIDENCE_LABEL, EXPLAIN_RULE, FRAME_WEEKS, MEASURES, MEASURE_BY_ID, MONTHS, SCALE_ANCHOR, MEASURE_AREA_LABEL } from "@/data/measures";
+import type { MeasureId } from "@/data/measures";
+import { PlanPicture } from "@/components/task1/PlanPicture";
+import { abFlagsOf, allTagged, expHolds, measureScore, measureScored, orderInversions, rowChecks, tagHolds, tallyOf, totalCost, uncHolds } from "@/lib/checks";
 import { scrollToAndFlash } from "@/lib/flash";
 import { Gloss } from "@/lib/glossify";
 import { euro, tt } from "@/lib/lang";
 import { IDS } from "@/lib/missing";
 import { abKey, measureKey, orderKey, rowKey, tagKey, uncKey } from "@/lib/answerKey";
-import { abGuide, misreadGuide, scoreGuide, whyGuide } from "@/lib/mentorGuide";
+import { abGuide, misreadGuide, scoreGuide, whyGuide, reasonGuide } from "@/lib/mentorGuide";
 import { MIN_LINE, MIN_SENTENCE } from "@/lib/progress";
 import { BLOCK_MINUTES } from "@/lib/routes";
 import { useStore } from "@/store/useStore";
@@ -34,13 +37,15 @@ export function Block21() {
   const undo = useStore((s) => s.undoTags);
   const redo = useStore((s) => s.redoTags);
   const patch = useStore((s) => s.patchL1);
+  const mentor = useStore((s) => s.mentorUnlocked);
   return (
     <AnswerBlock
       id="block-2-1"
-      title={tt("Block 2.1 · Tag ConnectIT's twelve metrics by kind", "Block 2.1 · Die zwölf Kennzahlen von ConnectIT nach Art zuordnen")}
-      kind="OBJECTIVE"
+      title={tt("Block 2.1 · Tag EngageIT's twelve metrics by kind, and name your three KPIs", "Block 2.1 · Die zwölf Kennzahlen von EngageIT nach Art zuordnen, und Ihre drei KPIs nennen")}
+      kind="OBJECTIVE + JUDGED"
+      core={false}
       minutes={BLOCK_MINUTES["2.1"]}
-      findIt={tt("Route 1 → Task 1 → the twelve metrics on the board below, from ConnectIT's reports on retention, members and referrals, each with whether it moved together with customer value last year. Find the words that decide each one and answer on the board.", "Route 1 → Task 1 → die zwölf Kennzahlen auf der Tafel unten, aus den Berichten von ConnectIT zu Bindung, Mitgliedern und Empfehlungen, jede mit der Angabe, ob sie sich letztes Jahr mit dem Kundenwert bewegte. Finden Sie die Worte, die jede entscheiden, und antworten Sie auf der Tafel.")}
+      findIt={tt("Route 1 → Task 1 → the twelve metrics on the board below, from EngageIT's reports, each with whether it moved together with customer value last year. Find the words that decide each one and answer on the board; then name your three KPIs in the field under it.", "Route 1 → Task 1 → die zwölf Kennzahlen auf der Tafel unten, aus den Berichten von EngageIT, jede mit der Angabe, ob sie sich letztes Jahr mit dem Kundenwert bewegte. Finden Sie die Worte, die jede entscheiden, und antworten Sie auf der Tafel; nennen Sie dann Ihre drei KPIs im Feld darunter.")}
     >
       <MaterialRefs refs={["A5"]} />
       <PlacementBoard<PatternId>
@@ -54,6 +59,7 @@ export function Block21() {
         undoCount={l1.tagHistory.length}
         redoCount={l1.tagFuture.length}
         domId={IDS.rec}
+        keyPhrases={REC_KEY}
         clues={Object.fromEntries(RECORDS.map((o) => [o.id, o.clue]))}
         reasons={Object.fromEntries(RECORDS.map((o) => [o.id, o.why]))}
         result={l1.tagResult}
@@ -92,6 +98,32 @@ export function Block21() {
         }
       />
       <AnswerKey block={tagKey()} />
+      <TextBox
+        id={IDS.misread}
+        label={tt("Your three KPIs for EngageIT", "Ihre drei KPIs für EngageIT")}
+        help={tt(`Name three KPIs from the twelve metrics above: at least one outcome and one driver (a guardrail may be the third). For each, say where the number comes from, what you would aim for and why it is a KPI. At least ${MIN_SENTENCE} characters.`, `Nennen Sie drei KPIs aus den zwölf Kennzahlen oben: mindestens ein Outcome und einen Treiber (eine Guardrail kann der dritte sein). Sagen Sie für jeden, woher die Zahl kommt, was Sie anstreben würden und warum er ein KPI ist. Mindestens ${MIN_SENTENCE} Zeichen.`)}
+        value={l1.misread}
+        onChange={(v) => patch({ misread: v })}
+        min={MIN_SENTENCE}
+        rows={4}
+      >
+        <WritingHelp
+          id="kpi-kit"
+          refs={[
+            { label: tt("The twelve metrics (board above)", "Die zwölf Kennzahlen (Tafel oben)"), value: tt("pick three of them; the kind decides the use", "wählen Sie drei davon; die Art entscheidet über die Nutzung"), target: IDS.rec(RECORDS[0].id) },
+            { label: tt("The four kinds and how each is used (Materi A5)", "Die vier Arten und wie jede genutzt wird (Materi A5)"), value: tt("outcome · driver · guardrail · vanity", "Outcome · Treiber · Guardrail · Vanity"), target: "mat-A5" },
+          ]}
+          steps={[
+            tt("Choose one outcome: the result EngageIT is paid for.", "Wählen Sie einen Outcome: das Ergebnis, für das EngageIT bezahlt wird."),
+            tt("Choose one driver: something customers do before they renew, that a team can move this month.", "Wählen Sie einen Treiber: etwas, das Kunden tun, bevor sie verlängern, und das ein Team in diesem Monat bewegen kann."),
+            tt("Add a guardrail as the third if you can: what must not get worse.", "Ergänzen Sie nach Möglichkeit eine Guardrail als dritten: was nicht schlechter werden darf."),
+            tt("For each, name the system the number comes from and what you would aim for (up, down, or stay under a limit).", "Nennen Sie für jeden das System, aus dem die Zahl kommt, und was Sie anstreben würden (hoch, runter oder unter einer Grenze bleiben)."),
+          ]}
+        />
+      </TextBox>
+      <ExampleAnswer id="kpi-example" guide={misreadGuide()} />
+      {mentor && <MentorGuide guide={misreadGuide()} />}
+      <BlockMissing block="2.1" route={1} />
     </AnswerBlock>
   );
 }
@@ -117,8 +149,9 @@ export function Block22() {
   return (
     <AnswerBlock
       id="block-2-2"
-      title={tt("Block 2.2 · What each kind of metric is worth, and your three KPIs", "Block 2.2 · Was jede Art von Kennzahl wert ist, und Ihre drei KPIs")}
+      title={tt("Block 2.2 · What each kind of metric is worth, and the uncertainties in measuring", "Block 2.2 · Was jede Art von Kennzahl wert ist, und die Unsicherheiten beim Messen")}
       kind="OBJECTIVE + JUDGED"
+      core={false}
       minutes={BLOCK_MINUTES["2.2"]}
       findIt={tt("Route 1 → Task 1 → “Your tally” below (from your own tags in Block 2.1) and the rules in Materi A5 and A6. Answer in the four rows and the fields under them.", "Route 1 → Task 1 → „Ihre Auszählung“ unten (aus Ihren eigenen Zuordnungen in Block 2.1) und die Regeln in Materi A5 und A6. Antworten Sie in den vier Zeilen und den Feldern darunter.")}
     >
@@ -205,8 +238,8 @@ export function Block22() {
       <AnswerKey block={rowKey()} />
 
       <div id={IDS.unc} className="space-y-2 border-t border-line pt-3">
-        <p className="font-semibold text-ink">{tt("Which uncertainties sit in the referral figures?", "Welche Unsicherheiten stecken in den Empfehlungswerten?")}</p>
-        <p className="text-caption text-ash">{tt("Choose two or more that are real uncertainties of ConnectIT's referral figures (Block 1.2) and customer data.", "Wählen Sie zwei oder mehr, die echte Unsicherheiten der Empfehlungswerte von ConnectIT (Block 1.2) und seiner Kundendaten sind.")}</p>
+        <p className="font-semibold text-ink">{tt("Which uncertainties sit in the set-up figures?", "Welche Unsicherheiten stecken in den Einrichtungs-Werten?")}</p>
+        <p className="text-caption text-ash">{tt("EngageIT has last year's set-up figures (new customers who did or did not see the set-up bar) and its usage data. Choose two or more that are real uncertainties when it reads figures like these.", "EngageIT hat die Einrichtungs-Werte des letzten Jahres (Neukunden, die die Einrichtungsleiste sahen oder nicht) und seine Nutzungsdaten. Wählen Sie zwei oder mehr, die echte Unsicherheiten sind, wenn es solche Werte liest.")}</p>
         <OptionList<UncId> multi label={tt("Uncertainties", "Unsicherheiten")} options={UNCERTAINTIES.map((w) => ({ id: w.id, label: w.label }))} value={l1.unc} onChange={toggleUnc} />
         <div className="flex flex-wrap items-center gap-3">
           <button type="button" onClick={() => patch((s) => ({ checks: s.checks + 1, uncResult: uncHolds(s.unc) }))} className="btn-ghost btn-sm">
@@ -214,22 +247,13 @@ export function Block22() {
           </button>
           {l1.uncResult && (
             <span role="status" className="text-caption text-ink">
-              {l1.uncResult.chosen === 0 ? tt("Nothing chosen yet.", "Noch nichts gewählt.") : tt(`${l1.uncResult.holds} of ${l1.uncResult.chosen} chosen are real uncertainties. The others are beliefs about loyalty programmes that Materi A1, A3 and A6 show to be wrong.`, `${l1.uncResult.holds} von ${l1.uncResult.chosen} gewählten sind echte Unsicherheiten. Die anderen sind Annahmen über Treueprogramme, die Materi A1, A3 und A6 widerlegen.`)}
+              {l1.uncResult.chosen === 0 ? tt("Nothing chosen yet.", "Noch nichts gewählt.") : tt(`${l1.uncResult.holds} of ${l1.uncResult.chosen} chosen are real uncertainties. The others are beliefs about gamification that Materi A1, A5 and A6 show to be wrong.`, `${l1.uncResult.holds} von ${l1.uncResult.chosen} gewählten sind echte Unsicherheiten. Die anderen sind Annahmen über Gamification, die Materi A1, A5 und A6 als falsch zeigen.`)}
             </span>
           )}
         </div>
         <AnswerKey block={uncKey()} />
       </div>
-      <TextBox
-        id={IDS.misread}
-        label={tt("Your three KPIs for ConnectIT", "Ihre drei KPIs für ConnectIT")}
-        help={tt(`Name three KPIs from the twelve metrics: at least one outcome and one driver (a guardrail may be the third). For each, say where the number comes from and a target. At least ${MIN_SENTENCE} characters.`, `Nennen Sie drei KPIs aus den zwölf Kennzahlen: mindestens ein Outcome und einen Treiber (eine Guardrail kann der dritte sein). Sagen Sie für jeden, woher die Zahl kommt, und ein Ziel. Mindestens ${MIN_SENTENCE} Zeichen.`)}
-        value={l1.misread}
-        onChange={(v) => patch({ misread: v })}
-        min={MIN_SENTENCE}
-        rows={4}
-      />
-      {mentor && <MentorGuide guide={misreadGuide()} />}
+      <BlockMissing block="2.2" route={1} />
     </AnswerBlock>
   );
 }
@@ -256,12 +280,13 @@ export function Block23() {
       id="block-2-3"
       title={tt("Block 2.3 · Design a fair A/B test", "Block 2.3 · Einen fairen A/B-Test entwerfen")}
       kind="OBJECTIVE + JUDGED"
+      core={false}
       minutes={BLOCK_MINUTES["2.3"]}
-      findIt={tt("Route 1 → Task 1 → the test card below, and the referral figures in Block 1.2. Answer on the test card.", "Route 1 → Task 1 → die Testkarte unten und die Empfehlungswerte in Block 1.2. Antworten Sie auf der Testkarte.")}
+      findIt={tt("Route 1 → Task 1 → the test card below. Answer on the test card.", "Route 1 → Task 1 → die Testkarte unten. Antworten Sie auf der Testkarte.")}
     >
       <MaterialRefs refs={["A6"]} />
       <p className="text-body text-ink">
-        <Gloss>{tt("The figures in Block 1.2 compare leads that customers chose to refer with leads from marketing, so they are not a fair test. Design the test that would let ConnectIT decide whether asking for referrals at the quarterly review works: what changes, who is compared, which KPI decides, and when the test is read. Write a hypothesis and a decision rule.", "Die Werte in Block 1.2 vergleichen Leads, die Kunden empfehlen wollten, mit Leads aus dem Marketing, sind also kein fairer Test. Entwerfen Sie den Test, mit dem ConnectIT entscheiden könnte, ob die Bitte um Empfehlungen im Quartalsreview wirkt: was sich ändert, wer verglichen wird, welcher KPI entscheidet und wann der Test gelesen wird. Schreiben Sie eine Hypothese und eine Entscheidungsregel.")}</Gloss>
+        <Gloss>{tt("Last year's set-up figures compare new customers who happened to see the bar or not, so they are not a fair test. Design the test that would let EngageIT decide whether a set-up bar works: what changes, who is compared, which KPI decides, and when the test is read. Write a hypothesis and a decision rule.", "Die Einrichtungs-Werte des letzten Jahres vergleichen Neukunden, die die Leiste zufällig sahen oder nicht, sind also kein fairer Test. Entwerfen Sie den Test, mit dem EngageIT entscheiden kann, ob eine Einrichtungsleiste wirkt: was sich ändert, wer verglichen wird, welcher KPI entscheidet und wann der Test gelesen wird. Schreiben Sie eine Hypothese und eine Entscheidungsregel.")}</Gloss>
       </p>
       <TextBox
         id={IDS.abPart("hyp")}
@@ -275,7 +300,20 @@ export function Block23() {
         clue={AB_CLUE_TEXT.hyp()}
         clueShown={l1.abClue}
         onShowClue={() => patch({ abClue: true })}
-      />
+      >
+        <WritingHelp
+          id="hyp-kit"
+          refs={[
+            { label: tt("The two groups of the test", "Die zwei Gruppen des Tests"), value: tt("new customers with the bar · new customers without it", "Neukunden mit der Leiste · Neukunden ohne sie"), target: "mat-A6" },
+            { label: tt("What a hypothesis names (Materi A6)", "Was eine Hypothese nennt (Materi A6)"), value: tt("one change · the KPI expected to move · a reason", "eine Änderung · der KPI, der sich bewegen soll · ein Grund"), target: "mat-A6" },
+          ]}
+          steps={[
+            tt("Say the one thing you change (“If we …”).", "Sagen Sie die eine Sache, die Sie ändern („Wenn wir …“)."),
+            tt("Say which KPI should move (“then … rises”).", "Sagen Sie, welcher KPI sich bewegen soll („dann steigt …“)."),
+            tt("Give the reason in customer terms (“because …”).", "Geben Sie den Grund in Kundenworten („weil …“)."),
+          ]}
+        />
+      </TextBox>
       <div className="grid gap-3 md:grid-cols-2">
         {AB_PARTS.map((k) => {
           const part = AB[k];
@@ -307,7 +345,20 @@ export function Block23() {
         clue={AB_CLUE_TEXT.rule()}
         clueShown={l1.abClue}
         onShowClue={() => patch({ abClue: true })}
-      />
+      >
+        <WritingHelp
+          id="rule-kit"
+          refs={[
+            { label: tt("What a decision rule names (Materi A6)", "Was eine Entscheidungsregel nennt (Materi A6)"), value: tt("a point to roll out · a band to keep testing · a point to stop", "ein Punkt zum Ausrollen · ein Band zum Weitertesten · ein Punkt zum Stoppen"), target: "mat-A6" },
+            { label: tt("The guardrails to keep (Materi A5)", "Die Guardrails, die bleiben müssen (Materi A5)"), value: tt("accounts that only collect points · customers who switch off prompts", "Konten, die nur Punkte sammeln · Kunden, die Hinweise abschalten"), target: "mat-A5" },
+          ]}
+          steps={[
+            tt("Write when you roll out: how far above the control group, and with how many finished set-ups per group.", "Schreiben Sie, wann Sie ausrollen: wie weit über der Kontrollgruppe, und mit wie vielen abgeschlossenen Einrichtungen pro Gruppe."),
+            tt("Write when you keep testing, and when you stop.", "Schreiben Sie, wann Sie weiter testen und wann Sie stoppen."),
+            tt("Name one guardrail that must hold.", "Nennen Sie eine Guardrail, die halten muss."),
+          ]}
+        />
+      </TextBox>
       <CheckBar onCheck={check} checkLabel={tt("Check my test card", "Meine Testkarte prüfen")} checks={l1.checks} />
       {l1.abChecked && (
         <Reading>
@@ -320,7 +371,9 @@ export function Block23() {
         </Reading>
       )}
       <AnswerKey block={abKey()} />
+      <ExampleAnswer id="ab-example" guide={abGuide()} />
       {mentor && <MentorGuide guide={abGuide()} />}
+      <BlockMissing block="2.3" route={1} />
     </AnswerBlock>
   );
 }
@@ -333,7 +386,6 @@ export function Block24() {
   const mentor = useStore((s) => s.mentorUnlocked);
   const chosen = l1.chosen;
   const cost = totalCost(chosen);
-  const cov = coverage(l1);
   const shown = l1.order.length === chosen.length && chosen.every((id) => l1.order.includes(id)) ? l1.order : chosen;
   const inv = orderInversions({ ...l1, order: shown });
   const toggle = (id: MeasureId) =>
@@ -341,7 +393,6 @@ export function Block24() {
       const next = s.chosen.includes(id) ? s.chosen.filter((x) => x !== id) : [...s.chosen, id];
       return { chosen: next, order: s.order.filter((x) => next.includes(x)), measureFlags: [] };
     });
-  const setAims = (id: MeasureId, aims: ProblemId[]) => patch((s) => ({ aims: { ...s.aims, [id]: aims }, measureFlags: s.measureFlags.filter((f) => f !== `${id}.aims`) }));
   const setScore = (k: "exp" | "fea" | "eff", id: MeasureId, v: Score) => patch((s) => ({ [k]: { ...s[k], [id]: v }, measureFlags: k === "exp" ? s.measureFlags.filter((f) => f !== `${id}.exp`) : s.measureFlags }) as Partial<typeof s>);
   const move = (id: MeasureId, d: -1 | 1) => {
     const list = [...shown];
@@ -355,25 +406,29 @@ export function Block24() {
     patch((s) => {
       const flags: string[] = [];
       for (const id of s.chosen) {
-        if (s.aims[id] !== undefined && !aimsHold(id, s.aims[id])) flags.push(`${id}.aims`);
         if (s.exp[id] && !expHolds(id, s.exp[id])) flags.push(`${id}.exp`);
       }
       return { checks: s.checks + 1, measureFlags: flags };
     });
-  const nA = l1.measureFlags.filter((f) => f.endsWith(".aims")).length;
   const nE = l1.measureFlags.filter((f) => f.endsWith(".exp")).length;
   return (
     <AnswerBlock
       id="block-2-4"
       title={tt("Block 2.4 · Choose three measures, score them, put them in order", "Block 2.4 · Drei Maßnahmen wählen, bewerten, in eine Reihenfolge bringen")}
       kind="OBJECTIVE + JUDGED"
+      core
       minutes={BLOCK_MINUTES["2.4"]}
-      findIt={tt(`Route 1 → Task 1 → “The limits” in the case above (${euro(BUDGET)}, ${MONTHS} months) and the nine measures below. Answer by choosing three and filling their cards.`, `Route 1 → Task 1 → „Die Grenzen“ im Fall oben (${euro(BUDGET)}, ${MONTHS} Monate) und die neun Maßnahmen unten. Antworten Sie, indem Sie drei wählen und ihre Karten ausfüllen.`)}
+      findIt={tt(`Route 1 → Task 1 → “The limits” in the case above (${euro(BUDGET)}, ${MONTHS} months) and the six measures below. Answer by choosing three and filling their cards.`, `Route 1 → Task 1 → „Die Grenzen“ im Fall oben (${euro(BUDGET)}, ${MONTHS} Monate) und die sechs Maßnahmen unten. Antworten Sie, indem Sie drei wählen und ihre Karten ausfüllen.`)}
     >
       <MaterialRefs refs={["A7"]} />
       <div id={IDS.measurePick} className="space-y-2">
         <p className="text-body text-ink">
-          <Gloss>{tt("Choose exactly three of the nine measures. Each says what it does, how its cost grows and when it is in use; it does not say which problem of the brief it answers. That is your job.", "Wählen Sie genau drei der neun Maßnahmen. Jede sagt, was sie tut, wie ihre Kosten wachsen und wann sie im Einsatz ist; sie sagt nicht, welches Problem des Auftrags sie beantwortet. Das ist Ihre Aufgabe.")}</Gloss>
+          <Gloss>{tt(`Choose exactly three of the six measures. Together they have to fit ${euro(BUDGET)} and ${MONTHS} months (${FRAME_WEEKS} weeks). Prices are Case assumptions: each is built from the parts printed on its card.`, `Wählen Sie genau drei der sechs Maßnahmen. Zusammen müssen sie in ${euro(BUDGET)} und ${MONTHS} Monate (${FRAME_WEEKS} Wochen) passen. Die Preise sind Fallannahmen: Jeder setzt sich aus den Teilen zusammen, die auf der Karte stehen.`)}</Gloss>
+        </p>
+        <p className="rounded-md border border-line bg-mist/40 px-3 py-2 text-caption text-ink">
+          <Gloss>
+            {tt("Which problem a measure answers is for you to see: choose it and watch the picture under the cards. “Connects to …” on a card decides its integration score (rule in the box below). Motivation and sustainability are your judgement.", "Welches Problem eine Maßnahme beantwortet, sehen Sie selbst: Wählen Sie sie und beobachten Sie das Bild unter den Karten. „Verbunden mit …“ auf einer Karte bestimmt ihren Wert für die Integration (Regel im Kasten unten). Motivation und Nachhaltigkeit sind Ihr Urteil.")}
+          </Gloss>
         </p>
         <OptionList<MeasureId>
           multi
@@ -382,7 +437,16 @@ export function Block24() {
           onChange={toggle}
           disabledIds={chosen.length >= CHOOSE ? MEASURES.map((m) => m.id) : []}
           onDisabledClick={() => scrollToAndFlash(IDS.measurePick, "warn")}
-          options={MEASURES.map((m) => ({ id: m.id, label: `${m.name} · ${euro(m.cost)}`, sub: `${m.what} ${m.basis}` }))}
+          options={MEASURES.map((m) => ({
+            id: m.id,
+            label: tt(`${m.name} · ${euro(m.cost)} · ${m.weeks === 1 ? "1 week" : `${m.weeks} weeks`}`, `${m.name} · ${euro(m.cost)} · ${m.weeks === 1 ? "1 Woche" : `${m.weeks} Wochen`}`),
+            tag: MEASURE_AREA_LABEL[m.area],
+            sub: `${m.what}
+${tt("A scene: ", "Eine Szene: ")}${m.scene}
+${tt("Who does what: ", "Wer was tut: ")}${m.who}
+${m.basis}
+${tt("The price: ", "Der Preis: ")}${euro(m.cost)} = ${m.costParts.map((c) => `${euro(c.amount)} ${c.label}`).join(" + ")}. ${tt(`In use after ${m.weeks} ${m.weeks === 1 ? "week" : "weeks"}.`, `In Betrieb nach ${m.weeks} ${m.weeks === 1 ? "Woche" : "Wochen"}.`)}`,
+          }))}
         />
         <p role="status" className="text-caption text-ash">
           {tt(`${chosen.length} of ${CHOOSE} chosen.`, `${chosen.length} von ${CHOOSE} gewählt.`)}
@@ -390,97 +454,93 @@ export function Block24() {
         </p>
         <RevealHint id="aims-help" label={tt("Show the test questions", "Testfragen zeigen")} title={tt("How to match and score a measure · taught in Materi A7", "Wie man eine Maßnahme zuordnet und bewertet · aus Materi A7")}>
           <div className="space-y-2 text-caption text-ink">
-            <p>{tt("Which problem of the brief does it answer? “Low customer retention” is answered by what gives customers a reason to stay; “expensive new customer acquisition” by what brings new customers more cheaply, for example through existing ones; “potential of existing customers unused” by what makes existing customers use more, meet peers or refer. A measure can answer none.", "Welches Problem des Auftrags beantwortet sie? „Geringe Kundenbindung“ beantwortet, was Kunden einen Grund zum Bleiben gibt; „teure Neukundengewinnung“, was Neukunden günstiger bringt, etwa über Bestandskunden; „Potenzial der Bestandskunden ungenutzt“, was Bestandskunden mehr nutzen, andere treffen oder empfehlen lässt. Eine Maßnahme kann keines beantworten.")}</p>
+            <p>{tt("Which problem of the brief does it answer? “Low use of the platform” is answered by what carries customers to features they want; “mediocre retention” by what gives customers a reason to stay and to bring others; “measures not integrated” by what joins membership, referral and the customer profile. A measure can answer none: a prize for a click answers no problem.", "Welches Problem des Auftrags beantwortet sie? „Geringe Nutzung der Plattform“ beantwortet, was Kunden zu Funktionen trägt, die sie wollen; „mittelmäßige Kundenbindung“, was Kunden einen Grund gibt, zu bleiben und andere mitzubringen; „Maßnahmen nicht integriert“, was Mitgliedschaft, Empfehlung und Kundenprofil verbindet. Eine Maßnahme kann keines beantworten: Ein Preis für einen Klick beantwortet kein Problem.")}</p>
             <p>{EXPLAIN_RULE.v}</p>
             <MaterialRefs refs={["A7"]} lead={tt("Taught in", "Gelehrt in")} />
           </div>
         </RevealHint>
       </div>
+      <PlanPicture l1={l1} />
       {chosen.length > 0 && (
         <div className="space-y-3">
-          <BudgetBar items={chosen.map((id) => ({ id, short: MEASURE_BY_ID[id].name.split(" ")[0], cost: MEASURE_BY_ID[id].cost }))} budget={BUDGET} title={tt(`Chosen measures against the ${euro(BUDGET)} budget`, `Gewählte Maßnahmen gegen das Budget von ${euro(BUDGET)}`)} />
+          <BudgetBar items={chosen.map((id) => ({ id, short: MEASURE_BY_ID[id].short, cost: MEASURE_BY_ID[id].cost }))} budget={BUDGET} title={tt(`Chosen measures against the ${euro(BUDGET)} budget`, `Gewählte Maßnahmen gegen das Budget von ${euro(BUDGET)}`)} />
           <p className="text-caption text-ash">
             {tt(`${chosen.length} measure${chosen.length === 1 ? "" : "s"} cost ${euro(cost)} of ${euro(BUDGET)}.`, `${chosen.length} ${chosen.length === 1 ? "Maßnahme kostet" : "Maßnahmen kosten"} ${euro(cost)} von ${euro(BUDGET)}.`)}
             {cost > BUDGET ? tt(` That is ${euro(cost - BUDGET)} over: leave out the lowest score.`, ` Das sind ${euro(cost - BUDGET)} zu viel: Lassen Sie den niedrigsten Wert weg.`) : tt(` ${euro(BUDGET - cost)} is left.`, ` ${euro(BUDGET - cost)} bleiben übrig.`)}
           </p>
         </div>
       )}
+      {chosen.length > 0 && (
+        <div className="space-y-1 rounded-md border border-line bg-mist/40 px-3 py-2 text-caption text-ink">
+          <p className="smallcaps">{tt("How to score (taught in Materi A7)", "So bewerten Sie (gelehrt in Materi A7)")}</p>
+          <p><strong>{tt("Integration.", "Integration.")}</strong> <Gloss>{EXPLAIN_RULE.v}</Gloss></p>
+          <p><strong>{tt("Motivation.", "Motivation.")}</strong> <Gloss>{EFFECT_ANCHOR.v}</Gloss></p>
+          <p><strong>{tt("Sustainability.", "Nachhaltigkeit.")}</strong> <Gloss>{SCALE_ANCHOR.v}</Gloss></p>
+        </div>
+      )}
       {chosen.map((id) => {
         const m = MEASURE_BY_ID[id];
-        const aims = l1.aims[id];
-        const aF = l1.measureFlags.includes(`${id}.aims`);
         const eF = l1.measureFlags.includes(`${id}.exp`);
         return (
-          <div key={id} id={IDS.measure(id)} className={clsx("space-y-3 rounded-lg border border-line bg-paper p-3.5", (aF || eF) && "is-flagged")}>
+          <div key={id} id={IDS.measure(id)} className={clsx("space-y-3 rounded-lg border border-line bg-paper p-3.5", eF && "is-flagged")}>
             <p className="font-semibold text-ink">
-              {m.name} <span className="font-normal text-ash">· {euro(m.cost)} · {EVIDENCE_LABEL[m.evidence]}</span>
+              {m.name} <span className="font-normal text-ash">· {euro(m.cost)} · {MEASURE_AREA_LABEL[m.area]} · {EVIDENCE_LABEL[m.evidence]} ({m.weeks} {tt("weeks", "Wochen")})</span>
             </p>
-            <div>
-              <p className="smallcaps">{tt("Which problems of the brief does it answer? (choose the ones it really answers, or none)", "Welche Probleme des Auftrags beantwortet sie? (wählen Sie die, die sie wirklich beantwortet, oder keines)")}</p>
-              <div className="mt-1 flex flex-wrap gap-2">
-                {PROBLEM_IDS.map((f) => {
-                  const on = aims?.includes(f) ?? false;
-                  return (
-                    <button key={f} type="button" aria-pressed={on} onClick={() => setAims(id, on ? (aims ?? []).filter((x) => x !== f) : [...(aims ?? []), f])} className={clsx("btn btn-sm min-h-[40px] border", on ? "border-accent bg-accentSoft text-ink" : "border-line bg-paper text-ash hover:border-ash")}>
-                      {on ? "☑ " : "☐ "}
-                      {PROBLEM_LABEL[f]}
-                    </button>
-                  );
-                })}
-                <button type="button" aria-pressed={aims !== undefined && aims.length === 0} onClick={() => setAims(id, [])} className={clsx("btn btn-sm min-h-[40px] border", aims !== undefined && aims.length === 0 ? "border-accent bg-accentSoft text-ink" : "border-line bg-paper text-ash hover:border-ash")}>
-                  {tt("None of the three", "Keines der drei")}
-                </button>
-              </div>
-              {aF && (
-                <p className="mt-1 text-caption text-ink">
-                  <span className="smallcaps mr-1 text-accent">{tt("Clue", "Hinweis")}</span>
-                  {tt("Read what this measure does: does it give customers a reason to stay, bring new customers more cheaply, or make existing customers use more or refer? Name only what it really does.", "Lesen Sie, was diese Maßnahme tut: Gibt sie Kunden einen Grund zu bleiben, bringt sie Neukunden günstiger, oder lässt sie Bestandskunden mehr nutzen oder empfehlen? Nennen Sie nur, was sie wirklich tut.")}
-                </p>
-              )}
-            </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <div>
-                <p className="smallcaps">{tt("Retention effect", "Bindungswirkung")}</p>
-                <ScorePick label={tt(`Retention effect of ${m.name}`, `Bindungswirkung von ${m.name}`)} value={l1.eff[id] || 0} onChange={(v) => setScore("eff", id, v)} />
+                <p className="smallcaps">{tt("Integration (from what it connects to)", "Integration (aus dem, womit sie verbunden ist)")}</p>
+                <ScorePick label={tt(`Integration of ${m.name}`, `Integration von ${m.name}`)} value={l1.exp[id] || 0} onChange={(v) => setScore("exp", id, v)} flagged={eF} />
+                {eF && <p className="mt-1 text-micro normal-case tracking-normal text-ink">{tt(`It is ${EVIDENCE_LABEL[m.evidence]}. Read that against the rule in Materi A7.`, `Sie ist ${EVIDENCE_LABEL[m.evidence]}. Lesen Sie das gegen die Regel in Materi A7.`)}</p>}
               </div>
               <div>
-                <p className="smallcaps">{tt("Scalability (from how the cost grows)", "Skalierbarkeit (daraus, wie die Kosten wachsen)")}</p>
-                <ScorePick label={tt(`Scalability of ${m.name}`, `Skalierbarkeit von ${m.name}`)} value={l1.exp[id] || 0} onChange={(v) => setScore("exp", id, v)} flagged={eF} />
-                {eF && <p className="mt-1 text-micro normal-case tracking-normal text-ink">{tt(`With it, ${EVIDENCE_LABEL[m.evidence]}. Read that against the rule in Materi A7.`, `Damit gilt: ${EVIDENCE_LABEL[m.evidence]}. Lesen Sie das gegen die Regel in Materi A7.`)}</p>}
+                <p className="smallcaps">{tt("Motivation", "Motivation")}</p>
+                <ScorePick label={tt(`Motivation of ${m.name}`, `Motivation von ${m.name}`)} value={l1.eff[id] || 0} onChange={(v) => setScore("eff", id, v)} />
               </div>
               <div>
-                <p className="smallcaps">{tt("Economic viability", "Wirtschaftlichkeit")}</p>
-                <ScorePick label={tt(`Economic viability of ${m.name}`, `Wirtschaftlichkeit von ${m.name}`)} value={l1.fea[id] || 0} onChange={(v) => setScore("fea", id, v)} />
+                <p className="smallcaps">{tt("Sustainability", "Nachhaltigkeit")}</p>
+                <ScorePick label={tt(`Sustainability of ${m.name}`, `Nachhaltigkeit von ${m.name}`)} value={l1.fea[id] || 0} onChange={(v) => setScore("fea", id, v)} />
               </div>
             </div>
             <p className="tnum text-caption text-ink" aria-live="polite">
               {tt("Score: ", "Wert: ")}
-              {measureScored(l1, id) ? `${l1.eff[id]} × ${l1.exp[id]} × ${l1.fea[id]} = ` : tt("fill all three scores · ", "alle drei Werte ausfüllen · ")}
+              {measureScored(l1, id) ? `${l1.exp[id]} × ${l1.eff[id]} × ${l1.fea[id]} = ` : tt("fill all three scores · ", "alle drei Werte ausfüllen · ")}
               <strong>{measureScore(l1, id) || "—"}</strong>
             </p>
+            <TextBox
+              id={IDS.reason(id)}
+              label={tt(`Why these motivation and sustainability scores for “${m.name}”?`, `Warum diese Werte für Motivation und Nachhaltigkeit bei „${m.name}“?`)}
+              help={tt(`One or two sentences: whether customers would do it without the prize (motivation), and whether it still works after the novelty has worn off and what keeps it going (sustainability). Use a fact from the card. At least ${MIN_LINE} characters.`, `Ein oder zwei Sätze: ob Kunden es auch ohne den Preis tun würden (Motivation), und ob es noch wirkt, wenn die Neuheit verflogen ist, und was es am Laufen hält (Nachhaltigkeit). Nutzen Sie eine Tatsache von der Karte. Mindestens ${MIN_LINE} Zeichen.`)}
+              value={l1.reasons[id] ?? ""}
+              onChange={(v) => patch((s) => ({ reasons: { ...s.reasons, [id]: v } }))}
+              min={MIN_LINE}
+              rows={2}
+            >
+              <WritingHelp
+                id={`reason-kit-${id}`}
+                refs={[
+                  { label: tt("What it does", "Was sie tut"), value: m.what, target: IDS.measurePick },
+                  { label: tt("A scene and who does what", "Eine Szene und wer was tut"), value: `${m.scene} ${m.who}`, target: IDS.measurePick },
+                  { label: tt("Cost and weeks", "Kosten und Wochen"), value: `${euro(m.cost)} · ${m.weeks} ${tt("weeks", "Wochen")}`, target: IDS.measurePick },
+                  { label: tt("Your motivation and sustainability scores", "Ihre Werte für Motivation und Nachhaltigkeit"), value: `${l1.eff[id] || "—"} · ${l1.fea[id] || "—"}`, target: IDS.measure(id) },
+                ]}
+                steps={[
+                  tt("Motivation: say what the customer sees or does because of this measure, and whether they would do it without the prize (use the scene).", "Motivation: Sagen Sie, was der Kunde wegen dieser Maßnahme sieht oder tut, und ob er es auch ohne den Preis täte (nutzen Sie die Szene)."),
+                  tt("Sustainability: say whether it still works when the novelty is gone and what keeps it going (prizes, people or nothing), and how long it takes (the weeks on the card).", "Nachhaltigkeit: Sagen Sie, ob es noch wirkt, wenn die Neuheit verflogen ist, und was es am Laufen hält (Preise, Personal oder nichts), und wie lange es dauert (die Wochen auf der Karte)."),
+                ]}
+              />
+            </TextBox>
+            <ExampleAnswer id={`reason-example-${id}`} guide={reasonGuide(id)} />
+            {mentor && <MentorGuide guide={reasonGuide(id)} />}
             {mentor && <MentorGuide guide={scoreGuide(id)} />}
           </div>
         );
       })}
-      {chosen.length > 0 && (
-        <div className="space-y-2">
-          <p className="smallcaps">{tt("Which problems of the brief do your measures answer? (from what each really answers)", "Welche Probleme des Auftrags beantworten Ihre Maßnahmen? (aus dem, was jede wirklich beantwortet)")}</p>
-          <ul className="grid gap-1.5 sm:grid-cols-2">
-            {cov.map((c) => (
-              <li key={c.pattern} className={clsx("rounded-md border px-3 py-1.5 text-caption", c.covered ? "border-signal/40 bg-signalSoft text-ink" : "border-dashed border-ash bg-mist text-ink")}>
-                <span aria-hidden>{c.covered ? "● " : "○ "}</span>
-                <strong>{PROBLEM_LABEL[c.pattern]}</strong>: {c.covered ? tt("at least one chosen measure answers it", "mindestens eine gewählte Maßnahme beantwortet es") : tt("nothing you chose answers it", "nichts Gewähltes beantwortet es")}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
       <CheckBar onCheck={check} checkLabel={tt("Check my measures", "Meine Maßnahmen prüfen")} checks={l1.checks} />
       {chosen.length > 0 && l1.checks > 0 && (
         <Reading>
-          {l1.measureFlags.length > 0
-            ? tt(`${nA} measure${nA === 1 ? " names" : "s name"} problems it does not answer, and ${nE} scalability score${nE === 1 ? " does not" : "s do not"} follow how the cost grows. They are outlined above.`, `${nA} ${nA === 1 ? "Maßnahme nennt" : "Maßnahmen nennen"} Probleme, die sie nicht beantworten, und ${nE} ${nE === 1 ? "Wert für Skalierbarkeit folgt" : "Werte für Skalierbarkeit folgen"} nicht daraus, wie die Kosten wachsen. Sie sind oben markiert.`)
-            : tt("The problems you named and the scalability scores match the measures. Retention effect and economic viability are your judgement.", "Die genannten Probleme und die Werte für Skalierbarkeit passen zu den Maßnahmen. Bindungswirkung und Wirtschaftlichkeit sind Ihr Urteil.")}
+          {nE > 0
+            ? tt(`${nE} integration score${nE === 1 ? " does not" : "s do not"} follow what the card says the measure connects to. ${nE === 1 ? "It is" : "They are"} outlined above.`, `${nE} ${nE === 1 ? "Wert für Integration folgt" : "Werte für Integration folgen"} nicht dem, womit die Karte die Maßnahme verbunden nennt. ${nE === 1 ? "Er ist" : "Sie sind"} oben markiert.`)
+            : tt("The integration scores match what the cards say the measures connect to. Motivation and sustainability are your judgement.", "Die Werte für Integration passen zu dem, womit die Karten die Maßnahmen verbunden nennen. Motivation und Nachhaltigkeit sind Ihr Urteil.")}
           {cost > BUDGET ? tt(` The plan is ${euro(cost - BUDGET)} over the budget.`, ` Der Plan liegt ${euro(cost - BUDGET)} über dem Budget.`) : ""}
         </Reading>
       )}
@@ -519,7 +579,7 @@ export function Block24() {
           <TextBox
             id={IDS.why}
             label={tt("Why does your first priority go first?", "Warum kommt Ihre erste Priorität zuerst?")}
-            help={tt("Give the order, name the score or the figure from Block 1.2 that decides it, say what the plan costs against the budget, and what you left out. At least 60 characters.", "Nennen Sie die Reihenfolge, den Wert oder die Zahl aus Block 1.2, die sie entscheidet, was der Plan gegen das Budget kostet und was Sie weggelassen haben. Mindestens 60 Zeichen.")}
+            help={tt("Give the order, name the score or the problem of the brief that decides it, say what the plan costs against the budget, and what you left out (and whether it rewards real use or only a click). At least 60 characters.", "Nennen Sie die Reihenfolge, den Wert oder das Problem des Auftrags, das sie entscheidet, was der Plan gegen das Budget kostet und was Sie weggelassen haben (und ob es echte Nutzung oder nur einen Klick belohnt). Mindestens 60 Zeichen.")}
             value={l1.why}
             onChange={(v) => patch({ why: v })}
             min={60}
@@ -528,8 +588,8 @@ export function Block24() {
             <WritingHelp
               id="why-help"
               steps={[
-                tt("Say which measure goes first and why: its score, or what the others need from it.", "Sagen Sie, welche Maßnahme zuerst kommt und warum: ihr Wert, oder was die anderen von ihr brauchen."),
-                tt("Say what the three cost against the €90,000.", "Sagen Sie, was die drei gegen die 90.000 € kosten."),
+                tt("Say which measure goes first and why: its score, or the problem of the brief it answers.", "Sagen Sie, welche Maßnahme zuerst kommt und warum: ihr Wert, oder das Problem des Auftrags, das sie beantwortet."),
+                tt("Say what the three cost against the €150,000.", "Sagen Sie, was die drei gegen die 150.000 € kosten."),
                 tt("Say what you left out and why.", "Sagen Sie, was Sie weggelassen haben und warum."),
               ]}
               refs={[{ label: tt("Budget", "Budget"), value: euro(BUDGET), target: IDS.measurePick }]}
@@ -538,6 +598,7 @@ export function Block24() {
           {mentor && <MentorGuide guide={whyGuide()} />}
         </div>
       )}
+      <BlockMissing block="2.4" route={1} />
     </AnswerBlock>
   );
 }

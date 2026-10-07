@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { COURSE, ROUTES } from "@/lib/routes";
+import { CORE1_MINUTES, CORE2_MINUTES, CORE_CARD_MINUTES, COURSE, ROUTES } from "@/lib/routes";
 import { RouteCards } from "@/components/chrome/RouteCards";
 import { DAY_INTRO } from "@/data/dayIntro";
 import { Gloss } from "@/lib/glossify";
@@ -9,13 +9,14 @@ import { tt } from "@/lib/lang";
 
 export default function Home() {
   const total = ROUTES.reduce((s, r) => s + r.plan.reduce((t, p) => t + p.minutes, 0), 0);
+  const core = CORE1_MINUTES + CORE2_MINUTES + CORE_CARD_MINUTES[1] + CORE_CARD_MINUTES[2];
   return (
     <div className="space-y-8 pt-6">
       <header className="space-y-2">
         <p className="smallcaps text-accent">{COURSE.module}</p>
         <h1 className="text-display">{COURSE.site}</h1>
         <p className="max-w-prose text-body text-ash">
-          {tt(`${COURSE.title}. Two routes: on one case, see why ConnectIT's customers leave and why winning new ones costs so much, which membership benefits hold customers and what a referral is worth, then decide as Chief Customer Officer on a scalable membership and referral system. Study on your own, work a document from the case, and export it.`, `${COURSE.title}. Zwei Routen: an einem Fall sehen, warum die Kunden von ConnectIT gehen und warum neue so viel kosten, welche Mitgliedervorteile Kunden halten und was eine Empfehlung wert ist, dann als Chief Customer Officer über ein skalierbares Mitglieder- und Empfehlungssystem entscheiden. Selbst lernen, aus dem Fall ein Dokument erarbeiten und exportieren.`)}
+          {tt(`${COURSE.title}. Two routes: on one case, see which game ideas build real motivation at EngageIT and which only buy clicks, weigh measures by motivation, integration and sustainability, then decide as Chief Customer Officer how to build an integrated retention architecture. Study on your own, work a document from the case, and export it.`, `${COURSE.title}. Zwei Routen: an einem Fall sehen, welche Spielideen bei EngageIT echte Motivation aufbauen und welche nur Klicks kaufen, Maßnahmen nach Motivation, Integration und Nachhaltigkeit abwägen, dann als Chief Customer Officer entscheiden, wie eine integrierte Kundenbindungsarchitektur aufgebaut wird. Selbst lernen, aus dem Fall ein Dokument erarbeiten und exportieren.`)}
         </p>
       </header>
 
@@ -52,8 +53,8 @@ export default function Home() {
           </ol>
           <p className="text-caption text-ash">
             {tt(
-              `${total} minutes in total across both routes: about two hours of material and one and three-quarter hours of task, facilitator-led. You finish with two documents.`,
-              `Insgesamt ${total} Minuten über beide Routen: etwa zwei Stunden Material und eindreiviertel Stunden Aufgabe, moderiert. Sie schließen mit zwei Dokumenten ab.`,
+              `${total} minutes in total across both routes, facilitator-led. The core is much shorter: one block and one card per level, about ${core} minutes, so there is room for other tasks the same day. Everything else is folded and one click away. You finish with two documents.`,
+              `Insgesamt ${total} Minuten über beide Routen, moderiert. Der Kern ist viel kürzer: ein Block und eine Karte pro Level, etwa ${core} Minuten, sodass am selben Tag Raum für andere Aufgaben bleibt. Alles andere ist eingeklappt und einen Klick entfernt. Sie schließen mit zwei Dokumenten ab.`,
             )}
           </p>
         </div>
@@ -94,6 +95,7 @@ export default function Home() {
         </h2>
         <ol className="list-decimal space-y-1 pl-5 text-body">
           <li>{tt("Study, then task, then export: each route ends as one working document, not a quiz score. Route 1 merges Levels 1 and 2 on one case; Route 2 is Level 3.", "Lernen, dann Aufgabe, dann Export: Jede Route endet mit einem Arbeitsdokument, nicht mit einem Quiz-Ergebnis. Route 1 verbindet Level 1 und 2 an einem Fall; Route 2 ist Level 3.")}</li>
+          <li>{tt("Each level has one core block and one core card; the rest is optional, folded, and counts nowhere. Open it any time.", "Jedes Level hat einen Kernblock und eine Kernkarte; der Rest ist optional, eingeklappt und zählt nirgends. Öffnen Sie ihn jederzeit.")}</li>
           <li>{tt("Nothing is locked. Every section and route stays open, and a suggested order is only a suggestion.", "Nichts ist gesperrt. Jeder Abschnitt und jede Route bleibt offen, und eine empfohlene Reihenfolge ist nur eine Empfehlung.")}</li>
           <li>{tt("The app shows consequences, not verdicts. It marks something only when you press a Check button, and then it gives a question, not the answer.", "Die App zeigt Folgen, keine Urteile. Sie markiert etwas nur, wenn Sie eine Prüfen-Schaltfläche drücken, und dann gibt sie eine Frage, nicht die Antwort.")}</li>
           <li>{tt("EN | DE in the top bar switches the whole site to German. Common technical terms stay in English; every explanation is in German.", "EN | DE oben in der Leiste schaltet die ganze Seite auf Deutsch. Gängige Fachbegriffe bleiben Englisch; jede Erklärung ist auf Deutsch.")}</li>

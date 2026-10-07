@@ -3,7 +3,8 @@
 import clsx from "clsx";
 import { AnswerBlock } from "@/components/ui/AnswerBlock";
 import { AnswerKey } from "@/components/ui/AnswerKey";
-import { BudgetBar } from "@/components/ui/BudgetBar";
+import { BlockMissing } from "@/components/ui/BlockMissing";
+import { ExampleAnswer } from "@/components/ui/ExampleAnswer";
 import { CheckBar, OptionList, Reading, ScorePick, TextBox } from "@/components/ui/Inputs";
 import { MaterialRefs } from "@/components/ui/MaterialRefs";
 import { MentorGuide } from "@/components/ui/MentorGuide";
@@ -11,11 +12,6 @@ import { RevealHint } from "@/components/ui/RevealHint";
 import { WritingHelp } from "@/components/ui/WritingHelp";
 import {
   ACTION_LABEL,
-  ARCH,
-  ARCH_BY_ID,
-  ARCH_IDS,
-  BASELINE_ITEM,
-  BOARD_CHALLENGE,
   CADENCE_LABEL,
   CASES_MIN,
   COMPS,
@@ -25,38 +21,30 @@ import {
   COST_SHAPE_LABEL,
   CRITERIA,
   CRIT_IDS,
-  DECISIONS,
-  KPIS,
   LIFT_ACT,
   LIFT_WATCH,
   LOGIC_OWNERS,
   LOGIC_OWNER_LABEL,
-  OWNERS,
-  OWNER_IDS,
   PRINCIPLES,
   PRINCIPLE_IDS,
   QUALITY_BAR,
-  R2_BASELINE_NOTE,
-  R2_BUDGET,
-  R2_MONTHS,
   SITUATIONS,
   SOURCES,
   USE_LABEL,
 } from "@/data/route2";
-import type { Action, ArchId, CompId, Criterion, DecisionId, KpiId, LogicOwner, OwnerId, PrincipleId, SitId, SourceId, Use } from "@/data/route2";
-import { archCost, archLeft, archOver, blackBoxFunded, compTotal, earlyCount, funded, logicHolds, principlesHold, ratingFlags, seqRules, sourceHolds, tripFlagsOf } from "@/lib/checks";
+import type { Action, CompId, Criterion, LogicOwner, PrincipleId, SitId, SourceId, Use } from "@/data/route2";
+import { compTotal, earlyCount, logicHolds, principlesHold, ratingFlags, sourceHolds } from "@/lib/checks";
 import { scrollToAndFlash } from "@/lib/flash";
 import { Gloss } from "@/lib/glossify";
 import { euro, num, pct, tt } from "@/lib/lang";
 import { IDS } from "@/lib/missing";
-import { assumptionGuide, challengeGuide, greatestGuide, postponedGuide, principleTextGuide, triggerGuide } from "@/lib/mentorGuide";
-import { compKey, decisionKey, logicKey, ownerKey, principleKey, sourceKey, tripKey } from "@/lib/answerKey";
+import { greatestGuide, principleTextGuide } from "@/lib/mentorGuide";
+import { compKey, logicKey, principleKey, sourceKey } from "@/lib/answerKey";
 import { MIN_LINE } from "@/lib/progress";
 import { BLOCK_MINUTES } from "@/lib/routes";
 import { useStore } from "@/store/useStore";
 import type { Score } from "@/store/useStore";
 
-const MONTHS_LIST = Array.from({ length: R2_MONTHS }, (_, i) => i + 1);
 const PRINCIPLE_CHOOSE = 3;
 const USES: Use[] = ["core", "later", "leave"];
 const ACTIONS: Action[] = ["intervene", "watch", "none"];
@@ -77,15 +65,15 @@ export function Block31() {
   return (
     <AnswerBlock
       id="block-3-1"
-      title={tt("Block 3.1 · The target vision of a membership and referral system", "Block 3.1 · Das Zielbild eines Mitglieder- und Empfehlungssystems")}
+      title={tt("Block 3.1 · The target vision of an integrated retention system", "Block 3.1 · Das Zielbild eines integrierten Kundenbindungssystems")}
       kind="OBJECTIVE + JUDGED"
       minutes={BLOCK_MINUTES["3.1"]}
-      findIt={tt("Route 2 → Task 2 → the six principles below. Answer by choosing three and saying what each means for ConnectIT.", "Route 2 → Task 2 → die sechs Prinzipien unten. Antworten Sie, indem Sie drei wählen und sagen, was jedes für ConnectIT bedeutet.")}
+      findIt={tt("Route 2 → Task 2 → the six principles below. Answer by choosing three and saying what each means for EngageIT.", "Route 2 → Task 2 → die sechs Prinzipien unten. Antworten Sie, indem Sie drei wählen und sagen, was jedes für EngageIT bedeutet.")}
     >
       <MaterialRefs refs={["B1"]} />
       <div id={IDS.principlePick} className={clsx("space-y-2 rounded-lg p-1", r2.principleFlagged && "is-flagged")}>
         <p className="text-body text-ink">
-          <Gloss>{tt("Choose the three principles your retention system will stand on. Test each against Materi B1: does it give customers a reason to stay and to refer, and does it avoid wrong incentives?", "Wählen Sie die drei Prinzipien, auf denen Ihr Bindungssystem stehen wird. Prüfen Sie jedes an Materi B1: Gibt es Kunden einen Grund zu bleiben und zu empfehlen, und vermeidet es falsche Anreize?")}</Gloss>
+          <Gloss>{tt("Choose the three principles your integrated system will stand on. Test each against Materi B1: does it join the measures around the customer, rather than add one more game element that knows nothing about the others?", "Wählen Sie die drei Prinzipien, auf denen Ihr integriertes System stehen wird. Prüfen Sie jedes an Materi B1: Verbindet es die Maßnahmen um den Kunden, statt ein weiteres Spielelement hinzuzufügen, das nichts über die anderen weiß?")}</Gloss>
         </p>
         <OptionList<PrincipleId>
           multi
@@ -104,9 +92,9 @@ export function Block31() {
         {r2.principleFlagged && (
           <p className="text-caption text-ink">
             <span className="smallcaps mr-1 text-accent">{tt("Check", "Prüfung")}</span>
-            {tt(`${[h.defs, h.rules].filter(Boolean).length} of the 2 foundations a membership and referral system needs are among your three. `, `${[h.defs, h.rules].filter(Boolean).length} der 2 Fundamente, die ein Mitglieder- und Empfehlungssystem braucht, sind unter Ihren dreien. `)}
+            {tt(`${[h.defs, h.rules].filter(Boolean).length} of the 2 foundations an integrated system needs are among your three. `, `${[h.defs, h.rules].filter(Boolean).length} der 2 Fundamente, die ein integriertes System braucht, sind unter Ihren dreien. `)}
             {r2.principleClue ? (
-              tt("Which principle gives members a reason to stay that a competitor's price cannot copy, and which keeps referrals honest?", "Welches Prinzip gibt Mitgliedern einen Grund zu bleiben, den der Preis eines Wettbewerbers nicht kopieren kann, und welches hält Empfehlungen ehrlich?")
+              tt("Which principle lets every game element know the same customer, and which makes sure every reward rests on a real action written in one rulebook?", "Welches Prinzip lässt jedes Spielelement denselben Kunden kennen, und welches stellt sicher, dass jede Belohnung auf einer echten Handlung in einem Regelwerk beruht?")
             ) : (
               <button type="button" onClick={() => patch({ principleClue: true })} className="btn-ghost btn-sm border-gold">
                 {tt("Show clue", "Hinweis zeigen")}
@@ -119,18 +107,32 @@ export function Block31() {
         <div key={c} className="space-y-1.5">
           <TextBox
             id={IDS.principle(c)}
-            label={tt(`${PRINCIPLES[c].name}: what it means at ConnectIT`, `${PRINCIPLES[c].name}: was es bei ConnectIT bedeutet`)}
-            help={tt(`One or two sentences: what changes for ConnectIT's customers or teams, and which problem of the brief it answers. At least ${MIN_LINE} characters.`, `Ein oder zwei Sätze: was sich für Kunden oder Teams von ConnectIT ändert, und welches Problem des Auftrags es beantwortet. Mindestens ${MIN_LINE} Zeichen.`)}
+            label={tt(`${PRINCIPLES[c].name}: what it means at EngageIT`, `${PRINCIPLES[c].name}: was es bei EngageIT bedeutet`)}
+            help={tt(`One or two sentences: what changes for EngageIT's teams or customers, and which problem or risk it answers. At least ${MIN_LINE} characters.`, `Ein oder zwei Sätze: was sich für Teams oder Kunden von EngageIT ändert, und welches Problem oder Risiko es beantwortet. Mindestens ${MIN_LINE} Zeichen.`)}
             value={r2.principleText[c] ?? ""}
             onChange={(v) => patch((s) => ({ principleText: { ...s.principleText, [c]: v } }))}
             min={MIN_LINE}
             rows={2}
-          />
+          >
+            <WritingHelp
+              id={`principle-kit-${c}`}
+              refs={[
+                { label: tt("The principle as printed", "Das Prinzip, wie gedruckt"), value: PRINCIPLES[c].means, target: IDS.principlePick },
+                { label: tt("The problems the brief names", "Die Probleme, die der Auftrag nennt"), value: tt("single measures · retention not managed as a system · wrong incentives", "einzelne Maßnahmen · Kundenbindung nicht als System gesteuert · falsche Anreize"), target: "task-2" },
+              ]}
+              steps={[
+                tt("Say what changes for a team or a customer once everyone works by this principle.", "Sagen Sie, was sich für ein Team oder einen Kunden ändert, wenn alle nach diesem Prinzip arbeiten."),
+                tt("Name the problem or risk it answers.", "Nennen Sie das Problem oder Risiko, das es beantwortet."),
+              ]}
+            />
+          </TextBox>
+          <ExampleAnswer id={`principle-example-${c}`} guide={principleTextGuide(c)} />
           {mentor && <MentorGuide guide={principleTextGuide(c)} />}
         </div>
       ))}
       <CheckBar onCheck={check} checkLabel={tt("Check my principles", "Meine Prinzipien prüfen")} checks={r2.checks} />
       <AnswerKey block={principleKey()} />
+      <BlockMissing block="3.1" route={2} />
     </AnswerBlock>
   );
 }
@@ -145,20 +147,20 @@ export function Block32() {
   return (
     <AnswerBlock
       id="block-3-2"
-      title={tt("Block 3.2 · Definition of central added values for customers", "Block 3.2 · Festlegung zentraler Mehrwerte für Kunden")}
+      title={tt("Block 3.2 · Definition of central motivation moments", "Block 3.2 · Festlegung zentraler Motivationsmomente")}
       kind="OBJECTIVE"
       minutes={BLOCK_MINUTES["3.2"]}
-      findIt={tt("Route 2 → Task 2 → the eight added values below, each with the customer decision it supports and how many pilot members used it. Answer by choosing a decision for each.", "Route 2 → Task 2 → die acht Mehrwerte unten, jeder mit der Kundenentscheidung, die er unterstützt, und wie viele Pilotmitglieder ihn genutzt haben. Antworten Sie, indem Sie für jeden eine Entscheidung wählen.")}
+      findIt={tt("Route 2 → Task 2 → the eight moments below, each with what the customer wants to get done in it and how much of its data reaches the shared profile today. Answer by choosing a decision for each.", "Route 2 → Task 2 → die acht Momente unten, jeder mit dem, was der Kunde darin erledigen will, und wie viel seiner Daten heute das gemeinsame Profil erreicht. Antworten Sie, indem Sie für jeden eine Entscheidung wählen.")}
     >
       <MaterialRefs refs={["B2"]} />
       <p className="text-body text-ink">
-        <Gloss>{tt("For each added value decide: central and offer now, central but prove it first, or not central. Start from the customer decision it supports, not from how nice it sounds.", "Entscheiden Sie für jeden Mehrwert: zentral und jetzt anbieten, zentral, aber zuerst belegen, oder nicht zentral. Gehen Sie von der Kundenentscheidung aus, die er unterstützt, nicht davon, wie schön er klingt.")}</Gloss>
+        <Gloss>{tt("For each moment decide: central and integrate now, central but connect the data first, or not central. Start from what the customer wants to get done in it, not from how many customers pass through.", "Entscheiden Sie für jeden Moment: zentral und jetzt integrieren, zentral, aber zuerst die Daten verbinden, oder nicht zentral. Gehen Sie von dem aus, was der Kunde darin erledigen will, nicht davon, wie viele Kunden dort vorbeikommen.")}</Gloss>
       </p>
       <RevealHint id="source-tests" label={tt("Show the test questions", "Testfragen zeigen")} title={tt("The rule · taught in Materi B2", "Die Regel · aus Materi B2")}>
         <ul className="space-y-1.5 text-caption text-ink">
-          <li>{tt("Does it support a customer decision (switch, choose, justify the price, trust for the long term)? If not, not central.", "Unterstützt er eine Kundenentscheidung (wechseln, wählen, den Preis rechtfertigen, langfristig vertrauen)? Wenn nicht, nicht zentral.")}</li>
-          <li>{tt(`Did at least ${QUALITY_BAR}% of the pilot members use it? Then offer it now; if not, prove it first.`, `Haben mindestens ${QUALITY_BAR} % der Pilotmitglieder ihn genutzt? Dann jetzt anbieten; wenn nicht, zuerst belegen.`)}</li>
-          <li>{tt("How often it is used is not enough on its own: the member badge is used by everyone but helps no customer decide; the benchmark report would help a decision but needs proof first.", "Wie oft er genutzt wird, reicht allein nicht: Das Mitgliedsabzeichen nutzen alle, aber es hilft keinem Kunden zu entscheiden; der Benchmark-Bericht hülfe einer Entscheidung, braucht aber zuerst Belege.")}</li>
+          <li>{tt("Does the customer want to get something done in it (get going, keep learning, use more, renew and recommend)? If not, a game element would only buy clicks: not central.", "Will der Kunde darin etwas erledigen (loslegen, weiterlernen, mehr nutzen, verlängern und empfehlen)? Wenn nicht, würde ein Spielelement nur Klicks kaufen: nicht zentral.")}</li>
+          <li>{tt(`Does at least ${QUALITY_BAR}% of its data reach the shared profile? Then integrate now; if not, connect the data first.`, `Erreichen mindestens ${QUALITY_BAR} % seiner Daten das gemeinsame Profil? Dann jetzt integrieren; wenn nicht, zuerst die Daten verbinden.`)}</li>
+          <li>{tt("Volume and cost are not the test: a newsletter nobody wants to open is not central; a renewal talk is.", "Menge und Kosten sind nicht der Test: Ein Newsletter, den niemand öffnen will, ist nicht zentral; ein Verlängerungsgespräch schon.")}</li>
           <li>
             <MaterialRefs refs={["B2"]} lead={tt("Taught in", "Gelehrt in")} />
           </li>
@@ -168,22 +170,23 @@ export function Block32() {
         <div key={s.id} id={IDS.source(s.id)} className="space-y-2 rounded-lg border border-line bg-paper p-3">
           <p className="font-semibold text-ink">{s.name}</p>
           <p className="text-caption text-ash">
-            <span className="font-semibold text-ink">{tt("Customer decision: ", "Entscheidung des Kunden: ")}</span>
-            {s.decision ?? tt("none", "keine")} · <span className="font-semibold text-ink">{tt("Used in the pilot: ", "Im Pilot genutzt: ")}</span>
-            {pct(s.complete)} · <span className="font-semibold text-ink">{tt("Cost to prepare: ", "Kosten der Vorbereitung: ")}</span>
+            <span className="font-semibold text-ink">{tt("What the customer wants to get done: ", "Was der Kunde erledigen will: ")}</span>
+            {s.decision ?? tt("none", "keine")} · <span className="font-semibold text-ink">{tt("Data connected: ", "Daten verbunden: ")}</span>
+            {pct(s.complete)} · <span className="font-semibold text-ink">{tt("Cost to connect: ", "Kosten der Anbindung: ")}</span>
             {euro(s.cost)}
           </p>
           <OptionList<Use> label={tt(`Decision on ${s.name}`, `Entscheidung zu ${s.name}`)} value={r2.sources[s.id] ?? null} onChange={(v) => setUse(s.id, v)} options={USES.map((u) => ({ id: u, label: USE_LABEL[u] }))} />
         </div>
       ))}
-      <CheckBar onCheck={check} checkLabel={tt("Check my added values", "Meine Mehrwerte prüfen")} checks={r2.checks} clueShown={r2.sourceClue} onClue={() => patch({ sourceClue: true })} />
+      <CheckBar onCheck={check} checkLabel={tt("Check my moments", "Meine Momente prüfen")} checks={r2.checks} clueShown={r2.sourceClue} onClue={() => patch({ sourceClue: true })} />
       {r2.sourceResult && (
         <Reading>
-          {tt(`${r2.sourceResult.holds} of ${r2.sourceResult.total} added values are placed by the rule of Materi B2. A check never says which.`, `${r2.sourceResult.holds} von ${r2.sourceResult.total} Mehrwerten sind nach der Regel aus Materi B2 eingeordnet. Eine Prüfung sagt nie, welche.`)}
-          {r2.sourceClue ? tt(" Clue: first cover the “used in the pilot” figure and ask only whether the added value supports a customer decision; then look at the figure.", " Hinweis: Verdecken Sie zuerst die Zahl bei „Im Pilot genutzt“ und fragen Sie nur, ob der Mehrwert eine Kundenentscheidung unterstützt; schauen Sie dann auf die Zahl.") : ""}
+          {tt(`${r2.sourceResult.holds} of ${r2.sourceResult.total} moments are placed by the rule of Materi B2. A check never says which.`, `${r2.sourceResult.holds} von ${r2.sourceResult.total} Momenten sind nach der Regel aus Materi B2 eingeordnet. Eine Prüfung sagt nie, welche.`)}
+          {r2.sourceClue ? tt(" Clue: first cover the “data connected” figure and ask only whether the customer wants something done in the moment; then look at the figure.", " Hinweis: Verdecken Sie zuerst die Zahl bei „Daten verbunden“ und fragen Sie nur, ob der Kunde im Moment etwas erledigen will; schauen Sie dann auf die Zahl.") : ""}
         </Reading>
       )}
       <AnswerKey block={sourceKey()} />
+      <BlockMissing block="3.2" route={2} />
     </AnswerBlock>
   );
 }
@@ -204,7 +207,7 @@ export function Block33() {
   return (
     <AnswerBlock
       id="block-3-3"
-      title={tt("Block 3.3 · A KPI system for customer retention", "Block 3.3 · Ein KPI-System für Kundenbindung")}
+      title={tt("Block 3.3 · A KPI system for game elements", "Block 3.3 · Ein KPI-System für Spielelemente")}
       kind="OBJECTIVE + JUDGED"
       minutes={BLOCK_MINUTES["3.3"]}
       findIt={tt("Route 2 → Task 2 → the eight KPI candidates below, each with whether it is linked to value, how often it is counted, whom it covers and how it is collected. Answer by choosing three and rating them on the four tests of Materi B3.", "Route 2 → Task 2 → die acht KPI-Kandidaten unten, jeder damit, ob er mit dem Wert verbunden ist, wie oft er gezählt wird, wen er abdeckt und wie er erhoben wird. Antworten Sie, indem Sie drei wählen und nach den vier Tests aus Materi B3 bewerten.")}
@@ -276,7 +279,7 @@ export function Block33() {
           {r2.rateFlags.length > 0
             ? tt(`${r2.rateFlags.length} rating${r2.rateFlags.length === 1 ? " is" : "s are"} higher than the printed facts allow and ${r2.rateFlags.length === 1 ? "is" : "are"} outlined. `, `${r2.rateFlags.length} ${r2.rateFlags.length === 1 ? "Bewertung ist" : "Bewertungen sind"} höher, als die gedruckten Fakten erlauben, und markiert. `)
             : tt("No rating exceeds what the printed facts allow. ", "Keine Bewertung übersteigt, was die gedruckten Fakten erlauben. ")}
-          {tt(`${r2.compResult.early} of your ${r2.comps.length} KPIs show a change before the result is lost (every week or monthly); a management system needs most of them to (Materi B3).`, `${r2.compResult.early} Ihrer ${r2.comps.length} KPIs zeigen eine Veränderung, bevor das Ergebnis verloren ist (jede Woche oder monatlich); ein Managementsystem braucht die meisten davon so (Materi B3).`)}
+          {tt(`${r2.compResult.early} of your ${r2.comps.length} KPIs show a change before the result is lost (daily or monthly); a management system needs most of them to (Materi B3).`, `${r2.compResult.early} Ihrer ${r2.comps.length} KPIs zeigen eine Veränderung, bevor das Ergebnis verloren ist (täglich oder monatlich); ein Managementsystem braucht die meisten davon so (Materi B3).`)}
         </Reading>
       )}
       <AnswerKey block={compKey()} />
@@ -297,9 +300,23 @@ export function Block33() {
           onChange={(v) => patch({ greatestWhy: v })}
           min={40}
           rows={3}
-        />
+        >
+          <WritingHelp
+            id="greatest-kit"
+            refs={[
+              { label: tt("Your three KPIs", "Ihre drei KPIs"), value: r2.comps.map((id) => COMP_BY_ID[id].name).join(" · ") || tt("not chosen yet", "noch nicht gewählt"), target: IDS.compPick },
+              { label: tt("The four tests", "Die vier Tests"), value: CRITERIA.map((c) => c.name).join(" · "), target: IDS.compPick },
+            ]}
+            steps={[
+              tt("Name the one KPI and the tests it passes best (linked to value and early together).", "Nennen Sie den einen KPI und die Tests, die er am besten besteht (mit dem Wert verbunden und früh zugleich)."),
+              tt("Say which problem of the brief it answers.", "Sagen Sie, welches Problem des Auftrags er beantwortet."),
+            ]}
+          />
+        </TextBox>
+        <ExampleAnswer id="greatest-example" guide={greatestGuide()} />
         {mentor && <MentorGuide guide={greatestGuide()} />}
       </div>
+      <BlockMissing block="3.3" route={2} />
     </AnswerBlock>
   );
 }
@@ -314,18 +331,18 @@ export function Block34() {
   return (
     <AnswerBlock
       id="block-3-4"
-      title={tt("Block 3.4 · A scalable referral model, tested: roll out, keep testing or stop", "Block 3.4 · Ein skalierbares Empfehlungsmodell, getestet: ausrollen, weiter testen oder stoppen")}
+      title={tt("Block 3.4 · Game elements tested: roll out, keep testing or stop", "Block 3.4 · Spielelemente getestet: ausrollen, weiter testen oder stoppen")}
       kind="OBJECTIVE"
       minutes={BLOCK_MINUTES["3.4"]}
-      findIt={tt("Route 2 → Task 2 → the six referral and membership tests below, each with its uplift, its number of decisions and the extra revenue at stake. Answer with an action and an owner for each.", "Route 2 → Task 2 → die sechs Empfehlungs- und Mitgliedschaftstests unten, jeder mit Uplift, Zahl der Entscheidungen und dem zusätzlichen Umsatz, um den es geht. Antworten Sie mit einer Aktion und einem Owner für jeden.")}
+      findIt={tt("Route 2 → Task 2 → the six game-element tests below, each with its uplift, its number of conversions and the extra revenue at stake. Answer with an action and an owner for each.", "Route 2 → Task 2 → die sechs Tests von Spielelementen unten, jeder mit Uplift, Zahl der Conversions und dem zusätzlichen Umsatz, um den es geht. Antworten Sie mit einer Aktion und einem Owner für jeden.")}
     >
       <MaterialRefs refs={["B4"]} />
       <RevealHint id="logic-tests" label={tt("Show the test questions", "Testfragen zeigen")} title={tt("The rule · taught in Materi B4", "Die Regel · aus Materi B4")}>
         <ul className="space-y-1.5 text-caption text-ink">
-          <li>{tt(`Roll out: an uplift of ${LIFT_ACT}% or more and at least ${CASES_MIN} decisions in each group.`, `Ausrollen: ein Uplift von ${LIFT_ACT} % oder mehr und mindestens ${CASES_MIN} Entscheidungen in jeder Gruppe.`)}</li>
-          <li>{tt(`Keep testing: an uplift of ${LIFT_ACT}% or more on fewer than ${CASES_MIN} decisions, or an uplift between ${LIFT_WATCH}% and ${LIFT_ACT}%.`, `Weiter testen: ein Uplift von ${LIFT_ACT} % oder mehr bei weniger als ${CASES_MIN} Entscheidungen, oder ein Uplift zwischen ${LIFT_WATCH} % und ${LIFT_ACT} %.`)}</li>
+          <li>{tt(`Roll out: an uplift of ${LIFT_ACT}% or more and at least ${CASES_MIN} conversions in each group.`, `Ausrollen: ein Uplift von ${LIFT_ACT} % oder mehr und mindestens ${CASES_MIN} Conversions in jeder Gruppe.`)}</li>
+          <li>{tt(`Keep testing: an uplift of ${LIFT_ACT}% or more on fewer than ${CASES_MIN} conversions, or an uplift between ${LIFT_WATCH}% and ${LIFT_ACT}%.`, `Weiter testen: ein Uplift von ${LIFT_ACT} % oder mehr bei weniger als ${CASES_MIN} Conversions, oder ein Uplift zwischen ${LIFT_WATCH} % und ${LIFT_ACT} %.`)}</li>
           <li>{tt(`Stop: an uplift below ${LIFT_WATCH}%, or a negative one.`, `Stoppen: ein Uplift unter ${LIFT_WATCH} %, oder ein negativer.`)}</li>
-          <li>{tt("Who acts follows from what the test is about: what salespeople ask of new customers goes to sales, what members use or attend goes to Customer Success; keep testing belongs to customer operations; a stopped test has no owner.", "Wer handelt, folgt daraus, worum es im Test geht: Was Vertriebsleute von neuen Kunden erbitten, geht an den Vertrieb, was Mitglieder nutzen oder besuchen, an Customer Success; Weitertesten gehört Customer Operations; ein gestoppter Test hat keinen Owner.")}</li>
+          <li>{tt("Who acts follows from what the test is about: an element in the product goes to the product team, one that gives customers a service benefit goes to customer success; keep testing belongs to the data team; a stopped test has no owner.", "Wer handelt, folgt daraus, worum es im Test geht: Ein Element im Produkt geht an das Produktteam, eines, das Kunden einen Service-Vorteil gibt, an Customer Success; Weitertesten gehört dem Datenteam; ein gestoppter Test hat keinen Owner.")}</li>
           <li>
             <MaterialRefs refs={["B4"]} lead={tt("Taught in", "Gelehrt in")} />
           </li>
@@ -337,7 +354,7 @@ export function Block34() {
           <div key={s.id} id={IDS.logic(s.id)} className="space-y-3 rounded-lg border border-line bg-paper p-3.5">
             <p className="font-semibold text-ink">{s.signal}</p>
             <p className="tnum text-caption text-ash">
-              {tt(`Uplift ${s.lift > 0 ? "+" : s.lift < 0 ? "−" : ""}${num(Math.abs(s.lift))}% · ${s.cases} decisions (renewed or not, signed or not) in the smaller group · extra revenue a year if rolled out ${s.revenue < 0 ? "−" : ""}${euro(Math.abs(s.revenue))} · ${s.note}`, `Uplift ${s.lift > 0 ? "+" : s.lift < 0 ? "−" : ""}${num(Math.abs(s.lift))} % · ${s.cases} Entscheidungen (verlängert oder nicht, unterschrieben oder nicht) in der kleineren Gruppe · zusätzlicher Umsatz pro Jahr bei Rollout ${s.revenue < 0 ? "−" : ""}${euro(Math.abs(s.revenue))} · ${s.note}`)}
+              {tt(`Uplift ${s.lift > 0 ? "+" : s.lift < 0 ? "−" : ""}${num(Math.abs(s.lift))}% · ${s.cases} conversions in the smaller group · extra revenue a year if rolled out ${s.revenue < 0 ? "−" : ""}${euro(Math.abs(s.revenue))} · ${s.note}`, `Uplift ${s.lift > 0 ? "+" : s.lift < 0 ? "−" : ""}${num(Math.abs(s.lift))} % · ${s.cases} Conversions in der kleineren Gruppe · zusätzlicher Umsatz pro Jahr bei Rollout ${s.revenue < 0 ? "−" : ""}${euro(Math.abs(s.revenue))} · ${s.note}`)}
             </p>
             <div className="grid gap-3 md:grid-cols-2">
               <div>
@@ -365,356 +382,11 @@ export function Block34() {
       {r2.logicResult && (
         <Reading>
           {tt(`${r2.logicResult.holds} of ${r2.logicResult.total} settings hold (an action and an owner for each of the six test results). A check never says which.`, `${r2.logicResult.holds} von ${r2.logicResult.total} Einstellungen stimmen (eine Aktion und ein Owner für jedes der sechs Testergebnisse). Eine Prüfung sagt nie, welche.`)}
-          {r2.logicClue ? tt(" Clue: look at the number of decisions before you look at the uplift. A strong uplift on forty-five decisions may be chance.", " Hinweis: Schauen Sie auf die Zahl der Entscheidungen, bevor Sie auf den Uplift schauen. Ein starker Uplift bei fünfundvierzig Entscheidungen kann Zufall sein.") : ""}
+          {r2.logicClue ? tt(" Clue: look at the number of conversions before you look at the uplift. A strong uplift on forty conversions may be chance.", " Hinweis: Schauen Sie auf die Zahl der Conversions, bevor Sie auf den Uplift schauen. Ein starker Uplift bei vierzig Conversions kann Zufall sein.") : ""}
         </Reading>
       )}
       <AnswerKey block={logicKey()} />
-    </AnswerBlock>
-  );
-}
-
-/* ------------------------------------------------------------------ Block 3.5 */
-
-export function Block35() {
-  const r2 = useStore((s) => s.r2);
-  const patch = useStore((s) => s.patchR2);
-  const mentor = useStore((s) => s.mentorUnlocked);
-  const f = funded(r2);
-  const over = archOver(r2);
-  const rules = seqRules(r2);
-  const box = blackBoxFunded(r2);
-  const setItem = (id: ArchId, p: Partial<{ alloc: boolean; start: number | null; owner: OwnerId | null; trigger: string }>) =>
-    patch((s) => ({
-      alloc: p.alloc !== undefined ? { ...s.alloc, [id]: p.alloc } : s.alloc,
-      start: p.start !== undefined ? { ...s.start, [id]: p.start } : p.alloc === false ? { ...s.start, [id]: null } : s.start,
-      owner: p.owner !== undefined ? { ...s.owner, [id]: p.owner } : s.owner,
-      trigger: p.trigger !== undefined ? { ...s.trigger, [id]: p.trigger } : s.trigger,
-      seqResult: null,
-    }));
-  const check = () =>
-    patch((s) => {
-      const r = seqRules(s);
-      return { checks: s.checks + 1, seqResult: { holds: Number(r.baseline) + Number(r.budget) + Number(r.explainable), total: 3 }, seqClue: false };
-    });
-  const base = r2.start[BASELINE_ITEM];
-  const others = f.filter((id) => id !== BASELINE_ITEM);
-  const firstOther = others.length ? Math.min(...others.map((id) => r2.start[id] ?? 99)) : null;
-  const notAllFunded = !ARCH_IDS.every((id) => r2.alloc[id]);
-  return (
-    <AnswerBlock
-      id="block-3-5"
-      title={tt("Block 3.5 · Measures architecture: fund, sequence, own", "Block 3.5 · Maßnahmenarchitektur: finanzieren, ordnen, verantworten")}
-      kind="OBJECTIVE + JUDGED"
-      minutes={BLOCK_MINUTES["3.5"]}
-      findIt={tt(`Route 2 → Task 2 → the eight items below. The budget is ${euro(R2_BUDGET)} over ${R2_MONTHS} months. Answer in the item cards.`, `Route 2 → Task 2 → die acht Punkte unten. Das Budget beträgt ${euro(R2_BUDGET)} über ${R2_MONTHS} Monate. Antworten Sie in den Karten der Punkte.`)}
-    >
-      <MaterialRefs refs={["B5"]} />
-      <div className="flex flex-wrap items-start gap-2">
-        <RevealHint id="owner-help" label={tt("Show the owner test", "Owner-Test zeigen")} title={tt("The tests · taught in Materi B5", "Die Tests · aus Materi B5")}>
-          <div className="space-y-2 text-caption text-ink">
-            <ul className="list-disc space-y-1 pl-5">
-              <li>{tt("Owner: who can change it without asking anyone else?", "Owner: Wer kann es ändern, ohne jemanden zu fragen?")}</li>
-              <li>{tt("Start: does something have to exist before it, such as the membership programme?", "Start: Muss vorher etwas existieren, etwa das Mitgliedsprogramm?")}</li>
-              <li>{tt("Explainable: could anyone at ConnectIT check what it pays or offers customers, and measure what it did?", "Erklärbar: Könnte bei ConnectIT jemand prüfen, was es Kunden zahlt oder anbietet, und messen, was es bewirkt hat?")}</li>
-              <li>{tt("Trigger: does it have a metric, a number, a date and an action?", "Trigger: Hat er eine Kennzahl, eine Zahl, ein Datum und eine Aktion?")}</li>
-            </ul>
-            <p className="smallcaps text-ash">{tt("What each role can change", "Was jede Rolle ändern kann")}</p>
-            <ul className="space-y-1">
-              {OWNER_IDS.map((o) => (
-                <li key={o}>
-                  <span className="font-semibold">{OWNERS[o].name}. </span>
-                  {OWNERS[o].profile}
-                </li>
-              ))}
-            </ul>
-            <MaterialRefs refs={["B5"]} lead={tt("Taught in", "Gelehrt in")} />
-          </div>
-        </RevealHint>
-      </div>
-      <p className="text-body text-ink">
-        <Gloss>
-          {tt(
-            "Fund the items you will carry out inside the budget. For each funded item choose the month it starts, one owner who can change it without asking anyone else, and a trigger: a number, a date and an action. Leave out what does not fit, on purpose, and fund nothing whose forecasts nobody can explain.",
-            "Finanzieren Sie die Punkte, die Sie innerhalb des Budgets umsetzen. Wählen Sie für jeden finanzierten Punkt den Startmonat, einen Owner, der ihn ändern kann, ohne jemanden zu fragen, und einen Trigger: eine Zahl, ein Datum und eine Aktion. Lassen Sie weg, was nicht passt, bewusst, und finanzieren Sie nichts, dessen Prognosen niemand erklären kann.",
-          )}
-        </Gloss>
-      </p>
-      <div id={IDS.archTotal} className="space-y-2">
-        <BudgetBar items={f.map((id) => ({ id, short: ARCH_BY_ID[id].name.split(" ")[0], cost: ARCH_BY_ID[id].cost }))} budget={R2_BUDGET} title={tt(`Funded items against the ${euro(R2_BUDGET)} budget`, `Finanzierte Punkte gegen das Budget von ${euro(R2_BUDGET)}`)} />
-        <p className="text-caption text-ash" aria-live="polite">
-          {tt(`Funded ${euro(archCost(r2))} of ${euro(R2_BUDGET)}. `, `Finanziert ${euro(archCost(r2))} von ${euro(R2_BUDGET)}. `)}
-          {over > 0 ? tt(`${euro(over)} over: leave out the item with the weakest case, do not trim every item a little.`, `${euro(over)} darüber: Lassen Sie den Punkt mit der schwächsten Begründung weg, kürzen Sie nicht jeden ein bisschen.`) : tt(`${euro(archLeft(r2))} left.`, `${euro(archLeft(r2))} übrig.`)}
-        </p>
-      </div>
-      {ARCH.map((a) => {
-        const on = !!r2.alloc[a.id];
-        return (
-          <div key={a.id} id={IDS.arch(a.id)} className={clsx("space-y-3 rounded-lg border p-3.5", on ? "border-line bg-paper" : "border-dashed border-ash/60 bg-mist/40")}>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="font-semibold text-ink">
-                {a.name} <span className="font-normal text-ash">· {euro(a.cost)} · {tt(`${a.weeks} weeks to be in use`, `${a.weeks} Wochen bis zum Einsatz`)}</span>
-              </p>
-              <button type="button" aria-pressed={on} onClick={() => setItem(a.id, { alloc: !on })} className={clsx("btn btn-sm min-h-[40px] border", on ? "border-accent bg-accentSoft text-ink" : "border-line bg-paper text-ash hover:border-ash")}>
-                {on ? tt("☑ Funded", "☑ Finanziert") : tt("☐ Not funded", "☐ Nicht finanziert")}
-              </button>
-            </div>
-            <p className="text-caption text-ash">{a.what}</p>
-            {on && (
-              <>
-                <div className="grid gap-3 md:grid-cols-2">
-                  <div>
-                    <label htmlFor={`start-${a.id}`} className="smallcaps block">
-                      {tt("Starts in month", "Startet in Monat")}
-                    </label>
-                    <select id={`start-${a.id}`} className="field mt-1 max-w-[10rem]" value={r2.start[a.id] ?? ""} onChange={(e) => setItem(a.id, { start: e.target.value ? Number(e.target.value) : null })}>
-                      <option value="">{tt("Choose…", "Wählen…")}</option>
-                      {MONTHS_LIST.map((m) => (
-                        <option key={m} value={m}>
-                          {tt(`Month ${m}`, `Monat ${m}`)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor={`owner-${a.id}`} className="smallcaps block">
-                      {tt("Owner (who can change it without asking anyone else)", "Owner (wer es ändern kann, ohne jemanden zu fragen)")}
-                    </label>
-                    <select id={`owner-${a.id}`} className="field mt-1" value={r2.owner[a.id] ?? ""} onChange={(e) => setItem(a.id, { owner: (e.target.value || null) as OwnerId | null })}>
-                      <option value="">{tt("Choose an owner…", "Owner wählen…")}</option>
-                      {OWNER_IDS.map((o) => (
-                        <option key={o} value={o}>
-                          {OWNERS[o].name}
-                        </option>
-                      ))}
-                    </select>
-                    {r2.owner[a.id] && <p className="mt-1 text-micro normal-case tracking-normal text-ash">{OWNERS[r2.owner[a.id]!].profile}</p>}
-                  </div>
-                </div>
-                <TextBox
-                  id={`${IDS.arch(a.id)}-trigger`}
-                  label={tt("Trigger", "Trigger")}
-                  help={tt("If [metric] is [worse than a number] by [month], then [action]. At least 20 characters, with a number.", "Wenn [Kennzahl] bis [Monat] [schlechter als eine Zahl] ist, dann [Aktion]. Mindestens 20 Zeichen, mit einer Zahl.")}
-                  value={r2.trigger[a.id] ?? ""}
-                  onChange={(v) => setItem(a.id, { trigger: v })}
-                  min={20}
-                  rows={2}
-                />
-                {mentor && <MentorGuide guide={triggerGuide(a.id)} />}
-              </>
-            )}
-          </div>
-        );
-      })}
-
-      <div className="space-y-1 rounded-lg border border-line bg-mist/50 p-3 text-caption text-ink" aria-live="polite">
-        <p className="smallcaps">{tt("What your plan means", "Was Ihr Plan bedeutet")}</p>
-        {f.length === 0 && <p>{tt("Nothing is funded yet.", "Noch nichts ist finanziert.")}</p>}
-        {f.length > 0 && !rules.hasBaseline && <p>{tt("The membership programme is not funded, so the community, the referral thank-you and the KPIs have nothing to build on.", "Das Mitgliedsprogramm ist nicht finanziert, also haben Community, Empfehlungs-Dankeschön und KPIs nichts, worauf sie aufbauen.")}</p>}
-        {rules.hasBaseline && base != null && firstOther !== null && base > firstOther && <p>{tt(`The first item starts in month ${firstOther}, before the membership programme in month ${base}: it has no programme to build on.`, `Der erste Punkt startet in Monat ${firstOther}, vor dem Mitgliedsprogramm in Monat ${base}: Er hat kein Programm, auf dem er aufbaut.`)}</p>}
-        {rules.hasBaseline && base != null && firstOther !== null && base <= firstOther && <p>{tt(`The membership programme starts in month ${base}, no later than the first other item (month ${firstOther}), so every item builds on it.`, `Das Mitgliedsprogramm startet in Monat ${base}, nicht später als der erste andere Punkt (Monat ${firstOther}), also baut jeder Punkt darauf auf.`)}</p>}
-        {box.length > 0 && <p>{tt(`Funded without explanation: ${box.map((id) => ARCH_BY_ID[id].name).join(", ")}. Nobody at ConnectIT will be able to check what it pays customers.`, `Ohne Erklärung finanziert: ${box.map((id) => ARCH_BY_ID[id].name).join(", ")}. Niemand bei ConnectIT wird prüfen können, was es Kunden zahlt.`)}</p>}
-        {over > 0 && <p>{tt(`The funded items are ${euro(over)} over the budget.`, `Die finanzierten Punkte liegen ${euro(over)} über dem Budget.`)}</p>}
-      </div>
-
-      {notAllFunded && (
-        <div className="space-y-3 border-t border-line pt-3">
-          <TextBox
-            id={IDS.postponed}
-            label={tt("What you leave out, and why", "Was Sie weglassen, und warum")}
-            help={tt("Name the item and say why it is the one that goes: the budget, it buys renewals with margin instead of value, or nobody can check what it pays. At least 30 characters.", "Nennen Sie den Punkt und sagen Sie, warum gerade er wegfällt: das Budget, er kauft Verlängerungen mit Marge statt mit Wert, oder niemand kann prüfen, was er zahlt. Mindestens 30 Zeichen.")}
-            value={r2.postponed}
-            onChange={(v) => patch({ postponed: v })}
-            min={MIN_LINE}
-            rows={3}
-          >
-            <WritingHelp
-              id="postponed-help"
-              steps={[
-                tt("Name the item you leave out.", "Nennen Sie den Punkt, den Sie weglassen."),
-                tt("Say what it would have cost and what that would have pushed the total to.", "Sagen Sie, was er gekostet hätte und auf welche Summe das den Plan gebracht hätte."),
-                tt("Say why this one: does it make the benefit understood, and can what it says be checked?", "Sagen Sie, warum gerade dieser: Macht er den Nutzen verständlich, und lässt sich prüfen, was er sagt?"),
-              ]}
-              refs={[{ label: tt("Budget", "Budget"), value: euro(R2_BUDGET), target: IDS.archTotal }]}
-            />
-          </TextBox>
-          <TextBox
-            id={IDS.pickup}
-            label={tt("The pickup point", "Der Pickup Point")}
-            help={tt("The number and the date at which you look at it again: if [metric] is [number] by [month], we revisit it. At least 15 characters, with a number.", "Die Zahl und das Datum, zu dem Sie es wieder ansehen: Wenn [Kennzahl] bis [Monat] [Zahl] ist, prüfen wir es neu. Mindestens 15 Zeichen, mit einer Zahl.")}
-            value={r2.pickup}
-            onChange={(v) => patch({ pickup: v })}
-            min={15}
-            rows={2}
-          />
-          {mentor && <MentorGuide guide={postponedGuide()} />}
-        </div>
-      )}
-
-      <CheckBar onCheck={check} checkLabel={tt("Check my architecture", "Meine Architektur prüfen")} checks={r2.checks} clueShown={r2.seqClue} onClue={() => patch({ seqClue: true })} />
-      {r2.seqResult && (
-        <Reading>
-          {tt(`${r2.seqResult.holds} of ${r2.seqResult.total} rules hold (the membership programme starts no later than the first other item, the funded items fit the budget, nothing funded is a black box).`, `${r2.seqResult.holds} von ${r2.seqResult.total} Regeln stimmen (das Mitgliedsprogramm startet nicht später als der erste andere Punkt, die finanzierten Punkte passen ins Budget, nichts Finanziertes ist eine Black Box).`)}
-          {r2.seqClue ? tt(" Clue: which item do all the others build on? And which item could nobody at ConnectIT check?", " Hinweis: Auf welchem Punkt bauen alle anderen auf? Und welchen Punkt könnte bei ConnectIT niemand prüfen?") : ""}
-        </Reading>
-      )}
-      <AnswerKey block={ownerKey(f)} />
-    </AnswerBlock>
-  );
-}
-
-/* ------------------------------------------------------------------ Block 3.6 */
-
-export function Block36() {
-  const r2 = useStore((s) => s.r2);
-  const patch = useStore((s) => s.patchR2);
-  const mentor = useStore((s) => s.mentorUnlocked);
-  const k = r2.tripKpi ? KPIS.find((x) => x.id === r2.tripKpi)! : null;
-  const flags = tripFlagsOf(r2);
-  const check = () => patch((s) => ({ checks: s.checks + 1, decisionFlagged: s.decision === "wait", tripFlags: tripFlagsOf(s) }));
-  const unit = (x: (typeof KPIS)[number]) => (x.unit === "%" ? tt("%", " %") : ` ${x.unit}`);
-  return (
-    <AnswerBlock
-      id="block-3-6"
-      title={tt("Block 3.6 · A strategic decision despite an unclear success forecast", "Block 3.6 · Eine strategische Entscheidung trotz unklarer Erfolgsprognose")}
-      kind="OBJECTIVE + JUDGED"
-      minutes={BLOCK_MINUTES["3.6"]}
-      findIt={tt("Route 2 → Task 2 → your own answers in Blocks 3.1 to 3.5, the baselines below, and the decision rules in Materi B5. Answer in the fields below.", "Route 2 → Task 2 → Ihre eigenen Antworten in den Blöcken 3.1 bis 3.5, die Ausgangswerte unten und die Entscheidungsregeln in Materi B5. Antworten Sie in den Feldern unten.")}
-    >
-      <MaterialRefs refs={["B5"]} />
-      <div id={IDS.decision} className={clsx("space-y-2 rounded-lg p-1", r2.decisionFlagged && "is-flagged")}>
-        <p className="font-semibold text-ink">{tt("Your decision", "Ihre Entscheidung")}</p>
-        <p className="text-caption text-ash">{tt("The brief asks for a strategic decision although nobody can forecast its success. Choose one.", "Der Auftrag verlangt eine strategische Entscheidung, obwohl niemand ihren Erfolg vorhersagen kann. Wählen Sie eine.")}</p>
-        <OptionList<DecisionId> label={tt("Decision", "Entscheidung")} value={r2.decision} onChange={(v) => patch({ decision: v, decisionFlagged: false })} options={DECISIONS.map((d) => ({ id: d.id, label: d.label, sub: d.detail }))} />
-        {r2.decisionFlagged && (
-          <p className="text-caption text-ink">
-            <span className="smallcaps mr-1 text-accent">{tt("Clue", "Hinweis")}</span>
-            {tt("Which option changes something real for customers within weeks, and still learns what keeps them before the programme reaches everyone? Read the first two decision rules of Materi B5.", "Welche Option ändert innerhalb von Wochen etwas Echtes für Kunden und lernt trotzdem, was sie hält, bevor das Programm jeden erreicht? Lesen Sie die ersten zwei Entscheidungsregeln aus Materi B5.")}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-3">
-        <p className="font-semibold text-ink">{tt("Three assumptions your decision rests on", "Drei Annahmen, auf denen Ihre Entscheidung beruht")}</p>
-        {r2.assumptions.map((a, i) => (
-          <div key={i} className="space-y-1.5">
-            <TextBox
-              id={IDS.assumption(i)}
-              label={tt(`Assumption ${i + 1}`, `Annahme ${i + 1}`)}
-              help={tt("What you assume about the data, the customers or the teams, and the sign that would show you are wrong (a number or something you could see, and when). At least 30 characters.", "Was Sie über die Daten, die Kunden oder die Teams annehmen, und das Anzeichen, das zeigen würde, dass Sie falsch liegen (eine Zahl oder etwas Sichtbares, und wann). Mindestens 30 Zeichen.")}
-              value={a}
-              onChange={(v) => patch((s) => ({ assumptions: s.assumptions.map((x, j) => (j === i ? v : x)) }))}
-              min={MIN_LINE}
-              rows={2}
-            />
-            {mentor && <MentorGuide guide={assumptionGuide(i)} />}
-          </div>
-        ))}
-      </div>
-
-      <div id={IDS.trip} className="space-y-3 rounded-lg border border-line bg-paper p-3.5">
-        <p className="font-semibold text-ink">{tt("The tripwire", "Der Tripwire")}</p>
-        <p className="text-caption text-ash">
-          {tt("A metric of how customers behave, a threshold better than today's baseline, a month and an action agreed now. ", "Eine Kennzahl dafür, wie Kunden sich verhalten, ein Schwellenwert besser als die heutige Baseline, ein Monat und eine jetzt vereinbarte Aktion. ")}
-          {R2_BASELINE_NOTE.v}
-        </p>
-        <div className="grid gap-3 md:grid-cols-2">
-          <div className={clsx(flags.includes("kpi") && r2.tripFlags.includes("kpi") && "is-flagged p-1")}>
-            <label htmlFor="trip-kpi" className="smallcaps block">
-              {tt("Metric", "Kennzahl")}
-            </label>
-            <select id="trip-kpi" className="field mt-1" value={r2.tripKpi ?? ""} onChange={(e) => patch({ tripKpi: (e.target.value || null) as KpiId | null, tripFlags: [] })}>
-              <option value="">{tt("Choose a metric…", "Kennzahl wählen…")}</option>
-              {KPIS.map((x) => (
-                <option key={x.id} value={x.id}>
-                  {x.label} ({tt("today", "heute")}: {num(x.baseline)}
-                  {unit(x)})
-                </option>
-              ))}
-            </select>
-            {flags.includes("kpi") && r2.tripFlags.includes("kpi") && (
-              <p className="mt-1 text-micro normal-case tracking-normal text-ink">
-                <span className="font-semibold text-accent">{tt("Clue. ", "Hinweis. ")}</span>
-                {tt("Does this metric measure how customers behave, or how much ConnectIT did or how many signed up?", "Misst diese Kennzahl, wie Kunden sich verhalten, oder wie viel ConnectIT getan hat oder wie viele sich angemeldet haben?")}
-              </p>
-            )}
-          </div>
-          <div className={clsx(flags.includes("threshold") && r2.tripFlags.includes("threshold") && "is-flagged p-1")}>
-            <label htmlFor="trip-threshold" className="smallcaps block">
-              {tt("Threshold", "Schwellenwert")}
-              {k ? tt(` (${k.unit}; better is ${k.better === "up" ? "higher" : "lower"})`, ` (${k.unit}; besser ist ${k.better === "up" ? "höher" : "niedriger"})`) : ""}
-            </label>
-            <input id="trip-threshold" className="field tnum mt-1" inputMode="decimal" value={r2.tripThreshold} onChange={(e) => patch({ tripThreshold: e.target.value, tripFlags: [] })} />
-            {flags.includes("threshold") && r2.tripFlags.includes("threshold") && k && (
-              <p className="mt-1 text-micro normal-case tracking-normal text-ink">
-                <span className="font-semibold text-accent">{tt("Clue. ", "Hinweis. ")}</span>
-                {tt(`Compare it with today's figure, ${num(k.baseline)}${unit(k)}. Would reaching it show a real change?`, `Vergleichen Sie ihn mit dem heutigen Wert, ${num(k.baseline)}${unit(k)}. Würde das Erreichen eine echte Veränderung zeigen?`)}
-              </p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="trip-month" className="smallcaps block">
-              {tt("By month", "Bis Monat")}
-            </label>
-            <select id="trip-month" className="field mt-1 max-w-[10rem]" value={r2.tripMonth ?? ""} onChange={(e) => patch({ tripMonth: e.target.value ? Number(e.target.value) : null })}>
-              <option value="">{tt("Choose…", "Wählen…")}</option>
-              {MONTHS_LIST.map((m) => (
-                <option key={m} value={m}>
-                  {tt(`Month ${m}`, `Monat ${m}`)}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="trip-action" className="smallcaps block">
-              {tt("If it is missed", "Wenn er verfehlt wird")}
-            </label>
-            <select id="trip-action" className="field mt-1" value={r2.tripAction} onChange={(e) => patch({ tripAction: e.target.value as "" | "scale" | "adjust" | "stop" })}>
-              <option value="">{tt("Choose an action…", "Aktion wählen…")}</option>
-              <option value="adjust">{tt("Adjust one rule and continue", "Eine Regel anpassen und weitermachen")}</option>
-              <option value="stop">{tt("Stop the rollout and reconsider the architecture", "Den Rollout stoppen und die Architektur überdenken")}</option>
-              <option value="scale">{tt("Scale up anyway", "Trotzdem ausweiten")}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <div className="rounded-lg border border-gold bg-accentSoft p-3.5 text-caption text-ink">
-          <p className="smallcaps text-accent">{tt("The board's challenge", "Die Frage des Vorstands")}</p>
-          <p className="mt-1">
-            <Gloss>{BOARD_CHALLENGE.v}</Gloss>
-          </p>
-        </div>
-        <TextBox
-          id={IDS.challenge}
-          label={tt("What do you do?", "Was tun Sie?")}
-          help={tt("Say what you check first, what you keep, and the one thing you change. At least 60 characters.", "Sagen Sie, was Sie zuerst prüfen, was Sie behalten und was Sie als Einziges ändern. Mindestens 60 Zeichen.")}
-          value={r2.challenge}
-          onChange={(v) => patch({ challenge: v })}
-          min={60}
-          rows={4}
-        >
-          <WritingHelp
-            id="challenge-help"
-            steps={[
-              tt("Look at the numbers first: what went wrong with the six self-referrals, and is 78% to 79% after three months based on enough renewals to judge?", "Schauen Sie zuerst auf die Zahlen: Was lief bei den sechs Selbstempfehlungen schief, und reichen 78 % zu 79 % nach drei Monaten bei genug Verlängerungen für ein Urteil?"),
-              tt("Say what still holds: members use the benefits, the earliest sign, while cash per referral would buy more of the referrals that failed (Materi B4, B5).", "Sagen Sie, was noch gilt: Mitglieder nutzen die Vorteile, das früheste Zeichen, während Geld pro Empfehlung mehr der Empfehlungen kaufte, die versagt haben (Materi B4, B5)."),
-              tt("Change one thing, not the programme, and say when the tripwire will tell you whether you were right.", "Ändern Sie eine Sache, nicht das Programm, und sagen Sie, wann der Tripwire zeigt, ob Sie recht hatten."),
-            ]}
-          />
-        </TextBox>
-        {mentor && <MentorGuide guide={challengeGuide()} />}
-      </div>
-
-      <CheckBar onCheck={check} checkLabel={tt("Check my decision", "Meine Entscheidung prüfen")} checks={r2.checks} />
-      {r2.checks > 0 && (r2.decisionFlagged || r2.tripFlags.length > 0) && (
-        <Reading>
-          {r2.decisionFlagged ? tt("Your decision is outlined.", "Ihre Entscheidung ist markiert.") : ""}
-          {r2.tripFlags.length > 0 ? tt(` ${r2.tripFlags.length} part${r2.tripFlags.length === 1 ? "" : "s"} of the tripwire ${r2.tripFlags.length === 1 ? "is" : "are"} outlined.`, ` ${r2.tripFlags.length} ${r2.tripFlags.length === 1 ? "Teil" : "Teile"} des Tripwires ${r2.tripFlags.length === 1 ? "ist" : "sind"} markiert.`) : ""}
-        </Reading>
-      )}
-      <AnswerKey block={decisionKey()} />
-      <AnswerKey block={tripKey()} />
+      <BlockMissing block="3.4" route={2} />
     </AnswerBlock>
   );
 }

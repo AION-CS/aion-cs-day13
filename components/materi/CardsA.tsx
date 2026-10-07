@@ -1,50 +1,55 @@
 "use client";
 
 import { Bul, Diagram } from "@/components/materi/kit";
-import { AutomationGrid, DelayCost, FairTest, KpiTree, MomentProfile, PilotExample, ScoreExample } from "@/components/materi/diagramsA";
+import { BarToggle, FairTest, KpiTree, SceneCards, ScatterMap, ScoreBars, TwoRates } from "@/components/materi/diagrams";
 import { Callout, DataTable, MaterialCard } from "@/components/ui/MaterialCard";
+import { ShowMore } from "@/components/ui/ShowMore";
+import { BAR_RATES, FAIR, KPI_TREE, MECH, MOMENTS, PRIZE, SCORE } from "@/data/diagramData";
 import { LEVEL_TESTS } from "@/data/ladder";
 import { PATTERNS, PATTERN_IDS, PATTERN_PAIR_TESTS, RISK_RULE } from "@/data/patterns";
-import { EXPLAIN_RULE } from "@/data/measures";
+import { EFFECT_ANCHOR, EXPLAIN_RULE, SCALE_ANCHOR } from "@/data/measures";
 import { MOSEL, MOSEL_RESULT } from "@/data/forecast";
 import { euro, num, pct, tt } from "@/lib/lang";
 
-/** Materi A: the seven cards of Route 1 (Levels 1 and 2 on one case). 60 minutes in all. */
+/** Materi A: the seven cards of Route 1 (Levels 1 and 2 on one case). 60 minutes in all; A1 (Level 1) and A7 (Level 2) are the two Core cards (CLAUDE.md #48). */
 const p = "text-body text-ink";
 
 export function CardA1() {
   return (
     <MaterialCard
       id="A1"
-      scan={tt("Customer retention comes in two kinds. Transactional retention pays customers to stay (a discount, points, a gift): it works until someone pays more. Relational retention gives them a reason to stay (a service that works for them, people they trust, peers they meet): a competitor cannot copy it with a lower price. Satisfaction alone is not retention: satisfied customers still leave if nothing holds them.", "Kundenbindung gibt es in zwei Arten. Transaktionale Bindung bezahlt Kunden fürs Bleiben (ein Rabatt, Punkte, ein Geschenk): Sie wirkt, bis jemand mehr zahlt. Relationale Bindung gibt ihnen einen Grund zu bleiben (ein Service, der für sie funktioniert, Menschen, denen sie trauen, andere Kunden, die sie treffen): Ein Wettbewerber kann sie mit einem niedrigeren Preis nicht kopieren. Zufriedenheit allein ist keine Bindung: Zufriedene Kunden gehen trotzdem, wenn nichts sie hält.")}
+      scan={tt("Gamification means using game elements, such as rewards, rankings and progress bars, in something that is not a game. In customer retention it works when the customer already wants the result and the element only helps them get there. When they do it only for the prize, the behaviour is artificial and stops with the prize. There are three mechanisms: a reward, competition, and progress and status.", "Gamification heißt, Spielelemente wie Belohnungen, Ranglisten und Fortschrittsleisten in etwas zu nutzen, das kein Spiel ist. In der Kundenbindung wirkt sie, wenn der Kunde das Ergebnis ohnehin will und das Element ihm nur dorthin hilft. Tut er es nur für den Preis, ist das Verhalten künstlich und hört mit dem Preis auf. Es gibt drei Mechanismen: eine Belohnung, Wettbewerb, und Fortschritt und Status.")}
       reasoning={[
-        tt("Transactional retention: the customer stays because it pays (a discount, points, a gift, a lock-in). It is quick to start, costs margin on every renewal and ends when a competitor offers more.", "Transaktionale Bindung: Der Kunde bleibt, weil es sich auszahlt (ein Rabatt, Punkte, ein Geschenk, eine Bindungsfrist). Sie ist schnell gestartet, kostet bei jeder Verlängerung Marge und endet, wenn ein Wettbewerber mehr bietet."),
-        tt("Relational retention: the customer stays because of value they would lose by leaving (a service that works for them, trusted people, a community). It takes longer to build and lasts.", "Relationale Bindung: Der Kunde bleibt wegen eines Werts, den er beim Gehen verlöre (ein Service, der für ihn funktioniert, vertraute Menschen, eine Community). Sie braucht länger zum Aufbau und hält."),
-        tt("Short-term versus long-term: an incentive changes behaviour this quarter; added value changes it for years. A retention system that runs on incentives alone has to keep paying.", "Kurzfristig gegen langfristig: Ein Anreiz ändert das Verhalten in diesem Quartal; Mehrwert ändert es über Jahre. Ein Bindungssystem, das nur auf Anreizen läuft, muss immer weiter zahlen."),
-        tt("Satisfaction, loyalty and retention differ: satisfaction is how customers feel, loyalty is their willingness to stay and recommend, retention is whether they actually renew. Satisfaction is necessary, not enough.", "Zufriedenheit, Loyalität und Bindung unterscheiden sich: Zufriedenheit ist, wie Kunden sich fühlen, Loyalität ihre Bereitschaft zu bleiben und zu empfehlen, Bindung, ob sie tatsächlich verlängern. Zufriedenheit ist nötig, aber nicht genug."),
-        tt("In IT services, relationships last years and switching is costly, so relational retention pays twice: customers stay longer and bring others.", "Bei IT-Dienstleistungen dauern Beziehungen Jahre, und ein Wechsel ist aufwendig, also zahlt sich relationale Bindung doppelt aus: Kunden bleiben länger und bringen andere mit."),
+        tt("Gamification is a tool, not a goal. Start from the customer behaviour you want (finish set-up, use more features, invite a colleague) and ask why the customer would want it too.", "Gamification ist ein Werkzeug, kein Ziel. Gehen Sie vom Kundenverhalten aus, das Sie wollen (die Einrichtung abschließen, mehr Funktionen nutzen, einen Kollegen einladen), und fragen Sie, warum der Kunde es auch wollen würde."),
+        ...LEVEL_TESTS.map((x) => `${x.name}: ${x.test}`),
+        tt("Real motivation or a short-term incentive? Ask: would the customer do it without the prize? If yes, the element supports real motivation and keeps working when the novelty is gone. If no, it buys a click and stops with the prize.", "Echte Motivation oder kurzfristiger Anreiz? Fragen Sie: Würde der Kunde es ohne den Preis tun? Wenn ja, stützt das Element echte Motivation und wirkt weiter, wenn die Neuheit verflogen ist. Wenn nein, kauft es einen Klick und hört mit dem Preis auf."),
+        tt("Choose the moment where the customer wants the result: a first project, inviting colleagues. A prize for something nobody wants (opening a newsletter, writing a rating) buys the click, not the habit, and it is the risk the plan asks you to name: artificial behaviour.", "Wählen Sie den Moment, in dem der Kunde das Ergebnis will: ein erstes Projekt, Kollegen einladen. Ein Preis für etwas, das niemand will (einen Newsletter öffnen, eine Bewertung schreiben), kauft den Klick, nicht die Gewohnheit, und es ist das Risiko, das der Plan Sie benennen lässt: künstliches Verhalten."),
+        tt("A reward works best as help that deepens real use (consultant hours, a training seat), not as a discount: a discount trains customers to wait for the next one.", "Eine Belohnung wirkt am besten als Hilfe, die die echte Nutzung vertieft (Beraterstunden, ein Schulungsplatz), nicht als Rabatt: Ein Rabatt bringt Kunden bei, auf den nächsten zu warten."),
+        tt("Competition motivates the few at the top and can discourage the many. Where it is used, keep it private or among similar companies. Progress and status measure the customer against their own path, and a title or level stays theirs; that is why a progress path rarely discourages.", "Wettbewerb motiviert die wenigen an der Spitze und kann die vielen entmutigen. Wo er genutzt wird, halten Sie ihn privat oder unter ähnlichen Unternehmen. Fortschritt und Status messen den Kunden an seinem eigenen Weg, und ein Titel oder eine Stufe bleibt ihm; deshalb entmutigt ein Fortschrittspfad selten."),
+        tt("Watch for artificial behaviour: accounts with many points and almost no real use are the sign that a reward pays for clicks. Too many elements at once (levels, badges, streaks and quests) cannot be explained, tested or kept going: start with one.", "Achten Sie auf künstliches Verhalten: Konten mit vielen Punkten und kaum echter Nutzung sind das Zeichen, dass eine Belohnung Klicks bezahlt. Zu viele Elemente auf einmal (Stufen, Badges, Serien und Quests) lassen sich nicht erklären, testen oder am Laufen halten: Beginnen Sie mit einem."),
+        tt("A game idea of your own names a moment on the platform, the mechanism, and what the customer gains (“so …”): a real result, not a prize for a click.", "Eine eigene Spielidee nennt einen Moment auf der Plattform, den Mechanismus, und was der Kunde gewinnt („sodass …“): ein echtes Ergebnis, kein Preis für einen Klick."),
       ]}
-      sources={["reichheld1990", "dowling1997"]}
+      sources={["deterding2011", "ryan2000", "hamari2014"]}
     >
-      <p className={p}>
-        {tt(
-          "Reichheld and Sasser (1990) showed that keeping customers longer raises profit strongly, because long-standing customers buy more, cost less to serve and refer others. Dowling and Uncles (1997) warned that many loyalty programmes only buy behaviour: they are easily copied, cost margin and rarely create real loyalty unless they add value to the product itself.",
-          "Reichheld und Sasser (1990) zeigten, dass es den Gewinn stark erhöht, Kunden länger zu halten, weil langjährige Kunden mehr kaufen, weniger Betreuungskosten verursachen und andere empfehlen. Dowling und Uncles (1997) warnten, dass viele Treueprogramme nur Verhalten kaufen: Sie sind leicht zu kopieren, kosten Marge und schaffen selten echte Loyalität, außer sie geben dem Produkt selbst einen Mehrwert.",
-        )}
-      </p>
-      <Diagram label={tt("Why customers renewed · a worked example on Werra Datentechnik", "Warum Kunden verlängert haben · ein Beispiel mit Werra Datentechnik")} caption={tt("Choose a bar or a button and read whether the reason is transactional or relational, and how long it holds.", "Wählen Sie einen Balken oder eine Schaltfläche und lesen Sie, ob der Grund transaktional oder relational ist und wie lange er hält.")}>
-        <DelayCost />
+      <ShowMore id="A1" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Deterding and colleagues (2011) define gamification as the use of game design elements in settings that are not games. Hamari, Koivisto and Sarsa (2014) reviewed the studies and found mostly positive effects that depend on the context and on the user. Ryan and Deci (2000) explain why: people stay motivated when they want the activity itself, and prizes and control can push that out. Nunes and Drèze (2006) and Kivetz, Urminsky and Zheng (2006) show why progress works: people put in more effort the closer they can see the goal.",
+            "Deterding und Kollegen (2011) definieren Gamification als die Nutzung von Spielelementen in Umfeldern, die keine Spiele sind. Hamari, Koivisto und Sarsa (2014) werteten die Studien aus und fanden meist positive Effekte, die vom Umfeld und vom Nutzer abhängen. Ryan und Deci (2000) erklären warum: Menschen bleiben motiviert, wenn sie die Tätigkeit selbst wollen, und Preise und Kontrolle können das verdrängen. Nunes und Drèze (2006) sowie Kivetz, Urminsky und Zheng (2006) zeigen, warum Fortschritt wirkt: Menschen strengen sich mehr an, je näher sie das Ziel sehen.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("Three mechanisms, three states · a worked example on Elbe Cloudwerk", "Drei Mechanismen, drei Zustände · ein Beispiel mit Elbe Cloudwerk")} caption={tt("Choose a mechanism and a state and read what the customer experiences; then try the worked sort below.", "Wählen Sie einen Mechanismus und einen Zustand und lesen Sie, was der Kunde erlebt; probieren Sie dann die Beispielsortierung darunter.")}>
+        <SceneCards cfg={MECH} />
       </Diagram>
-      <DataTable
-        head={[tt("", ""), tt("Transactional retention", "Transaktionale Bindung"), tt("Relational retention", "Relationale Bindung")]}
-        rows={[
-          [tt("Why the customer stays", "Warum der Kunde bleibt"), tt("It pays to stay", "Bleiben zahlt sich aus"), tt("Leaving would cost value they have", "Gehen kostete Wert, den sie haben")],
-          [tt("Examples", "Beispiele"), tt("Discount, points, gifts, lock-in", "Rabatt, Punkte, Geschenke, Bindungsfrist"), tt("Service that works for them, trusted people, community", "Service, der für sie funktioniert, vertraute Menschen, Community")],
-          [tt("How long it holds", "Wie lange sie hält"), tt("Until someone pays more", "Bis jemand mehr zahlt"), tt("As long as the value lasts", "So lange der Wert besteht")],
-          [tt("What it costs", "Was sie kostet"), tt("Margin on every renewal", "Marge bei jeder Verlängerung"), tt("Effort to build, then little per customer", "Aufwand zum Aufbau, dann wenig pro Kunde")],
-        ]}
-        caption={tt("Transactional versus relational retention", "Transaktionale gegen relationale Bindung")}
-      />
+      <ShowMore id="A1" part="notes" label={tt("Show two short notes", "Zwei kurze Hinweise zeigen")}>
+        <Bul
+          items={[
+            tt("Reward: the customer receives something for doing it. Competition: their place depends on what others do. Progress and status: they see their own path, or hold a title that stays theirs.", "Belohnung: Der Kunde erhält etwas dafür, dass er es tut. Wettbewerb: Sein Platz hängt davon ab, was andere tun. Fortschritt und Status: Er sieht seinen eigenen Weg oder hält einen Titel, der ihm bleibt."),
+            tt("A game element is never the whole retention plan: it has to join the membership programme, the referral scheme and the customer profile that already exist (Materi A7).", "Ein Spielelement ist nie der ganze Kundenbindungsplan: Es muss das Mitgliedschaftsprogramm, das Empfehlungsprogramm und das Kundenprofil verbinden, die es schon gibt (Materi A7)."),
+          ]}
+        />
+      </ShowMore>
     </MaterialCard>
   );
 }
@@ -53,28 +58,28 @@ export function CardA2() {
   return (
     <MaterialCard
       id="A2"
-      scan={tt("A membership gives customers something for belonging. What it gives decides whether it retains: an incentive (money, points, a discount) pays for staying; a service added value (faster help, reviews, training) makes the product work better; a community (user groups, a forum, an advisory board) connects customers with each other. Most memberships that last combine service and community.", "Eine Mitgliedschaft gibt Kunden etwas dafür, dass sie dazugehören. Was sie gibt, entscheidet, ob sie bindet: Ein Anreiz (Geld, Punkte, ein Rabatt) bezahlt fürs Bleiben; ein Service-Mehrwert (schnellere Hilfe, Reviews, Schulung) lässt das Produkt besser funktionieren; eine Community (User Groups, ein Forum, ein Beirat) verbindet Kunden miteinander. Die meisten Mitgliedschaften, die halten, verbinden Service und Community.")}
+      scan={tt("A prize can lift a number for a while, but only an action the customer wants keeps going after the prize stops. The test is simple: would the customer do it without the prize? Where the answer is no, the game element creates artificial behaviour, and the accounts with many points but no real use pile up.", "Ein Preis kann eine Zahl eine Zeit lang heben, aber nur eine Handlung, die der Kunde will, geht weiter, wenn der Preis endet. Der Test ist einfach: Würde der Kunde es ohne den Preis tun? Lautet die Antwort Nein, erzeugt das Spielelement künstliches Verhalten, und die Konten mit vielen Punkten, aber ohne echte Nutzung, häufen sich.")}
       reasoning={[
-        ...LEVEL_TESTS.map((x) => `${x.name}: ${x.test}`),
-        tt("Advantages of a membership model: customers stay longer because they would lose something by leaving, they use more of the product, and members who know each other refer others.", "Vorteile eines Mitgliedsmodells: Kunden bleiben länger, weil sie beim Gehen etwas verlören, sie nutzen mehr vom Produkt, und Mitglieder, die einander kennen, empfehlen andere."),
-        tt("Benefits customers find attractive in B2B IT: faster and named help, advice that saves them time, training for their own staff, and exchange with peers who have the same problems. Discounts rank low once the service works.", "Vorteile, die Kunden im B2B-IT-Bereich attraktiv finden: schnellere und benannte Hilfe, Beratung, die ihnen Zeit spart, Schulung für die eigenen Mitarbeitenden und Austausch mit anderen, die dieselben Probleme haben. Rabatte zählen wenig, sobald der Service funktioniert."),
-        tt("Risks of a membership: it becomes a discount club (margin lost, no loyalty won), benefits nobody uses (cost without effect), and members who feel second-class when the promised service is not delivered.", "Risiken einer Mitgliedschaft: Sie wird zum Rabattclub (Marge verloren, keine Loyalität gewonnen), Vorteile, die niemand nutzt (Kosten ohne Wirkung), und Mitglieder, die sich zweitklassig fühlen, wenn der versprochene Service nicht kommt."),
-        tt("A simple membership approach names who can join, the two or three added values they get, and how you will see whether they use them.", "Ein einfacher Mitgliedschaftsansatz nennt, wer beitreten kann, die zwei oder drei Mehrwerte, die Mitglieder erhalten, und woran Sie sehen, ob sie sie nutzen."),
+        tt("Real motivation: the customer does it for its own result. Short-term incentive: the customer does it for the prize and stops when the prize stops.", "Echte Motivation: Der Kunde tut es um seines Ergebnisses willen. Kurzfristiger Anreiz: Der Kunde tut es für den Preis und hört auf, wenn der Preis endet."),
+        tt("The test: take the prize away in your head. If the behaviour stays, the element only helped. If it collapses, you bought it.", "Der Test: Nehmen Sie den Preis gedanklich weg. Bleibt das Verhalten, hat das Element nur geholfen. Bricht es ein, haben Sie es gekauft."),
+        tt("A prize for something people already want can lower their interest once the prize ends (Deci et al. 1999): reward the milestone that serves the customer, not the click.", "Ein Preis für etwas, das Menschen ohnehin wollen, kann ihr Interesse senken, sobald der Preis endet (Deci et al. 1999): Belohnen Sie den Meilenstein, der dem Kunden dient, nicht den Klick."),
+        tt("Wherever the wrong behaviour is rewarded, customers learn it: they log in for the points and open nothing else.", "Wo das falsche Verhalten belohnt wird, lernen Kunden es: Sie loggen sich für die Punkte ein und öffnen sonst nichts."),
+        tt("The numbers that show it: accounts with many points but almost no real use rise (a guardrail), and points awarded rise while renewals do not (a vanity metric).", "Die Zahlen, die es zeigen: Konten mit vielen Punkten, aber kaum echter Nutzung, nehmen zu (eine Guardrail), und vergebene Punkte steigen, während Verlängerungen nicht steigen (eine Vanity Metric)."),
+        tt("A discount is a prize that is also a price cut: customers learn to wait for it, and it connects to nothing.", "Ein Rabatt ist ein Preis, der zugleich eine Preissenkung ist: Kunden lernen, darauf zu warten, und er ist mit nichts verbunden."),
       ]}
-      sources={["bolton2000", "mcalexander2002"]}
+      sources={["ryan2000", "deci1999", "hamari2017"]}
     >
-      <p className={p}>
-        {tt(
-          "Bolton, Kannan and Bramlett (2000) found that members of a loyalty programme rated the company's service more forgivingly and stayed longer, but only where the programme came with real service value. McAlexander, Schouten and Koenig (2002) showed that customers who meet other customers and the company's people form a community, and that this community strengthens their loyalty to the company itself.",
-          "Bolton, Kannan und Bramlett (2000) fanden, dass Mitglieder eines Treueprogramms den Service des Unternehmens nachsichtiger bewerteten und länger blieben, aber nur dort, wo das Programm echten Servicewert brachte. McAlexander, Schouten und Koenig (2002) zeigten, dass Kunden, die andere Kunden und die Menschen des Unternehmens treffen, eine Community bilden, und dass diese Community ihre Loyalität zum Unternehmen selbst stärkt.",
-        )}
-      </p>
-      <Diagram label={tt("One area, three kinds of benefit · a worked example on Werra Datentechnik", "Ein Bereich, drei Arten von Vorteil · ein Beispiel mit Werra Datentechnik")} caption={tt("Choose an area and a kind of benefit and compare the three versions; then try the worked sort below.", "Wählen Sie einen Bereich und eine Art von Vorteil und vergleichen Sie die drei Versionen; probieren Sie dann die Beispielsortierung darunter.")}>
-        <MomentProfile />
+      <ShowMore id="A2" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Deci, Koestner and Ryan (1999) combined 128 experiments and found that tangible rewards for an activity people already enjoy tend to lower their interest in it once the reward ends. Hamari (2017) ran a field experiment with badges and found that they raised activity, but that the effect depended on what the badges were for. Both point to the same rule: reward what serves the customer.",
+            "Deci, Koestner und Ryan (1999) fassten 128 Experimente zusammen und fanden, dass greifbare Belohnungen für eine Tätigkeit, die Menschen ohnehin gern tun, ihr Interesse daran tendenziell senken, sobald die Belohnung endet. Hamari (2017) führte ein Feldexperiment mit Badges durch und fand, dass sie die Aktivität hoben, der Effekt aber davon abhing, wofür die Badges standen. Beides weist auf dieselbe Regel: Belohnen Sie, was dem Kunden dient.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("What is left when the prize stops · a worked example on Elbe Cloudwerk", "Was bleibt, wenn der Preis endet · ein Beispiel mit Elbe Cloudwerk")} caption={tt("Switch between the time the prize is paid and the time after it stops, and choose an action.", "Wechseln Sie zwischen der Zeit, in der der Preis gezahlt wird, und der Zeit danach, und wählen Sie eine Handlung.")}>
+        <BarToggle cfg={PRIZE} />
       </Diagram>
-      <Callout label={tt("Free is not the same as an incentive", "Kostenlos ist nicht dasselbe wie ein Anreiz")} tone="rust">
-        <p>{tt("A free training seat is a service: the customer receives know-how. A €100 training discount is an incentive: the customer receives money. Ask what the customer receives, not what it costs.", "Ein kostenloser Schulungsplatz ist ein Service: Der Kunde erhält Know-how. Ein Schulungsrabatt von 100 € ist ein Anreiz: Der Kunde erhält Geld. Fragen Sie, was der Kunde erhält, nicht was es kostet.")}</p>
-      </Callout>
     </MaterialCard>
   );
 }
@@ -83,35 +88,39 @@ export function CardA3() {
   return (
     <MaterialCard
       id="A3"
-      scan={tt("Referrals work because people trust people they know more than any advertisement. A customer becomes a multiplier when two things come together: they are satisfied enough to vouch for you, and they are in contact with others who could buy. Customers who talk mostly about price are the opposite: they join for a discount and leave for a better one.", "Empfehlungen wirken, weil Menschen Menschen, die sie kennen, mehr vertrauen als jeder Werbung. Ein Kunde wird zum Multiplikator, wenn zwei Dinge zusammenkommen: Er ist zufrieden genug, um für Sie einzustehen, und er steht in Kontakt mit anderen, die kaufen könnten. Kunden, die vor allem über den Preis sprechen, sind das Gegenteil: Sie treten wegen eines Rabatts bei und gehen für einen besseren.")}
+      scan={tt("Not every moment on the platform needs a game element. A game element helps most where the customer wants the result and many stop. It can plug into what exists only where part or all of the membership, referral and profile data already reaches the moment.", "Nicht jeder Moment auf der Plattform braucht ein Spielelement. Ein Spielelement hilft am meisten dort, wo der Kunde das Ergebnis will und viele aufhören. Es kann sich nur dort an Bestehendes anschließen, wo ein Teil oder alle Daten aus Mitgliedschaft, Empfehlung und Profil den Moment schon erreichen.")}
       reasoning={[
-        tt("Ask first for a referral: satisfaction of 80% or more AND in regular contact with other firms of their industry. Both are needed: satisfaction without a network reaches nobody; a network without satisfaction spreads a lukewarm message.", "Zuerst um eine Empfehlung bitten: Zufriedenheit von 80 % oder mehr UND regelmäßiger Kontakt mit anderen Firmen ihrer Branche. Beides ist nötig: Zufriedenheit ohne Netzwerk erreicht niemanden; ein Netzwerk ohne Zufriedenheit verbreitet eine laue Botschaft."),
-        tt("Joins only for a discount: the customer talks mostly about price and discounts. A discount club retains them only as long as the discount is the best on offer; they need added value first.", "Tritt nur wegen eines Rabatts bei: Der Kunde spricht vor allem über Preis und Rabatte. Ein Rabattclub bindet ihn nur, solange der Rabatt das beste Angebot ist; er braucht zuerst Mehrwert."),
-        tt("Why customers refer: they want to help a peer and they trust the provider. Trust is the central factor; a reward can make referring easier, but it cannot replace trust.", "Warum Kunden empfehlen: Sie wollen einem Kollegen helfen, und sie vertrauen dem Anbieter. Vertrauen ist der zentrale Faktor; eine Belohnung kann Empfehlen erleichtern, aber Vertrauen nicht ersetzen."),
-        tt("A very satisfied customer with no contact to peers is still valuable: ask for a testimonial or a reference call instead of a referral.", "Ein sehr zufriedener Kunde ohne Kontakt zu anderen ist trotzdem wertvoll: Bitten Sie um ein Testimonial oder ein Referenzgespräch statt um eine Empfehlung."),
-        tt("Referral systems come in forms: a simple ask at the right moment, a thank-you in value for one or both sides, a cash reward, and network effects where members bring members. Value for both sides builds trust; cash for volume invites misuse (Materi A6).", "Empfehlungssysteme gibt es in verschiedenen Formen: eine einfache Bitte im richtigen Moment, ein Dankeschön in Wert für eine oder beide Seiten, eine Geldprämie und Netzwerkeffekte, bei denen Mitglieder Mitglieder bringen. Wert für beide Seiten baut Vertrauen auf; Geld für Menge lädt zu Missbrauch ein (Materi A6)."),
+        tt("A game element helps most where two things hold: the customer wants the result of the step, and 25% or more stop there. Help those moments first.", "Ein Spielelement hilft am meisten, wo zwei Dinge gelten: Der Kunde will das Ergebnis des Schritts, und 25 % oder mehr hören dort auf. Helfen Sie diesen Momenten zuerst."),
+        tt("Many stopping is not enough: nobody wants to open the platform because of a newsletter or to write a rating, so a prize there buys clicks, not a habit. A moment where the customer wants the result but few stop works already; it is not the first place to act.", "Dass viele aufhören, reicht nicht: Niemand will wegen eines Newsletters die Plattform öffnen oder eine Bewertung schreiben, also kauft ein Preis dort Klicks, keine Gewohnheit. Ein Moment, in dem der Kunde das Ergebnis will, aber wenige aufhören, funktioniert schon; er ist nicht der erste Ort zum Handeln."),
+        tt("A game element plugs into what exists where part or all of the data of the membership programme, the referral scheme and the customer profile reaches the moment: it can read the customer's level, who they might invite, what they used last.", "Ein Spielelement schließt sich dort an Bestehendes an, wo ein Teil oder alle Daten des Mitgliedschaftsprogramms, des Empfehlungsprogramms und des Kundenprofils den Moment erreichen: Es kann die Stufe des Kunden lesen, wen er einladen könnte, was er zuletzt nutzte."),
+        tt("Where nothing is connected, a game element stands alone and adds one more island: choose it only if the moment is one that helps most.", "Wo nichts verbunden ist, steht ein Spielelement allein und fügt eine weitere Insel hinzu: Wählen Sie es nur, wenn der Moment einer ist, in dem es am meisten hilft."),
+        tt("A progress path suits moments that lead to something the customer wants (a first project); a reward suits a finished milestone; competition rarely suits a moment where many are still stuck at the start.", "Ein Fortschrittspfad passt zu Momenten, die zu etwas führen, das der Kunde will (ein erstes Projekt); eine Belohnung passt zu einem abgeschlossenen Meilenstein; Wettbewerb passt selten zu einem Moment, in dem viele noch am Anfang feststecken."),
+        tt("Three simple approaches use three different mechanisms and each says what the customer gains (“so …”).", "Drei einfache Ansätze nutzen drei verschiedene Mechanismen, und jeder sagt, was der Kunde gewinnt („sodass …“)."),
       ]}
-      sources={["kumar2010", "schmitt2011"]}
+      sources={["kivetz2006", "nunes2006"]}
     >
-      <p className={p}>
-        {tt(
-          "Kumar, Petersen and Leone (2010) found that the customers who buy the most are not always the ones who refer the most: referral value depends on the customer's network and their willingness to recommend, and firms should ask the customers who have both. Schmitt, Skiera and Van den Bulte (2011) showed that customers won through referrals were more loyal and more valuable than customers won in other ways.",
-          "Kumar, Petersen und Leone (2010) fanden, dass die Kunden, die am meisten kaufen, nicht immer die sind, die am meisten empfehlen: Der Empfehlungswert hängt vom Netzwerk des Kunden und seiner Bereitschaft zu empfehlen ab, und Firmen sollten die Kunden fragen, die beides haben. Schmitt, Skiera und Van den Bulte (2011) zeigten, dass über Empfehlungen gewonnene Kunden treuer und wertvoller waren als auf anderem Weg gewonnene.",
-        )}
-      </p>
-      <Diagram label={tt("Who to ask, who only wants a discount · a worked example on Werra Datentechnik", "Wen man fragt, wer nur einen Rabatt will · ein Beispiel mit Werra Datentechnik")} caption={tt("Choose a customer on the grid or in the list and read where they stand and why.", "Wählen Sie einen Kunden im Raster oder in der Liste und lesen Sie, wo er steht und warum.")}>
-        <AutomationGrid />
+      <ShowMore id="A3" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Kivetz, Urminsky and Zheng (2006) found that people speed up as a goal gets closer and that a visible path keeps customers going; Nunes and Drèze (2006) found that customers work harder towards a goal when they can see progress already made. That is why the first moments, where customers have not yet got going, are where a progress path pays.",
+            "Kivetz, Urminsky und Zheng (2006) fanden, dass Menschen schneller werden, je näher ein Ziel rückt, und dass ein sichtbarer Weg Kunden bei der Stange hält; Nunes und Drèze (2006) fanden, dass Kunden sich mehr auf ein Ziel hin anstrengen, wenn sie schon gemachten Fortschritt sehen. Deshalb sind die ersten Momente, in denen Kunden noch nicht in Gang gekommen sind, dort, wo sich ein Fortschrittspfad auszahlt.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("Where game elements help, and where they plug in · a worked example on Elbe Cloudwerk", "Wo Spielelemente helfen, und wo sie sich anschließen · ein Beispiel mit Elbe Cloudwerk")} caption={tt("Choose a moment on the map or in the list and read where it falls and why.", "Wählen Sie einen Moment auf der Karte oder in der Liste und lesen Sie, wo er liegt und warum.")}>
+        <ScatterMap cfg={MOMENTS} />
       </Diagram>
-      <DataTable
-        head={[tt("Satisfied (80%+)?", "Zufrieden (80 %+)?"), tt("In contact with peers?", "In Kontakt mit anderen?"), tt("What to do", "Was zu tun ist")]}
-        rows={[
-          [tt("Yes", "Ja"), tt("Yes", "Ja"), tt("Ask first for a referral, and thank both sides with value", "Zuerst um eine Empfehlung bitten, und beiden Seiten mit Wert danken")],
-          [tt("Yes", "Ja"), tt("No", "Nein"), tt("Ask for a testimonial or a reference call", "Um ein Testimonial oder ein Referenzgespräch bitten")],
-          [tt("No", "Nein"), tt("Yes", "Ja"), tt("Fix what is missing first; a referral now carries a lukewarm message", "Zuerst beheben, was fehlt; eine Empfehlung trüge jetzt eine laue Botschaft")],
-          [tt("Talks about price", "Spricht über den Preis"), tt("Either", "Egal"), tt("Offer added value, not a bigger discount", "Mehrwert anbieten, keinen größeren Rabatt")],
-        ]}
-        caption={tt("Who to ask, and what to do with the others", "Wen man fragt, und was mit den anderen zu tun ist")}
-      />
+      <ShowMore id="A3" part="table" label={tt("Show the table: three systems and what a game element needs from each", "Tabelle zeigen: Drei Systeme und was ein Spielelement von jedem braucht")}>
+        <DataTable
+          head={[tt("What exists", "Was existiert"), tt("What it holds", "Was es enthält"), tt("What a game element needs from it", "Was ein Spielelement davon braucht")]}
+          rows={[
+            [tt("Membership programme", "Mitgliedschaftsprogramm"), tt("The customer's level and the benefits they hold", "Die Stufe des Kunden und die Vorteile, die er hat"), tt("A benefit to hand over that serves the customer", "Einen Vorteil zum Übergeben, der dem Kunden dient")],
+            [tt("Referral scheme", "Empfehlungsprogramm"), tt("Who invited whom, and whether the invited customer stayed", "Wer wen eingeladen hat, und ob der eingeladene Kunde blieb"), tt("A way to pay only for a customer who stays", "Einen Weg, nur für einen Kunden zu zahlen, der bleibt")],
+            [tt("Customer profile", "Kundenprofil"), tt("What the customer used and when", "Was der Kunde nutzte und wann"), tt("The next step to show and who is ready to be asked", "Den nächsten Schritt, den man zeigt, und wer bereit ist, gefragt zu werden")],
+          ]}
+          caption={tt("Three systems and what a game element needs from each", "Drei Systeme und was ein Spielelement von jedem braucht")}
+        />
+      </ShowMore>
     </MaterialCard>
   );
 }
@@ -121,36 +130,40 @@ export function CardA4() {
   return (
     <MaterialCard
       id="A4"
-      scan={tt("To put a euro figure on referrals, compare how often leads became customers when they came through a referral and when they came from marketing. Three figures read it: the close rate of each group, the lift, and the extra revenue a year.", "Um Empfehlungen einen Euro-Wert zu geben, vergleichen Sie, wie oft Leads zu Kunden wurden, wenn sie über eine Empfehlung kamen, und wenn sie aus dem Marketing kamen. Drei Werte lesen es: die Abschlussquote jeder Gruppe, der Lift und der zusätzliche Umsatz pro Jahr.")}
+      scan={tt("To put a euro figure on a set-up bar, compare how often new customers finished set-up when they saw the bar and when they did not. Three figures read it: the finish rate of each group, the lift, and the extra revenue a year.", "Um einer Einrichtungsleiste einen Euro-Wert zu geben, vergleichen Sie, wie oft Neukunden die Einrichtung abschlossen, wenn sie die Leiste sahen, und wenn nicht. Drei Werte lesen es: die Abschlussquote jeder Gruppe, der Lift und der zusätzliche Umsatz pro Jahr.")}
       reasoning={[
-        tt("Close rate = deals ÷ leads × 100. Take both numbers from the same group's rows.", "Abschlussquote = Abschlüsse ÷ Leads × 100. Nehmen Sie beide Zahlen aus den Zeilen derselben Gruppe."),
-        tt("Lift = close rate of referred leads ÷ close rate of marketing leads. Work out the marketing rate from its own rows first; the groups are not the same size, so compare rates, never counts.", "Lift = Abschlussquote empfohlener Leads ÷ Abschlussquote der Marketing-Leads. Berechnen Sie die Marketing-Quote zuerst aus ihren eigenen Zeilen; die Gruppen sind nicht gleich groß, also vergleichen Sie Quoten, nie Zahlen."),
-        tt("Extra revenue a year = referred leads a year × (referral rate − marketing rate, as a share of one) × average deal value. Only the difference counts: the same number of marketing leads would have closed their share anyway. One point is 0.01.", "Zusätzlicher Umsatz pro Jahr = empfohlene Leads pro Jahr × (Empfehlungsquote − Marketing-Quote, als Anteil von eins) × durchschnittlicher Auftragswert. Nur der Unterschied zählt: Dieselbe Zahl an Marketing-Leads hätte ihren Anteil ohnehin abgeschlossen. Ein Punkt ist 0,01."),
-        tt("Use the referred leads expected next year, not last year's referred leads.", "Nehmen Sie die im nächsten Jahr erwarteten empfohlenen Leads, nicht die empfohlenen Leads des letzten Jahres."),
-        tt("These figures compare leads that customers chose to refer with leads from marketing, so they are not yet a fair test: say them as an estimate, and test fairly before you promise the full amount (Materi A6).", "Diese Werte vergleichen Leads, die Kunden empfehlen wollten, mit Leads aus dem Marketing, sind also noch kein fairer Test: Sagen Sie sie als Schätzung, und testen Sie fair, bevor Sie den ganzen Betrag versprechen (Materi A6)."),
-        tt("A sentence about referrals quotes at least one figure, says what to change first, and how sure it can be.", "Ein Satz über Empfehlungen nennt mindestens einen Wert, sagt, was zuerst zu ändern ist, und wie sicher man sein kann."),
+        tt("Finish rate = finished set-ups ÷ new customers × 100. Take both numbers from the same group's rows.", "Abschlussquote = abgeschlossene Einrichtungen ÷ Neukunden × 100. Nehmen Sie beide Zahlen aus den Zeilen derselben Gruppe."),
+        tt("Lift = finish rate with the bar ÷ finish rate without it. Work out the second rate from its own rows first; the groups are not the same size, so compare rates, never counts.", "Lift = Abschlussquote mit Leiste ÷ Abschlussquote ohne. Berechnen Sie die zweite Quote zuerst aus ihren eigenen Zeilen; die Gruppen sind nicht gleich groß, also vergleichen Sie Quoten, nie Zahlen."),
+        tt("Extra revenue a year = new customers a year × (rate with − rate without, as a share of one) × the extra yearly value of a customer who finishes set-up. Only the difference counts: customers without the bar would have finished their share anyway. One point is 0.01.", "Zusätzlicher Umsatz pro Jahr = Neukunden pro Jahr × (Quote mit − Quote ohne, als Anteil von eins) × der zusätzliche Jahreswert eines Kunden, der die Einrichtung abschließt. Nur der Unterschied zählt: Kunden ohne die Leiste hätten ihren Anteil ohnehin abgeschlossen. Ein Punkt ist 0,01."),
+        tt("Use the new customers of a whole year, not the customers of one group.", "Nehmen Sie die Neukunden eines ganzen Jahres, nicht die Kunden einer Gruppe."),
+        tt("These figures compare customers who happened to see the bar or not, so they are not yet a fair test: say them as an estimate, and test fairly before you promise the full amount (Materi A6).", "Diese Werte vergleichen Kunden, die die Leiste zufällig sahen oder nicht, sind also noch kein fairer Test: Sagen Sie sie als Schätzung, und testen Sie fair, bevor Sie den ganzen Betrag versprechen (Materi A6)."),
+        tt("A sentence about a set-up bar quotes at least one figure, says what to change first, and how sure it can be.", "Ein Satz über eine Einrichtungsleiste nennt mindestens einen Wert, sagt, was zuerst zu ändern ist, und wie sicher man sein kann."),
       ]}
-      sources={["provost2013", "schmitt2011"]}
+      sources={["provost2013", "nunes2006"]}
     >
-      <p className={p}>
-        {tt(
-          "Provost and Fawcett (2013) name rates, lift and expected value as the basic tools for reading any comparison: compare two groups, and put a value on the difference. Applied to referrals, the groups are leads that came two ways. The worked example uses Werra Datentechnik's numbers; the steps are the same for any company.",
-          "Provost und Fawcett (2013) nennen Raten, Lift und Erwartungswert als Grundwerkzeuge, um jeden Vergleich zu lesen: zwei Gruppen vergleichen und dem Unterschied einen Wert geben. Auf Empfehlungen angewandt, sind die Gruppen Leads, die auf zwei Wegen kamen. Das Beispiel nutzt die Zahlen von Werra Datentechnik; die Schritte sind für jedes Unternehmen gleich.",
-        )}
-      </p>
-      <Diagram label={tt("What a referral is worth · worked example on Werra Datentechnik (Case assumption)", "Was eine Empfehlung wert ist · Beispiel mit Werra Datentechnik (Fallannahme)")} caption={tt("Move the slider to change how many referred leads Werra gets in a year.", "Bewegen Sie den Regler, um zu ändern, wie viele empfohlene Leads Werra pro Jahr bekommt.")}>
-        <PilotExample />
+      <ShowMore id="A4" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Provost and Fawcett (2013) name rates, lift and expected value as the basic tools for reading any comparison: compare two groups, and put a value on the difference. The worked example uses Elbe Cloudwerk's numbers; the steps are the same for any company.",
+            "Provost und Fawcett (2013) nennen Raten, Lift und Erwartungswert als Grundwerkzeuge, um jeden Vergleich zu lesen: zwei Gruppen vergleichen und dem Unterschied einen Wert geben. Das Beispiel nutzt die Zahlen von Elbe Cloudwerk; die Schritte sind für jedes Unternehmen gleich.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("What a set-up bar is worth · worked example on Elbe Cloudwerk (Case assumption)", "Was eine Einrichtungsleiste wert ist · Beispiel mit Elbe Cloudwerk (Fallannahme)")} caption={tt("Move the slider to change how many new customers Elbe has in a year.", "Bewegen Sie den Regler, um zu ändern, wie viele Neukunden Elbe pro Jahr hat.")}>
+        <TwoRates cfg={BAR_RATES} />
       </Diagram>
-      <DataTable
-        head={[tt("Step", "Schritt"), tt("Calculation · Werra Datentechnik", "Rechnung · Werra Datentechnik"), tt("Result", "Ergebnis")]}
-        rows={[
-          [tt("1 · Close rate of referred leads", "1 · Abschlussquote empfohlener Leads"), `${MOSEL.variant.orders} ÷ ${num(MOSEL.variant.sent)} × 100`, pct(r.rate)],
-          [tt("2 · Close rate of marketing leads", "2 · Abschlussquote der Marketing-Leads"), `${MOSEL.control.orders} ÷ ${num(MOSEL.control.sent)} × 100`, pct(r.other)],
-          [tt("3 · Lift", "3 · Lift"), `${num(r.rate)} ÷ ${num(r.other)}`, tt(`${num(r.lift)} times`, `${num(r.lift)}-mal`)],
-          [tt("4 · Extra revenue a year", "4 · Zusätzlicher Umsatz pro Jahr"), `${num(MOSEL.yearly)} × ${num((r.rate - r.other) / 100)} × ${euro(MOSEL.order)}`, euro(r.extra)],
-        ]}
-        caption={tt("The four steps, on other numbers than the task", "Die vier Schritte, mit anderen Zahlen als in der Aufgabe")}
-      />
+      <ShowMore id="A4" part="calc" label={tt("Show the table: the four steps, on other numbers than the task", "Tabelle zeigen: Die vier Schritte, mit anderen Zahlen als in der Aufgabe")}>
+        <DataTable
+          head={[tt("Step", "Schritt"), tt("Calculation · Elbe Cloudwerk", "Rechnung · Elbe Cloudwerk"), tt("Result", "Ergebnis")]}
+          rows={[
+            [tt("1 · Finish rate with the bar", "1 · Abschlussquote mit Leiste"), `${MOSEL.variant.orders} ÷ ${num(MOSEL.variant.sent)} × 100`, pct(r.rate)],
+            [tt("2 · Finish rate without it", "2 · Abschlussquote ohne"), `${MOSEL.control.orders} ÷ ${num(MOSEL.control.sent)} × 100`, pct(r.other)],
+            [tt("3 · Lift", "3 · Lift"), `${num(r.rate)} ÷ ${num(r.other)}`, tt(`${num(r.lift)} times`, `${num(r.lift)}-mal`)],
+            [tt("4 · Extra revenue a year", "4 · Zusätzlicher Umsatz pro Jahr"), `${num(MOSEL.yearly)} × ${num((r.rate - r.other) / 100)} × ${euro(MOSEL.order)}`, euro(r.extra)],
+          ]}
+          caption={tt("The four steps, on other numbers than the task", "Die vier Schritte, mit anderen Zahlen als in der Aufgabe")}
+        />
+      </ShowMore>
     </MaterialCard>
   );
 }
@@ -159,32 +172,35 @@ export function CardA5() {
   return (
     <MaterialCard
       id="A5"
-      scan={tt("Retention programmes produce many numbers; few of them steer. An outcome KPI is the result (customers kept, revenue from existing customers, customers won through referrals); a driver KPI comes before it (members who use a benefit, referrals submitted); a guardrail must not get worse (the cost of rewards, fake referrals); a vanity metric counts sign-ups or reach (members signed up, likes).", "Bindungsprogramme erzeugen viele Zahlen; wenige davon steuern. Ein Outcome-KPI ist das Ergebnis (gehaltene Kunden, Umsatz mit Bestandskunden, über Empfehlungen gewonnene Kunden); ein Treiber-KPI kommt davor (Mitglieder, die einen Vorteil nutzen, eingereichte Empfehlungen); eine Guardrail darf nicht schlechter werden (die Kosten der Belohnungen, gefälschte Empfehlungen); eine Vanity Metric zählt Anmeldungen oder Reichweite (angemeldete Mitglieder, Likes).")}
+      scan={tt("If every game element reports its own numbers, nobody sees whether customers really use the platform more. Measure what customers do: an outcome KPI is the result (renewals, revenue, customers kept); a driver KPI comes before it (finished set-up, features used); a guardrail must not get worse (accounts that only collect points); a vanity metric counts what you hand out (points, badges).", "Wenn jedes Spielelement seine eigenen Zahlen berichtet, sieht niemand, ob Kunden die Plattform wirklich mehr nutzen. Messen Sie, was Kunden tun: Ein Outcome-KPI ist das Ergebnis (Verlängerungen, Umsatz, gehaltene Kunden); ein Treiber-KPI kommt davor (abgeschlossene Einrichtung, genutzte Funktionen); eine Guardrail darf nicht schlechter werden (Konten, die nur Punkte sammeln); eine Vanity Metric zählt, was Sie ausgeben (Punkte, Badges).")}
       reasoning={[
         ...PATTERN_IDS.map((x) => `${PATTERNS[x].label}: ${PATTERNS[x].test}`),
         ...PATTERN_PAIR_TESTS.map((x) => `${x.pair} ${x.test}`),
-        tt("Tag what a metric measures, not how it behaved last year: a driver that did not move with value is still a driver. A referral submitted is a driver; a referred firm that signed is an outcome.", "Ordnen Sie zu, was eine Kennzahl misst, nicht wie sie sich letztes Jahr verhielt: Ein Treiber, der sich nicht mit dem Wert bewegte, ist trotzdem ein Treiber. Eine eingereichte Empfehlung ist ein Treiber; eine empfohlene Firma, die unterschrieb, ist ein Outcome."),
+        tt("Tag what a metric measures, not how it behaved last year: a driver that did not move with value is still a driver. Inviting a colleague counts as a driver although it did not move with value last year: it comes before the renewal and onboarding moves it.", "Ordnen Sie zu, was eine Kennzahl misst, nicht wie sie sich letztes Jahr verhielt: Ein Treiber, der sich nicht mit dem Wert bewegte, ist trotzdem ein Treiber. Einen Kollegen einzuladen zählt als Treiber, obwohl es sich letztes Jahr nicht mit dem Wert bewegte: Es kommt vor der Verlängerung, und das Onboarding bewegt es."),
         RISK_RULE.v,
-        tt("How to use each kind: outcome → the target on the management dashboard; driver → the Customer Success team, reviewed weekly; guardrail → a limit that stops an approach; vanity → stop reporting it as success. A bonus on a number rewards reporting it, not moving it.", "Wie man jede Art nutzt: Outcome → das Ziel im Management-Dashboard; Treiber → das Customer-Success-Team, wöchentlich geprüft; Guardrail → eine Grenze, die einen Ansatz stoppt; Vanity → nicht mehr als Erfolg berichten. Ein Bonus auf eine Zahl belohnt, dass sie berichtet wird, nicht dass sie bewegt wird."),
-        tt("For memberships and referrals, an economic guardrail is essential: count what rewards and discounts cost per customer kept, and how many referrals turn out to be fake.", "Für Mitgliedschaften und Empfehlungen ist eine wirtschaftliche Guardrail unverzichtbar: Zählen Sie, was Belohnungen und Rabatte pro gehaltenem Kunden kosten und wie viele Empfehlungen sich als gefälscht erweisen."),
-        tt("A good set of three KPIs has at least one outcome and one driver, each with where the number comes from and a target; a guardrail is a strong third.", "Ein gutes Set aus drei KPIs hat mindestens ein Outcome und einen Treiber, jeder mit Quelle der Zahl und einem Ziel; eine Guardrail ist ein starker dritter."),
+        tt("How to use each kind: outcome → the target on the management dashboard; driver → the team that owns onboarding, reviewed weekly; guardrail → a limit that stops a game element when it is crossed; vanity → stop reporting it as success. A bonus on a number rewards reporting it, not moving it.", "Wie man jede Art nutzt: Outcome → das Ziel im Management-Dashboard; Treiber → das Team, dem das Onboarding gehört, wöchentlich geprüft; Guardrail → eine Grenze, die ein Spielelement stoppt, wenn sie überschritten wird; Vanity → nicht mehr als Erfolg berichten. Ein Bonus auf eine Zahl belohnt, dass sie berichtet wird, nicht dass sie bewegt wird."),
+        tt("A good set of three KPIs has at least one outcome and one driver, each with where the number comes from, what you would aim for and why it is a KPI; a guardrail is a strong third.", "Ein gutes Set aus drei KPIs hat mindestens ein Outcome und einen Treiber, jeder mit Quelle der Zahl, dem, was Sie anstreben würden, und warum er ein KPI ist; eine Guardrail ist ein starker dritter."),
       ]}
-      sources={["kaplan1992", "ries2011"]}
+      sources={["kaplan1992", "ries2011", "hubbard2014"]}
     >
-      <p className={p}>
-        {tt(
-          "Kaplan and Norton (1992) argued that managers should steer by a few linked measures: the results, and the drivers that lead to them. Ries (2011) called the numbers that go up whatever you do “vanity metrics”. In retention programmes, members signed up is the classic one: it rises with every campaign and says nothing about whether anyone stayed.",
-          "Kaplan und Norton (1992) forderten, dass Führungskräfte nach wenigen verbundenen Kennzahlen steuern: den Ergebnissen und den Treibern, die zu ihnen führen. Ries (2011) nannte die Zahlen, die steigen, egal was man tut, „Vanity Metrics“. In Bindungsprogrammen sind angemeldete Mitglieder die klassische: Sie steigen mit jeder Kampagne und sagen nichts darüber, ob jemand geblieben ist.",
-        )}
-      </p>
-      <Diagram label={tt("A KPI tree for memberships and referrals · a worked example on Werra Datentechnik", "Ein KPI-Baum für Mitgliedschaften und Empfehlungen · ein Beispiel mit Werra Datentechnik")} caption={tt("Choose a metric to read its kind, then show whether each moved with customer value last year.", "Wählen Sie eine Kennzahl, um ihre Art zu lesen, und zeigen Sie dann, ob sich jede letztes Jahr mit dem Kundenwert bewegte.")}>
-        <KpiTree />
+      <ShowMore id="A5" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Kaplan and Norton (1992) argued that managers should steer by a few linked measures: the results, and the drivers that lead to them. Ries (2011) called the numbers that go up whatever you do “vanity metrics”. Hubbard (2014) advises measuring what would change a decision.",
+            "Kaplan und Norton (1992) forderten, dass Führungskräfte nach wenigen verbundenen Kennzahlen steuern: den Ergebnissen und den Treibern, die zu ihnen führen. Ries (2011) nannte die Zahlen, die steigen, egal was man tut, „Vanity Metrics“. Hubbard (2014) rät, zu messen, was eine Entscheidung ändern würde.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("A KPI tree for game elements · a worked example on Elbe Cloudwerk", "Ein KPI-Baum für Spielelemente · ein Beispiel mit Elbe Cloudwerk")} caption={tt("Choose a metric to read its kind, then show whether each moved with customer value last year.", "Wählen Sie eine Kennzahl, um ihre Art zu lesen, und zeigen Sie dann, ob sich jede letztes Jahr mit dem Kundenwert bewegte.")}>
+        <KpiTree cfg={KPI_TREE} />
       </Diagram>
-      <DataTable
-        head={[tt("Kind", "Art"), tt("What it is", "Was es ist"), tt("Where it sits", "Wo es steht")]}
-        rows={PATTERN_IDS.map((x) => [PATTERNS[x].label, PATTERNS[x].means, PATTERNS[x].shape])}
-        caption={tt("The four kinds of metric", "Die vier Arten von Kennzahlen")}
-      />
+      <ShowMore id="A5" part="table" label={tt("Show the table: the four kinds of metric", "Tabelle zeigen: Die vier Arten von Kennzahlen")}>
+        <DataTable
+          head={[tt("Kind", "Art"), tt("What it is", "Was es ist"), tt("Where it sits", "Wo es steht")]}
+          rows={PATTERN_IDS.map((x) => [PATTERNS[x].label, PATTERNS[x].means, PATTERNS[x].shape])}
+          caption={tt("The four kinds of metric", "Die vier Arten von Kennzahlen")}
+        />
+      </ShowMore>
     </MaterialCard>
   );
 }
@@ -193,37 +209,53 @@ export function CardA6() {
   return (
     <MaterialCard
       id="A6"
-      scan={tt("Whether an approach really keeps customers or brings referrals is tested, not believed: one change, a random split of customers in the same weeks, judged by the result, with a size fixed before the start. And every reward passes a second test: does it build trust, or does it buy behaviour and invite misuse?", "Ob ein Ansatz wirklich Kunden hält oder Empfehlungen bringt, wird getestet, nicht geglaubt: eine Änderung, eine zufällige Aufteilung der Kunden in denselben Wochen, am Ergebnis gemessen, mit einer vor dem Start festgelegten Größe. Und jede Belohnung besteht einen zweiten Test: Baut sie Vertrauen auf, oder kauft sie Verhalten und lädt zu Missbrauch ein?")}
+      scan={tt("Two tools tell you whether a game element works. A fair A/B test shows the cause: one change, a random split in the same weeks, judged by the result, with a size fixed before the start. Reading trends shows the direction: a change that holds over several periods, not one good week.", "Zwei Werkzeuge zeigen, ob ein Spielelement wirkt. Ein fairer A/B-Test zeigt die Ursache: eine Änderung, eine zufällige Aufteilung in denselben Wochen, am Ergebnis gemessen, mit einer vor dem Start festgelegten Größe. Trends zu lesen zeigt die Richtung: eine Veränderung, die über mehrere Zeiträume hält, nicht eine gute Woche.")}
       reasoning={[
         tt("One change: if the variant differs in two things and wins, nobody knows which one did it.", "Eine Änderung: Unterscheidet sich die Variante in zwei Dingen und gewinnt, weiß niemand, welches es war."),
-        tt("A random split in the same weeks: comparing with last year, large with small customers, or customers an account manager chose lets something other than the change explain the difference.", "Eine zufällige Aufteilung in denselben Wochen: Der Vergleich mit dem Vorjahr, von großen mit kleinen Kunden oder mit Kunden, die ein Account Manager ausgewählt hat, lässt etwas anderes als die Änderung den Unterschied erklären."),
-        tt("The KPI that decides is the result the problem is about (for expensive acquisition: referred firms that became customers), not promises to refer and not e-mails sent.", "Der KPI, der entscheidet, ist das Ergebnis, um das es beim Problem geht (bei teurer Gewinnung: empfohlene Firmen, die Kunden wurden), nicht Versprechen zu empfehlen und nicht versandte E-Mails."),
-        tt("Fix the size before you start: about 100 decisions per group and at least one full sales cycle. Stopping when the variant is ahead picks a lucky moment.", "Legen Sie die Größe vor dem Start fest: etwa 100 Entscheidungen pro Gruppe und mindestens ein voller Verkaufszyklus. Zu stoppen, wenn die Variante vorn liegt, wählt einen glücklichen Moment."),
+        tt("A random split in the same weeks: comparing with last quarter, partner sign-ups with direct sign-ups, or customers who chose to hide the bar lets something other than the change explain the difference.", "Eine zufällige Aufteilung in denselben Wochen: Der Vergleich mit dem Vorquartal, von Partner-Anmeldungen mit Direkt-Anmeldungen oder mit Kunden, die die Leiste ausblenden wollten, lässt etwas anderes als die Änderung den Unterschied erklären."),
+        tt("The KPI that decides is the result the problem is about (for customers who never get going: the share who finish set-up), not views of the bar and not points awarded.", "Der KPI, der entscheidet, ist das Ergebnis, um das es beim Problem geht (bei Kunden, die nie in Gang kommen: der Anteil, der die Einrichtung abschließt), nicht Aufrufe der Leiste und nicht vergebene Punkte."),
+        tt("Fix the size before you start: about 100 finished set-ups per group and at least one full onboarding cycle. Stopping when the variant is ahead picks a lucky moment.", "Legen Sie die Größe vor dem Start fest: etwa 100 abgeschlossene Einrichtungen pro Gruppe und mindestens ein voller Onboarding-Zyklus. Zu stoppen, wenn die Variante vorn liegt, wählt einen glücklichen Moment."),
         tt("Write the hypothesis (“if we …, then … rises, because …”) and the decision rule (roll out, keep testing, stop, and which guardrail must hold) before the test starts.", "Schreiben Sie die Hypothese („wenn wir …, dann steigt …, weil …“) und die Entscheidungsregel (ausrollen, weiter testen, stoppen, und welche Guardrail halten muss) vor dem Teststart auf."),
-        tt("Wrong incentives: cash per referral buys names, not customers, invites fake and self-referrals, and turns a trusted advice into a paid one; a small reward can even make people less willing to help than no reward. Value for both sides, paid only when the referred firm signs, keeps trust.", "Falsche Anreize: Geld pro Empfehlung kauft Namen, nicht Kunden, lädt zu gefälschten und Selbstempfehlungen ein und macht aus einem vertrauten Rat einen bezahlten; eine kleine Belohnung kann Menschen sogar weniger hilfsbereit machen als gar keine. Wert für beide Seiten, erst gezahlt, wenn die empfohlene Firma unterschreibt, hält das Vertrauen."),
-        tt("Real uncertainties: a small base, referred firms that were warmer to begin with (not a fair split), referrals not recorded, and a new competitor or price war. “The bigger the reward, the more good referrals”, “every satisfied customer will refer if asked” and “a membership keeps customers whatever the product does” are mistakes, not uncertainties.", "Echte Unsicherheiten: eine kleine Basis, empfohlene Firmen, die von Anfang an wärmer waren (keine faire Aufteilung), nicht erfasste Empfehlungen und ein neuer Wettbewerber oder Preiskampf. „Je größer die Belohnung, desto mehr gute Empfehlungen“, „jeder zufriedene Kunde empfiehlt, wenn man ihn fragt“ und „eine Mitgliedschaft hält Kunden, egal was das Produkt leistet“ sind Fehler, keine Unsicherheiten."),
+        tt("A trend is a change that holds for several periods in a row; one good week is noise. Compare the same periods and look at the groups: a rise in one group and a fall in another may be one shift, not two trends.", "Ein Trend ist eine Veränderung, die mehrere Zeiträume in Folge hält; eine gute Woche ist Rauschen. Vergleichen Sie gleiche Zeiträume und schauen Sie auf die Gruppen: Ein Anstieg in einer Gruppe und ein Rückgang in einer anderen können eine Verschiebung sein, nicht zwei Trends."),
+        tt("A trend shows where to look, not why: use it to choose what to test, then test before you scale. A game element that works only while it is new will show as a rise that fades: watch the following quarters.", "Ein Trend zeigt, wo man hinschauen muss, nicht warum: Nutzen Sie ihn, um zu wählen, was getestet wird, und testen Sie dann, bevor Sie ausweiten. Ein Spielelement, das nur wirkt, solange es neu ist, zeigt sich als Anstieg, der verblasst: Beobachten Sie die folgenden Quartale."),
+        tt("Real uncertainties: a small base, the bar shown only to engaged customers (not a fair split), use that is not logged (the mobile app), and a new release that changes what customers use. “More points always mean more motivation”, “once the game is live the motivation lasts” and “the more badges, the more engaged” are mistakes, not uncertainties.", "Echte Unsicherheiten: eine kleine Basis, die Leiste nur engagierten Kunden gezeigt (keine faire Aufteilung), Nutzung, die nicht protokolliert wird (die Mobile-App), und ein neues Release, das ändert, was Kunden nutzen. „Mehr Punkte bedeuten immer mehr Motivation“, „sobald das Spiel läuft, hält die Motivation an“ und „je mehr Badges, desto engagierter“ sind Fehler, keine Unsicherheiten."),
       ]}
-      sources={["kohavi2020", "gneezy2000", "ryu2007"]}
+      sources={["kohavi2020", "hubbard2014"]}
     >
-      <p className={p}>
-        {tt(
-          "Kohavi, Tang and Xu (2020) collected what makes controlled experiments trustworthy: a random split, one change at a time, a size fixed in advance, guardrail metrics, and no peeking to stop early. Gneezy and Rustichini (2000) found that a small payment can make people do less than no payment at all, because it turns a favour into a transaction. Ryu and Feick (2007) showed that rewards raise referrals most where the tie between the two people is weak, which is also where trust is weakest.",
-          "Kohavi, Tang und Xu (2020) haben gesammelt, was kontrollierte Experimente vertrauenswürdig macht: eine zufällige Aufteilung, eine Änderung auf einmal, eine vorab festgelegte Größe, Guardrail-Kennzahlen und kein vorzeitiges Hinschauen, um früh zu stoppen. Gneezy und Rustichini (2000) fanden, dass eine kleine Zahlung Menschen weniger tun lassen kann als gar keine, weil sie aus einem Gefallen ein Geschäft macht. Ryu und Feick (2007) zeigten, dass Belohnungen Empfehlungen dort am meisten erhöhen, wo die Beziehung zwischen zwei Menschen schwach ist, also dort, wo auch das Vertrauen am schwächsten ist.",
-        )}
-      </p>
-      <Diagram label={tt("A fair test of a referral ask, and how sure it is · a worked example on Werra Datentechnik", "Ein fairer Test einer Empfehlungsbitte, und wie sicher er ist · ein Beispiel mit Werra Datentechnik")} caption={tt("Switch between the four ways of running the test, then move the slider to change how many new customers each group has.", "Wechseln Sie zwischen den vier Arten, den Test durchzuführen, und bewegen Sie dann den Regler, um zu ändern, wie viele Neukunden jede Gruppe hat.")}>
-        <FairTest />
+      <ShowMore id="A6" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Kohavi, Tang and Xu (2020) collected what makes controlled experiments trustworthy: a random split, one change at a time, a size fixed in advance, guardrail metrics, and no peeking to stop early. Hubbard (2014) reminds us that most business measurement is about reducing uncertainty enough to decide, which is what reading a trend over several periods does.",
+            "Kohavi, Tang und Xu (2020) haben gesammelt, was kontrollierte Experimente vertrauenswürdig macht: eine zufällige Aufteilung, eine Änderung auf einmal, eine vorab festgelegte Größe, Guardrail-Kennzahlen und kein vorzeitiges Hinschauen, um früh zu stoppen. Hubbard (2014) erinnert daran, dass die meiste Messung im Unternehmen Unsicherheit so weit verringern soll, dass man entscheiden kann; genau das tut ein Trend über mehrere Zeiträume.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("A fair test of a game element, and how sure it is · a worked example on Elbe Cloudwerk", "Ein fairer Test eines Spielelements, und wie sicher er ist · ein Beispiel mit Elbe Cloudwerk")} caption={tt("Switch between the four ways of running the test, then move the slider to change how many finished set-ups each group has.", "Wechseln Sie zwischen den vier Arten, den Test durchzuführen, und bewegen Sie dann den Regler, um zu ändern, wie viele abgeschlossene Einrichtungen jede Gruppe hat.")}>
+        <FairTest cfg={FAIR} />
       </Diagram>
-      <DataTable
-        head={[tt("How the referral is rewarded", "Wie die Empfehlung belohnt wird"), tt("Builds trust or buys behaviour?", "Baut Vertrauen auf oder kauft Verhalten?"), tt("Why", "Warum")]}
-        rows={[
-          [tt("A thank-you in value for both firms, once the referred firm signs", "Ein Dankeschön in Wert für beide Firmen, sobald die empfohlene Firma unterschreibt"), tt("Builds trust", "Baut Vertrauen auf"), tt("Both sides gain, and only real customers are thanked.", "Beide Seiten gewinnen, und nur echte Kunden werden bedankt.")],
-          [tt("€500 cash for every name submitted", "500 € Geld für jeden eingereichten Namen"), tt("Buys behaviour", "Kauft Verhalten"), tt("It pays for names, invites fake referrals and makes advice look paid.", "Es zahlt für Namen, lädt zu gefälschten Empfehlungen ein und lässt Rat bezahlt wirken.")],
-          [tt("A simple ask at the quarterly review, with a ready intro e-mail", "Eine einfache Bitte im Quartalsreview, mit fertiger Vorstellungs-E-Mail"), tt("Builds trust", "Baut Vertrauen auf"), tt("It makes referring easy for customers who already trust you.", "Es macht Empfehlen leicht für Kunden, die Ihnen schon vertrauen.")],
-          [tt("Points for every referral, whether or not it signs", "Punkte für jede Empfehlung, egal ob sie unterschreibt"), tt("Buys behaviour", "Kauft Verhalten"), tt("Volume is rewarded, not quality; the points become the reason.", "Menge wird belohnt, nicht Qualität; die Punkte werden zum Grund.")],
-        ]}
-        caption={tt("Trust or wrong incentive? (Case assumption)", "Vertrauen oder falscher Anreiz? (Fallannahme)")}
-      />
+      <ShowMore id="A6" part="table" label={tt("Show the table: reading a trend: Elbe's share of customers by quarter (Case assumption)", "Tabelle zeigen: Einen Trend lesen: Anteil der Kunden bei Elbe nach Quartal (Fallannahme)")}>
+        <DataTable
+          head={[tt("Group at Elbe", "Gruppe bei Elbe"), "Q1", "Q2", "Q3", "Q4", tt("Reading", "Lesart")]}
+          rows={[
+            [tt("Direct sign-ups who finish set-up", "Direkt-Anmeldungen, die die Einrichtung abschließen"), pct(15), pct(14), pct(28), pct(31), tt("A trend: it rose after the set-up bar in Q3 and held in Q4.", "Ein Trend: Er stieg nach der Einrichtungsleiste in Q3 und hielt in Q4.")],
+            [tt("Partner sign-ups who finish set-up", "Partner-Anmeldungen, die die Einrichtung abschließen"), pct(30), pct(29), pct(31), pct(30), tt("Flat: small moves are noise, not a trend.", "Flach: Kleine Bewegungen sind Rauschen, kein Trend.")],
+            [tt("Accounts that only collect points", "Konten, die nur Punkte sammeln"), pct(4), pct(9), pct(11), pct(14), tt("A shift: it jumped when points for logins started in Q2; customers now log in for points.", "Eine Verschiebung: Er sprang, als die Punkte für Logins in Q2 starteten; Kunden loggen sich jetzt für Punkte ein.")],
+          ]}
+          caption={tt("Reading a trend: Elbe's share of customers by quarter (Case assumption)", "Einen Trend lesen: Anteil der Kunden bei Elbe nach Quartal (Fallannahme)")}
+        />
+      </ShowMore>
+      <ShowMore id="A6" part="table" label={tt("Show the table: the test card, part by part", "Tabelle zeigen: Die Testkarte, Teil für Teil")}>
+        <DataTable
+          head={[tt("Part of the test card", "Teil der Testkarte"), tt("Fair", "Fair"), tt("What goes wrong otherwise", "Was sonst schiefgeht")]}
+          rows={[
+            [tt("What changes", "Was sich ändert"), tt("One thing only", "Nur eine Sache"), tt("A win cannot be put down to anything", "Ein Gewinn lässt sich nichts zuschreiben")],
+            [tt("Control group", "Kontrollgruppe"), tt("Random half, same weeks", "Zufällige Hälfte, dieselben Wochen"), tt("Another quarter, another sign-up source or self-chosen cases explain the difference", "Ein anderes Quartal, eine andere Anmelde-Quelle oder selbst gewählte Fälle erklären den Unterschied")],
+            [tt("Success KPI", "Erfolgs-KPI"), tt("The result: share who finish set-up", "Das Ergebnis: Anteil, der die Einrichtung abschließt"), tt("The bar is viewed and nobody finishes", "Die Leiste wird angesehen, und niemand wird fertig")],
+            [tt("Size and duration", "Größe und Dauer"), tt("Fixed: about 100 finished set-ups per group, one full onboarding cycle", "Fest: etwa 100 abgeschlossene Einrichtungen pro Gruppe, ein voller Onboarding-Zyklus"), tt("A lucky moment on the dashboard is taken for a result", "Ein glücklicher Moment im Dashboard wird für ein Ergebnis gehalten")],
+          ]}
+          caption={tt("The test card, part by part", "Die Testkarte, Teil für Teil")}
+        />
+      </ShowMore>
     </MaterialCard>
   );
 }
@@ -232,32 +264,48 @@ export function CardA7() {
   return (
     <MaterialCard
       id="A7"
-      scan={tt("Choose measures by the plan's three tests, each Low (1) to High (3), multiplied: retention effect (how much it keeps or wins customers), scalability (whether it can grow without the cost growing with it) and economic viability (whether it pays for itself). Then check the budget and which problems you answer.", "Wählen Sie Maßnahmen nach den drei Tests des Plans, jeweils Niedrig (1) bis Hoch (3), multipliziert: Bindungswirkung (wie stark sie Kunden hält oder gewinnt), Skalierbarkeit (ob sie wachsen kann, ohne dass die Kosten mitwachsen) und Wirtschaftlichkeit (ob sie sich selbst trägt). Prüfen Sie dann das Budget und welche Probleme Sie beantworten.")}
+      scan={tt("Choose measures by the plan's three tests, each Low (1) to High (3), multiplied: motivation (would customers do it for the result, not the prize), integration (what the measure connects to) and sustainability (does it still work after the novelty, and what keeps it going). Then check the budget, the weeks and which problems you answer.", "Wählen Sie Maßnahmen nach den drei Tests des Plans, jeweils Niedrig (1) bis Hoch (3), multipliziert: Motivation (würden Kunden es für das Ergebnis tun, nicht für den Preis), Integration (womit die Maßnahme verbunden ist) und Nachhaltigkeit (wirkt es nach der Neuheit noch, und was hält es am Laufen). Prüfen Sie dann das Budget, die Wochen und welche Probleme Sie beantworten.")}
       reasoning={[
+        tt("The plan's evaluation is Motivation × Integration × Sustainability. Score each from 1 to 3 and multiply: one weak answer lowers the whole.", "Die Bewertung des Plans ist Motivation × Integration × Nachhaltigkeit. Bewerten Sie jede von 1 bis 3 und multiplizieren Sie: Eine schwache Antwort senkt das Ganze."),
         EXPLAIN_RULE.v,
-        tt("Retention effect: 3 if it gives many customers a lasting reason to stay or brings new customers directly, 2 if it helps some customers or only for a while, 1 if it answers none of the problems.", "Bindungswirkung: 3, wenn sie vielen Kunden einen dauerhaften Grund zum Bleiben gibt oder direkt Neukunden bringt, 2, wenn sie einigen Kunden oder nur eine Zeit lang hilft, 1, wenn sie keines der Probleme beantwortet."),
-        tt("Economic viability: 3 if what it brings clearly exceeds what it costs and the cost does not keep growing with rewards, 2 if it roughly pays for itself, 1 if it costs margin on every customer or pays for behaviour nobody can check.", "Wirtschaftlichkeit: 3, wenn sie klar mehr bringt, als sie kostet, und die Kosten nicht mit Belohnungen weiter wachsen, 2, wenn sie sich ungefähr selbst trägt, 1, wenn sie bei jedem Kunden Marge kostet oder für Verhalten zahlt, das niemand prüfen kann."),
-        tt("Match each measure to the problems it really answers: what gives customers a reason to stay answers “low customer retention”; what brings new customers more cheaply, for example through existing ones, answers “expensive new customer acquisition”; what makes existing customers use more, meet peers or refer answers “potential of existing customers unused”. Merchandise answers none.", "Ordnen Sie jede Maßnahme den Problemen zu, die sie wirklich beantwortet: Was Kunden einen Grund zum Bleiben gibt, beantwortet „geringe Kundenbindung“; was Neukunden günstiger bringt, etwa über Bestandskunden, beantwortet „teure Neukundengewinnung“; was Bestandskunden mehr nutzen, andere treffen oder empfehlen lässt, beantwortet „Potenzial der Bestandskunden ungenutzt“. Merchandise beantwortet keines."),
-        tt("Stay inside the budget. If the plan is over, leave out the lowest score; do not trim every measure a little.", "Bleiben Sie im Budget. Liegt der Plan darüber, lassen Sie den niedrigsten Wert weg, statt jede Maßnahme ein bisschen zu kürzen."),
-        tt("Order by score and by dependency: what scales and feeds the others (the referral programme, the community where referrers meet peers) goes first; what adds service for each member comes next.", "Ordnen Sie nach Wert und nach Abhängigkeit: Was skaliert und die anderen speist (das Empfehlungsprogramm, die Community, in der Empfehler andere treffen), kommt zuerst; was jedem Mitglied Service hinzufügt, kommt danach."),
+        tt(`Motivation. ${EFFECT_ANCHOR.v}`, `Motivation. ${EFFECT_ANCHOR.v}`),
+        tt(`Sustainability. ${SCALE_ANCHOR.v}`, `Nachhaltigkeit. ${SCALE_ANCHOR.v}`),
+        tt("Apply Materi A1's test to the measure: would the customer do it without the prize? A measure that pays for a click (points for every login) scores 1 on motivation, and it connects to nothing: do not rank it above a measure that rewards real use.", "Wenden Sie den Test aus Materi A1 auf die Maßnahme an: Würde der Kunde es ohne den Preis tun? Eine Maßnahme, die einen Klick bezahlt (Punkte für jeden Login), erzielt bei Motivation 1 und ist mit nichts verbunden: Setzen Sie sie nicht über eine Maßnahme, die echte Nutzung belohnt."),
+        tt("Match each measure to the problems it really answers: “low use of the platform” is answered by what carries customers to features they want; “mediocre retention” by what gives customers a reason to stay and to bring others; “measures not integrated” by what joins membership, referral and the customer profile. A prize for a click answers none.", "Ordnen Sie jede Maßnahme den Problemen zu, die sie wirklich beantwortet: „Geringe Nutzung der Plattform“ beantwortet, was Kunden zu Funktionen trägt, die sie wollen; „mittelmäßige Kundenbindung“, was Kunden einen Grund gibt, zu bleiben und andere mitzubringen; „Maßnahmen nicht integriert“, was Mitgliedschaft, Empfehlung und Kundenprofil verbindet. Ein Preis für einen Klick beantwortet keines."),
+        tt("The label after the weeks says which mechanism the measure uses: a reward, competition, progress and status, or all three at once. It is a fact, not a score: a reward can be strong (service help) or weak (points for a login). Judge it by the three scores.", "Das Etikett hinter den Wochen sagt, welchen Mechanismus die Maßnahme nutzt: eine Belohnung, Wettbewerb, Fortschritt und Status, oder alle drei auf einmal. Es ist eine Tatsache, keine Note: Eine Belohnung kann stark sein (Service-Hilfe) oder schwach (Punkte für einen Login). Beurteilen Sie sie an den drei Werten."),
+        tt("A price is built from parts: set-up, a licence for the months, and days or hours of work × the day or hour rate. Add the parts to check a price, and ask which part recurs: people and prizes grow with volume, a path built once does not.", "Ein Preis besteht aus Teilen: Einrichtung, eine Lizenz für die Monate und Arbeitstage oder -stunden × Tages- oder Stundensatz. Addieren Sie die Teile, um einen Preis zu prüfen, und fragen Sie, welcher Teil wiederkehrt: Personal und Preise wachsen mit der Menge, ein einmal gebauter Pfad nicht."),
+        tt("Weeks decide whether a measure has time to work. Five months are 20 weeks: a measure in use after 10 weeks works for the other 10; one in use only after 32 weeks answers its problem too late, however well it is connected.", "Die Wochen entscheiden, ob eine Maßnahme Zeit hat zu wirken. Fünf Monate sind 20 Wochen: Eine Maßnahme, die nach 10 Wochen in Betrieb ist, wirkt in den übrigen 10; eine, die erst nach 32 Wochen in Betrieb ist, beantwortet ihr Problem zu spät, so gut sie auch verbunden ist."),
+        tt("Over-complexity lowers sustainability: one platform with points, levels, leaderboards, quests and streaks at once cannot be explained, tested or kept going, however well it is connected.", "Übermaß an Komplexität senkt die Nachhaltigkeit: Eine Plattform mit Punkten, Stufen, Ranglisten, Quests und Serien auf einmal lässt sich nicht erklären, testen oder am Laufen halten, so gut sie auch verbunden ist."),
+        tt("Give a reason for the two judged scores, in your own words and with a fact from the card: for motivation, whether customers would do it without the prize; for sustainability, whether it still works after the novelty and what keeps it going (prizes, people or nothing), and the weeks it needs.", "Geben Sie für die zwei beurteilten Werte einen Grund, in eigenen Worten und mit einer Tatsache von der Karte: bei der Motivation, ob Kunden es ohne den Preis täten; bei der Nachhaltigkeit, ob es nach der Neuheit noch wirkt und was es am Laufen hält (Preise, Personal oder nichts), und die Wochen, die es braucht."),
+        tt("The budget is a limit to weigh, not a lock. If the plan is over, the rule is to leave out the lowest score rather than trim every measure a little; if you keep it anyway, say why.", "Das Budget ist eine Grenze zum Abwägen, keine Sperre. Liegt der Plan darüber, ist die Regel, den niedrigsten Wert wegzulassen, statt jede Maßnahme ein bisschen zu kürzen; behalten Sie ihn trotzdem, sagen Sie warum."),
+        tt("Order by score and by dependency: what others read from goes first (a path that reads the customer profile); a measure that needs the data of another comes after it. Name what you left out and why.", "Ordnen Sie nach Wert und nach Abhängigkeit: Woraus andere lesen, kommt zuerst (ein Pfad, der das Kundenprofil liest); eine Maßnahme, die die Daten einer anderen braucht, kommt danach. Nennen Sie, was Sie weggelassen haben und warum."),
       ]}
-      sources={["hubbard2014", "reichheld2003"]}
+      sources={["davenport2018", "hubbard2014"]}
     >
-      <p className={p}>
-        {tt(
-          "Hubbard (2014) advises measuring what would change a decision. Reichheld (2003) argued that willingness to recommend is one of the best signs of future growth, because customers who recommend also stay. The plan names the evaluation for this day: retention effect × scalability × economic viability.",
-          "Hubbard (2014) rät, zu messen, was eine Entscheidung ändern würde. Reichheld (2003) argumentierte, dass die Bereitschaft zu empfehlen eines der besten Zeichen für künftiges Wachstum ist, weil Kunden, die empfehlen, auch bleiben. Der Plan nennt die Bewertung für diesen Tag: Bindungswirkung × Skalierbarkeit × Wirtschaftlichkeit.",
-        )}
-      </p>
-      <Diagram label={tt("Three measures of Werra Datentechnik, scored", "Drei Maßnahmen von Werra Datentechnik, bewertet")} caption={tt("Choose a measure to read its three scores and why each one is what it is.", "Wählen Sie eine Maßnahme, um ihre drei Werte zu lesen und warum jeder so ist.")}>
-        <ScoreExample />
+      <ShowMore id="A7" part="research" label={tt("Show the research behind this card", "Die Forschung hinter dieser Karte zeigen")}>
+        <p className={p}>
+          {tt(
+            "Davenport and Ronanki (2018) found that technology projects succeed when they start from a business problem and fit into existing processes and systems, and fail when they are bought as stand-alone tools; the same holds for game elements. Hubbard (2014) advises measuring what would change a decision. The plan names the evaluation for this day: motivation × integration × sustainability.",
+            "Davenport und Ronanki (2018) fanden, dass Technologieprojekte gelingen, wenn sie von einem Geschäftsproblem ausgehen und in bestehende Prozesse und Systeme passen, und scheitern, wenn sie als allein stehende Werkzeuge gekauft werden; dasselbe gilt für Spielelemente. Hubbard (2014) rät, zu messen, was eine Entscheidung ändern würde. Der Plan nennt die Bewertung für diesen Tag: Motivation × Integration × Nachhaltigkeit.",
+          )}
+        </p>
+      </ShowMore>
+      <Diagram label={tt("Three measures of Elbe Cloudwerk, scored", "Drei Maßnahmen von Elbe Cloudwerk, bewertet")} caption={tt("Choose a measure to read its three scores and why each one is what it is.", "Wählen Sie eine Maßnahme, um ihre drei Werte zu lesen und warum jeder so ist.")}>
+        <ScoreBars cfg={SCORE} />
       </Diagram>
-      <Bul
-        items={[
-          tt("Scalability is read from how the cost grows, never guessed.", "Die Skalierbarkeit wird daraus gelesen, wie die Kosten wachsen, nie geschätzt."),
-          tt("A measure that keeps customers only while it pays them scores low on economic viability.", "Eine Maßnahme, die Kunden nur hält, solange sie sie bezahlt, punktet bei der Wirtschaftlichkeit niedrig."),
-        ]}
-      />
+      <ShowMore id="A7" part="notes" label={tt("Show two short notes", "Zwei kurze Hinweise zeigen")}>
+        <Bul
+          items={[
+            tt("Integration is read from what the measure is printed to connect to, never guessed.", "Die Integration wird aus dem gelesen, womit die Maßnahme laut Beschreibung verbunden ist, nie geschätzt."),
+            tt("A clever game element that stands alone scores low: it adds an island instead of joining what exists.", "Ein kluges Spielelement, das allein steht, punktet niedrig: Es fügt eine Insel hinzu, statt zu verbinden, was existiert."),
+          ]}
+        />
+      </ShowMore>
+      <ShowMore id="A7" part="extra" label={tt("Show: A discount is not a game element", "Zeigen: Ein Rabatt ist kein Spielelement")}>
+        <Callout label={tt("A discount is not a game element", "Ein Rabatt ist kein Spielelement")} tone="signal">
+          <p>{tt("Points that can be exchanged for a discount turn a game element into a price cut: customers learn to wait for it, and the effect ends when the discount ends. Reward service, help or access, which deepens use, rather than money off.", "Punkte, die gegen einen Rabatt getauscht werden können, machen aus einem Spielelement eine Preissenkung: Kunden lernen, darauf zu warten, und die Wirkung endet mit dem Rabatt. Belohnen Sie Service, Hilfe oder Zugang, was die Nutzung vertieft, statt Preisnachlass.")}</p>
+        </Callout>
+      </ShowMore>
     </MaterialCard>
   );
 }

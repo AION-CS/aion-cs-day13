@@ -15,11 +15,11 @@ export function Route1Page() {
       <HashFlash />
       <header className="space-y-1">
         <p className="smallcaps text-accent">{tt("Route 1 · Levels 1 and 2 · Knowledge and application", "Route 1 · Level 1 und 2 · Wissen und Anwendung")}</p>
-        <h1>{tt("Customer retention: memberships that add value, and customers as multipliers", "Kundenbindung: Mitgliedschaften mit Mehrwert, und Kunden als Multiplikatoren")}</h1>
+        <h1>{tt("Motivation through gamification: reward, competition and progress, real motivation versus short-term incentives, and how to integrate them", "Motivation durch Gamification: Belohnung, Wettbewerb und Fortschritt, echte Motivation gegen kurzfristige Anreize, und wie man sie integriert")}</h1>
       </header>
       <SuggestedOrderBanner
         routeKey="r1"
-        text={tt("Materi A → the Retention Analysis task, one case in two parts (Understand retention models, Make it measurable and choose). Every section stays open, so you can start anywhere.", "Materi A → die Aufgabe Retention Analysis, ein Fall in zwei Teilen (Bindungsmodelle verstehen, Messbar machen und auswählen). Jeder Abschnitt bleibt offen, Sie können überall beginnen.")}
+        text={tt("Materi A (the two core cards are A1 and A7) → the Gamification Analysis task, one case in two parts (Understand gamification, Measure it and choose), with two core blocks. Every section stays open, so you can start anywhere.", "Materi A (die zwei Kernkarten sind A1 und A7) → die Aufgabe Gamification Analysis, ein Fall in zwei Teilen (Gamification verstehen, Messen und auswählen), mit zwei Kernblöcken. Jeder Abschnitt bleibt offen, Sie können überall beginnen.")}
       />
       <SectionRail route={1} />
       <PageNav route={1} />

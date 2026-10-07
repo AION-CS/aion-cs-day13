@@ -24,7 +24,7 @@ export function ParticipantStrip() {
           "Use the same name all week — it is how your submissions are matched. Each export names its own file from it, for example",
           "Verwenden Sie die ganze Woche denselben Namen, so werden Ihre Abgaben zugeordnet. Jeder Export bildet daraus seinen Dateinamen, zum Beispiel",
         )}{" "}
-        <span className="tnum">1-muchson-day13-l1l2-engagement-file</span>.
+        <span className="tnum">1-muchson-day13-l1l2-gamification-file</span>.
       </p>
       <input
         id="participant-name"
